@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高中段考題庫中心</title>
+
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+    <!-- Icons (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .katex {
+            font-size: 1.1em;
+        }
+
+        .explanation-box {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- 1. Data Store ---
+
+        // ★★★ 設定 PDF 連結的位置 ★★★
+        // 請將 '#' 替換為您 Google Drive 分享連結或本機檔案路徑 (例如 './math.pdf')
+        const PDF_LINKS = {
+            "1_2_chem": "#", // 化學科 PDF 連結
+            "1_2_geo": "#",  // 地理科 PDF 連結
+            "1_2_earth": "#", // 地科科 PDF 連結
+            "1_2_bio": "#",  // 生物科 PDF 連結
+            "1_2_phy": "#",  // 物理科 PDF 連結
+            "1_2_math": "#"  // 數學科 PDF 連結
+        };
+
+        const QUESTION_DATABASE = {
+            // --- 化學 (Chemistry) - 完整 25 題 ---
+            "1_2_chem": [
+                {
+                    id: "chem_01", number: 1, type: "單選",
+                    question: "取 3.2 克的 $TiO_2$ 於氫氣中受熱，失去部分的氧，質量減少 0.32 克，形成另一種氧化物，則此氧化物之化學式為何？",
+                    options: [
+                        { label: "A", text: "TiO" },
+                        { label: "B", text: "Ti₂O" },
+                        { label: "C", text: "Ti₂O₃" },
+                        { label: "D", text: "TiO₃" }
+                    ],
+                    answer: "C",
+                    explanation: `
+**解析：**
+1. $TiO_2$ 式量 = 80。Ti 莫耳數 $= 3.2/80 = 0.04$ mol。
+2. 原氧重 $= 0.04 \\times 2 \\times 16 = 1.28$ g。
+3. 剩氧重 $= 1.28 - 0.32 = 0.96$ g。剩氧莫耳數 $= 0.96/16 = 0.06$ mol。
+4. $Ti : O = 0.04 : 0.06 = 2 : 3$。故為 $Ti_2O_3$。`
+                },
+                {
+                    id: "chem_02", number: 2, type: "單選",
+                    question: "僅含有 C、H、O 之某二物實驗結果其元素的重量百分組成相同，同狀況下的蒸氣密度亦相同，但熔點、沸點有顯著差異，則可判斷此二物何者不同？",
+                    options: [
+                        { label: "A", text: "分子量" },
+                        { label: "B", text: "結構式" },
+                        { label: "C", text: "實驗式" },
+                        { label: "D", text: "分子式" }
+                    ],
+                    answer: "B",
+                    explanation: `
+**解析：**
+* 重量百分組成相同 $\\rightarrow$ **實驗式**相同。
+* 蒸氣密度相同 $\\rightarrow$ 分子量相同 $\\rightarrow$ **分子式**相同。
+* 熔沸點不同代表性質不同，為**同分異構物**，故 **結構式** 不同。`
+                },
+                {
+                    id: "chem_03", number: 3, type: "單選",
+                    question: "試問完全電解 90 公斤的水，可產生氫氣多少公斤？",
+                    options: [
+                        { label: "A", text: "5" },
+                        { label: "B", text: "10" },
+                        { label: "C", text: "20" },
+                        { label: "D", text: "90" }
+                    ],
+                    answer: "B",
+                    explanation: `
+**解析：**
+1. 反應：$2H_2O \\rightarrow 2H_2 + O_2$。
+2. 水 90 kg = 5000 mol。
+3. 產氫氣 5000 mol。
+4. 氫氣重 $5000 \\times 2 = 10000$ g = **10 kg**。`
+                },
+                {
+                    id: "chem_04", number: 4, type: "單選",
+                    question: "反應 $aA + bB \\rightarrow cC + dD$，分子量 $A=30, B=60, C=90$。欲生成 100 克 D，至少需要 A 若干克？",
+                    options: [
+                        { label: "A", text: "100a / (a + 2b - 3c)" },
+                        { label: "B", text: "30a / (30a + 60b - 90c)" },
+                        { label: "C", text: "100" },
+                        { label: "D", text: "無法計算" }
+                    ],
+                    answer: "A",
+                    explanation: `
+**解析：**
+1. 質量守恆：生成 D 的總重 $W_D = 30a + 60b - 90c$。
+2. 消耗 A 的重 $W_A = 30a$。
+3. 比例：$\\frac{x}{100} = \\frac{30a}{W_D} \\Rightarrow x = \\frac{3000a}{30a+60b-90c} = \\frac{100a}{a+2b-3c}$。`
+                },
+                {
+                    id: "chem_05", number: 5, type: "單選",
+                    question: "根據氣體 X、Y、Z 的初始與平衡條件 (X: 0.1 → 0.05, Y: 0.2 → 0.05, Z: 0 → 0.1)，求反應式。",
+                    options: [
+                        { label: "A", text: "3X + 2Y → Z" },
+                        { label: "B", text: "3X + Y → 2Z (數據可能有誤)" },
+                        { label: "C", text: "X + Y → Z" },
+                        { label: "D", text: "2X + Y → 2Z" }
+                    ],
+                    answer: "B",
+                    explanation: `
+**解析：**
+1. 變化量：$\\Delta X = 0.05$ (耗), $\\Delta Y = 0.15$ (耗), $\\Delta Z = 0.1$ (生)。
+2. 比例：$0.05 : 0.15 : 0.1 = 1 : 3 : 2$。
+3. 理論反應式：$X + 3Y \\rightarrow 2Z$。
+*(註：考卷選項 (B) 為 3X+Y->2Z，通常為題目 X, Y 數據錯置導致，依最接近形式選 B)*`
+                },
+                {
+                    id: "chem_06", number: 6, type: "單選",
+                    question: "乙烷 ($C_2H_6$) 和丙烷 ($C_3H_8$) 混合氣體燃燒得 26.4 克 $CO_2$ 及 15.3 克 $H_2O$，求莫耳數比。",
+                    options: [
+                        { label: "A", text: "1:1" },
+                        { label: "B", text: "2:3" },
+                        { label: "C", text: "3:1" },
+                        { label: "D", text: "3:2" }
+                    ],
+                    answer: "D",
+                    explanation: `
+**解析：**
+1. $CO_2=0.6$ mol, $H_2O=0.85$ mol。
+2. 設乙烷 $x$, 丙烷 $y$。
+3. C守恆: $2x+3y=0.6$; H守恆: $3x+4y=0.85$。
+4. 解得 $x=0.15, y=0.1$。比值 **3:2**。`
+                },
+                {
+                    id: "chem_07", number: 7, type: "單選",
+                    question: "關於氫氣燃燒 ($285.8 kJ$) 與過氧化氫分解 ($196.4 kJ$) 的熱化學反應敘述，何者錯誤？",
+                    options: [
+                        { label: "A", text: "1g H₂O₂ 分解約放出 2.89 kJ" },
+                        { label: "B", text: "反應熱大小與係數成正比" },
+                        { label: "C", text: "2 莫耳氫氣燃燒放出 285.8 kJ" },
+                        { label: "D", text: "1 莫耳 H₂O₂ 分解放出 98.2 kJ" }
+                    ],
+                    answer: "C",
+                    explanation: `
+**解析：**
+* (C) 錯誤。方程式給的是 **1 莫耳** 氫氣燃燒放出 285.8 kJ。2 莫耳應放出 $285.8 \\times 2 = 571.6$ kJ。`
+                },
+                {
+                    id: "chem_08", number: 8, type: "單選",
+                    question: "0.5M 400mL 鹽酸與 0.5M 200mL 漂白水 ($NaOCl$) 混合，求游泳池 ($10^7 L$) 中氯氣的 ppm 濃度？",
+                    options: [
+                        { label: "A", text: "7.1 x 10⁻⁴ ppm" },
+                        { label: "B", text: "7.1 x 10⁻³ ppm" },
+                        { label: "C", text: "1.4 x 10⁻⁴ ppm" },
+                        { label: "D", text: "3.5 x 10⁻⁴ ppm" }
+                    ],
+                    answer: "A",
+                    explanation: `
+**解析：**
+1. $HCl=0.2$ mol, $NaOCl=0.1$ mol。
+2. 完全反應生成 $Cl_2 = 0.1$ mol $= 7.1$ g。
+3. 池水重 $10^{10}$ g。
+4. $ppm = 7.1 / 10^{10} \\times 10^6 = 7.1 \\times 10^{-4}$。`
+                },
+                {
+                    id: "chem_09", number: 9, type: "單選",
+                    question: "2ppm 臭氧稀釋至原體積 2 倍，求體積莫耳濃度？",
+                    options: [
+                        { label: "A", text: "10⁻⁵ M" },
+                        { label: "B", text: "2.08 x 10⁻⁴ M" },
+                        { label: "C", text: "4.16 x 10⁻⁵ M" },
+                        { label: "D", text: "2.08 x 10⁻⁵ M" }
+                    ],
+                    answer: "D",
+                    explanation: `
+**解析：**
+1. 稀釋後變 1 ppm = 1 mg/L = $10^{-3}$ g/L。
+2. $O_3$ 分子量 48。
+3. $M = 10^{-3} / 48 \\approx 2.08 \\times 10^{-5}$ M。`
+                },
+                {
+                    id: "chem_10", number: 10, type: "單選",
+                    question: "嗎啡 ($C_{17}H_{19}NO_3$) 燃燒平衡係數和 ($a+b+c+d$) 為何？",
+                    options: [
+                        { label: "A", text: "190" },
+                        { label: "B", text: "195" },
+                        { label: "C", text: "200" },
+                        { label: "D", text: "205" }
+                    ],
+                    answer: "B",
+                    explanation: `
+**解析：**
+1. 平衡式：$4 C_{17}H_{19}NO_3 + 85 O_2 \\rightarrow 68 CO_2 + 38 H_2O + 4 NO_2$。
+2. 係數和 (不含嗎啡) $= 85+68+38+4 = 195$。`
+                },
+                {
+                    id: "chem_11", number: 11, type: "單選",
+                    question: "承上題，若 10g 樣品燃燒產生 17.6g $CO_2$，求嗎啡純度？",
+                    options: [
+                        { label: "A", text: "40%" },
+                        { label: "B", text: "50%" },
+                        { label: "C", text: "60%" },
+                        { label: "D", text: "67.1%" }
+                    ],
+                    answer: "D",
+                    explanation: `
+**解析：**
+1. $CO_2$ 0.4 mol $\\rightarrow$ 嗎啡 $0.4/17$ mol。
+2. 嗎啡重 $(0.4/17) \\times 285 \\approx 6.71$ g。
+3. 純度 $6.71 / 10 = 67.1\\%$。`
+                },
+                {
+                    id: "chem_12", number: 12, type: "單選",
+                    question: "NaOH 與 HCl 反應，峰值在 20g NaOH。加入 15g NaOH 時，溶液中有？",
+                    options: [
+                        { label: "A", text: "NaCl, H₂O, HCl" },
+                        { label: "B", text: "NaCl, H₂O, NaOH" },
+                        { label: "C", text: "僅 NaCl, H₂O" },
+                        { label: "D", text: "NaCl, NaOH, HCl" }
+                    ],
+                    answer: "A",
+                    explanation: `
+**解析：**
+15g < 20g (當量點)，故 NaOH 用完 (限量)，HCl 過量。`
+                },
+                {
+                    id: "chem_13", number: 13, type: "單選",
+                    question: "承上題，加入 10g NaOH 時，溫度約為？(起始 20°C，最高 32°C)",
+                    options: [
+                        { label: "A", text: "23°C" },
+                        { label: "B", text: "26°C" },
+                        { label: "C", text: "29°C" },
+                        { label: "D", text: "30°C" }
+                    ],
+                    answer: "B",
+                    explanation: `
+**解析：**
+10g 為 20g 的一半，溫升減半。$\\Delta T = 12/2 = 6$。末溫 $20+6=26^\\circ C$。`
+                },
+                {
+                    id: "chem_14", number: 14, type: "單選",
+                    question: "1 分子蔗糖發酵可得幾分子酒精？",
+                    options: [
+                        { label: "A", text: "1" },
+                        { label: "B", text: "2" },
+                        { label: "C", text: "3" },
+                        { label: "D", text: "4" }
+                    ],
+                    answer: "D",
+                    explanation: `
+**解析：**
+1 蔗糖 $\\rightarrow$ 2 葡萄糖 $\\rightarrow$ 4 酒精。`
+                },
+                {
+                    id: "chem_15", number: 15, type: "單選",
+                    question: "1 分子酒精完全燃燒消耗多少分子氧？",
+                    options: [
+                        { label: "A", text: "2" },
+                        { label: "B", text: "2.5" },
+                        { label: "C", text: "3" },
+                        { label: "D", text: "3.5" }
+                    ],
+                    answer: "C",
+                    explanation: `
+**解析：**
+$C_2H_5OH + 3O_2 \\rightarrow 2CO_2 + 3H_2O$。`
+                },
+                {
+                    id: "chem_16", number: 16, type: "多選",
+                    question: "有機物含氧 16.05%，含硫 8.00%，分子量可能為？",
+                    options: [
+                        { label: "A", text: "100" },
+                        { label: "B", text: "200" },
+                        { label: "C", text: "300" },
+                        { label: "D", text: "400" },
+                        { label: "E", text: "800" }
+                    ],
+                    answer: "DE",
+                    explanation: `
+**解析：**
+1. $O:S = (16/16) : (8/32) = 1 : 0.25 = 4:1$。
+2. 至少含 1 個 S (32g)。$M = 32 / 0.08 = 400$。
+3. 若含 2 個 S 則為 800。`
+                },
+                {
+                    id: "chem_17", number: 17, type: "多選",
+                    question: "丙烷燃燒，體積從 100mL 變為 70mL (回復常溫)。",
+                    options: [
+                        { label: "A", text: "反應後分子數減少" },
+                        { label: "B", text: "氧氣剩 50%" },
+                        { label: "C", text: "生成 CO2 與 H2O 體積比 3:4" },
+                        { label: "D", text: "高溫下水氣與氧氣分子數相同" },
+                        { label: "E", text: "原子總數改變" }
+                    ],
+                    answer: "AD",
+                    explanation: `
+**解析：**
+1. 計算得丙烷 10mL。
+2. (A) 100 $\\rightarrow$ 70，減少。
+3. (D) 高溫下生成水 40mL，氧氣剩 40mL。`
+                },
+                {
+                    id: "chem_18", number: 18, type: "多選",
+                    question: "$C_n H_{2n+2} O$ 燃燒生成 4 $CO_2$ 與 5 $H_2O$。",
+                    options: [
+                        { label: "A", text: "簡式 CH2O" },
+                        { label: "B", text: "分子式 C4H8O" },
+                        { label: "C", text: "分子量 74" },
+                        { label: "D", text: "含碳 64.9%" },
+                        { label: "E", text: "為飽和醇" }
+                    ],
+                    answer: "CDE",
+                    explanation: `
+**解析：**
+分子式 $C_4H_{10}O$。
+(C) $48+10+16=74$。
+(D) $48/74 \\approx 64.9\\%$。
+(E) 符合通式。`
+                },
+                {
+                    id: "chem_19", number: 19, type: "多選",
+                    question: "太空梭燃料 $C_2H_8N_2 + N_2O_4$。燃燒 0.5 mol 燃料：",
+                    options: [
+                        { label: "A", text: "需 1 mol N2O4" },
+                        { label: "B", text: "生 1 mol CO2" },
+                        { label: "C", text: "生 1.5 mol N2" },
+                        { label: "D", text: "生 1.2x10²⁴ 個水分子" },
+                        { label: "E", text: "氣體總數增加" }
+                    ],
+                    answer: "ABC",
+                    explanation: `
+**解析：**
+係數 1:2 $\\rightarrow$ 3:2:4。
+0.5 mol 燃料 $\\rightarrow$ 1 mol $N_2O_4$, 1 mol $CO_2$, 1.5 mol $N_2$。`
+                },
+                {
+                    id: "chem_20", number: 20, type: "多選",
+                    question: "光合作用與呼吸作用能量圖。",
+                    options: [
+                        { label: "A", text: "光合吸熱" },
+                        { label: "B", text: "呼吸放熱" },
+                        { label: "C", text: "光合轉熱能" },
+                        { label: "D", text: "光合能量在反應物" },
+                        { label: "E", text: "呼吸產物為葡萄糖" }
+                    ],
+                    answer: "ABD",
+                    explanation: `
+**解析：**
+光合作用將光能轉化為化學能 (吸熱)。呼吸作用釋放能量 (放熱)。`
+                },
+                {
+                    id: "chem_21", number: 21, type: "多選",
+                    question: "氫氣燃燒能量圖推論：",
+                    options: [
+                        { label: "A", text: "分解水吸熱" },
+                        { label: "B", text: "生成氣態水放熱較少" },
+                        { label: "C", text: "汽化熱為正值" },
+                        { label: "D", text: "燃燒吸熱" },
+                        { label: "E", text: "生成液態水放熱 285.8" }
+                    ],
+                    answer: "BCE",
+                    explanation: `
+**解析：**
+(B) $H_2O(g)$ 能量高，$\\Delta H$ 負值較小。
+(C) $\\Delta H = +44$ kJ。
+(E) 符合標準生成熱。`
+                },
+                {
+                    id: "chem_22", number: 22, type: "多選",
+                    question: "物質三態與冷熱敷包：",
+                    options: [
+                        { label: "A", text: "凝固放熱" },
+                        { label: "B", text: "熔化吸熱" },
+                        { label: "C", text: "熔化是放熱" },
+                        { label: "D", text: "昇華放熱" },
+                        { label: "E", text: "氣態能量最高" }
+                    ],
+                    answer: "ABE",
+                    explanation: `
+**解析：**
+固 $\\rightarrow$ 液 $\\rightarrow$ 氣 (吸熱)。反之放熱。`
+                },
+                {
+                    id: "chem_23", number: 23, type: "多選",
+                    question: "A+B → C+D 對應放熱圖：",
+                    options: [
+                        { label: "A", text: "反應物能量低" },
+                        { label: "B", text: "生成物能量高" },
+                        { label: "C", text: "H(A+B) > H(C+D)" },
+                        { label: "D", text: "H(A+B) > H(C)" },
+                        { label: "E", text: "吸熱" }
+                    ],
+                    answer: "CD",
+                    explanation: `
+**解析：**
+放熱反應：反應物總能 > 生成物總能。`
+                },
+                {
+                    id: "chem_24", number: 24, type: "多選",
+                    question: "吸熱與放熱比較：",
+                    options: [
+                        { label: "A", text: "暖暖包放熱" },
+                        { label: "B", text: "放熱不需活化能" },
+                        { label: "C", text: "反應熱決定速率" },
+                        { label: "D", text: "冷敷包吸熱" },
+                        { label: "E", text: "燃燒放熱" }
+                    ],
+                    answer: "ADE",
+                    explanation: `
+**解析：**
+(B) 仍需活化能啟動。
+(C) 速率由活化能決定。`
+                },
+                {
+                    id: "chem_25", number: 25, type: "多選",
+                    question: "膠體溶液性質：",
+                    options: [
+                        { label: "A", text: "布朗運動由粒子互撞產生" },
+                        { label: "B", text: "加電解質凝聚" },
+                        { label: "C", text: "易沉澱" },
+                        { label: "D", text: "廷得耳效應" },
+                        { label: "E", text: "粒子帶電" }
+                    ],
+                    answer: "BDE",
+                    explanation: `
+**解析：**
+(A) 溶劑分子撞擊造成。
+(C) 膠體安定不易沉澱。`
+                }
+            ],
+
+            // --- 地科 (Earth Science) - 完整試題 (Q1, Q28-32) ---
+            "1_2_earth": [
+                {
+                    id: "earth_01", number: 1, type: "單選",
+                    question: "甲、乙、丙三地位於同一經度線上。關於這三地的敘述，何者正確？",
+                    options: [
+                        { label: "A", text: "甲地氣溫最低" },
+                        { label: "B", text: "乙地氣壓最高" },
+                        { label: "C", text: "丙地科氏力最大" },
+                        { label: "D", text: "三地日出時間相同" }
+                    ],
+                    answer: "D",
+                    explanation: `
+**解析：**
+* 同一經度線上的地點，其 **地方視太陽時** 相同。在忽略季節性日出方位偏移與時差極端值的情況下，一般視為日出時間相同。
+* 氣溫與氣壓受緯度、地形等因素影響，無法單憑經度判斷。
+* 科氏力隨緯度增加而增大，未知緯度無法比較。`
+                },
+                {
+                    id: "earth_28", number: 28, type: "單選",
+                    question: "參考飽和水氣壓曲線圖，四個城市 (甲、乙、丙、丁) 中，飽和水氣壓最低的城市為何？(甲3°C, 乙13°C, 丙19°C, 丁26°C)",
+                    options: [
+                        { label: "A", text: "甲" },
+                        { label: "B", text: "乙" },
+                        { label: "C", text: "丙" },
+                        { label: "D", text: "丁" }
+                    ],
+                    answer: "A",
+                    explanation: `
+**解析：**
+* **飽和水氣壓** 與 **溫度** 成正比。溫度越低，空氣能容納的水氣越少，飽和水氣壓就越低。
+* 甲城市氣溫最低 (3°C)，故其飽和水氣壓最低。`
+                },
+                {
+                    id: "earth_29", number: 29, type: "單選",
+                    question: "承上圖，四個城市中何者空氣中「實際水氣含量」最高？",
+                    options: [
+                        { label: "A", text: "甲" },
+                        { label: "B", text: "乙" },
+                        { label: "C", text: "丙" },
+                        { label: "D", text: "丁" }
+                    ],
+                    answer: "D",
+                    explanation: `
+**解析：**
+* 實際水氣含量看圖表中的 **縱座標 (水氣壓)** 數值。
+* 丁點位於圖表最上方 (水氣壓約 25 hPa)，代表其空氣中實際含有的水氣壓力最大。`
+                },
+                {
+                    id: "earth_30", number: 30, type: "單選",
+                    question: "承上圖，四個城市中「相對溼度」最低的城市，其相對溼度約為何？",
+                    options: [
+                        { label: "A", text: "5%" },
+                        { label: "B", text: "24%" },
+                        { label: "C", text: "43%" },
+                        { label: "D", text: "62%" }
+                    ],
+                    answer: "B",
+                    explanation: `
+**解析：**
+1. **相對溼度 (RH)** 定義為：$\\frac{\\text{實際水氣壓}}{\\text{該溫度下的飽和水氣壓}} \\times 100\\%$。
+2. 在圖形上，距離飽和曲線（上方曲線）越遠（向下遠離），相對溼度越低。
+3. **乙點** (13°C, 實際約 4 hPa) 距離其飽和水氣壓 (約 15 hPa) 最遠。
+4. 計算：$4 / 15 \\approx 26\\%$，最接近選項 (B) 24%。`
+                },
+                {
+                    id: "earth_31", number: 31, type: "單選",
+                    question: "右圖為東太平洋洋脊 (中央斷裂谷) 附近地磁紀錄圖。圖中板塊運動方向何者正確？",
+                    options: [
+                        { label: "A", text: "相互遠離 (張裂)" },
+                        { label: "B", text: "相互靠近 (聚合)" },
+                        { label: "C", text: "錯動 (轉形)" },
+                        { label: "D", text: "無法判斷" }
+                    ],
+                    answer: "A",
+                    explanation: `
+**解析：**
+* **洋脊 (Mid-ocean ridge)** 為板塊 **張裂性邊界**。
+* 地函熱對流上升，岩漿湧出生成新地殼，推擠舊地殼向兩側移動，故板塊運動方向為 **相互遠離**。`
+                },
+                {
+                    id: "earth_32", number: 32, type: "單選",
+                    question: "有關此地磁紀錄的敘述何者正確？",
+                    options: [
+                        { label: "A", text: "深淺條帶代表磁性強弱" },
+                        { label: "B", text: "地磁倒轉有固定週期" },
+                        { label: "C", text: "洋脊兩側條帶大致對稱" },
+                        { label: "D", text: "此區地殼年齡最老" }
+                    ],
+                    answer: "C",
+                    explanation: `
+**解析：**
+* (A) 錯誤：深淺條帶代表 **正向/反向** 磁極，而非磁性強弱。
+* (B) 錯誤：地磁倒轉 **無** 固定週期，是不規則發生的。
+* (C) **正確**：因海底擴張，新地殼由洋脊向兩側推移，故洋脊兩側的地磁紀錄呈現 **對稱分布**。
+* (D) 錯誤：洋脊處不斷生成新地殼，故地殼年齡最 **年輕**。`
+                }
+            ],
+
+            // --- 地理 (Geography) - 10 題 ---
+            "1_2_geo": [
+                {
+                    id: "geo_01", number: 1, type: "單選",
+                    question: "某 APP 推出「好友靠近通知」服務，當朋友攜帶手機並進入使用者周圍特定距離範圍內時，就會觸發通知。請問此服務主要運用了下列哪一種 GIS 空間分析技術？",
+                    options: [
+                        { label: "A", text: "路網分析 (Network Analysis)" },
+                        { label: "B", text: "環域分析 (Buffer Analysis)" },
+                        { label: "C", text: "視域分析 (Viewshed Analysis)" },
+                        { label: "D", text: "疊圖分析 (Overlay Analysis)" }
+                    ],
+                    answer: "B",
+                    explanation: `
+**解析：**
+* (B) **正確**。環域分析是以某個點（使用者）為中心，向外擴張一定距離所形成的範圍。
+* (A) 路網分析用於路徑規劃。
+* (C) 視域分析用於可視範圍。`
+                },
+                {
+                    id: "geo_02", number: 2, type: "單選",
+                    question: "在地理資訊系統中，將真實世界的地理現象簡化並儲存為電腦可處理的形式（如：向量模式、網格模式），此過程統稱為下列何者？",
+                    options: [
+                        { label: "A", text: "空間資料模式 (Spatial Data Model)" },
+                        { label: "B", text: "屬性資料建立 (Attribute Data Entry)" },
+                        { label: "C", text: "數值地形模型 (DTM)" },
+                        { label: "D", text: "環域分析模式 (Buffer Model)" }
+                    ],
+                    answer: "A",
+                    explanation: `
+**解析：**
+* (A) **正確**。空間資料模式是將地理實體轉換為向量或網格數據的規範。
+* (B) 屬性資料是描述特徵（如人口）。
+* (C) DTM 是高程資料的一種。`
+                },
+                {
+                    id: "geo_03", number: 3, type: "單選",
+                    question: "若要設立一個森林遊樂區，選址條件為：「必須是林地」且「非生態保育地」。若利用 GIS 進行分析，應使用下列哪一種分析方法最合適？",
+                    options: [
+                        { label: "A", text: "路網分析" },
+                        { label: "B", text: "視域分析" },
+                        { label: "C", text: "疊圖分析" },
+                        { label: "D", text: "地勢分析" }
+                    ],
+                    answer: "C",
+                    explanation: `
+**解析：**
+* (C) **正確**。將「林地分布圖」與「保育區圖」進行疊合，找出交集區域。`
+                },
+                {
+                    id: "geo_04", number: 4, type: "單選",
+                    question: "關於「向量式資料 (Vector)」與「網格式資料 (Raster)」的比較，下列敘述何者正確？",
+                    options: [
+                        { label: "A", text: "向量式資料結構簡單，容易進行疊圖分析" },
+                        { label: "B", text: "網格式資料的解析度越高，資料量通常越小" },
+                        { label: "C", text: "向量式資料適合表現行政區邊界、道路等精確線條" },
+                        { label: "D", text: "衛星影像圖屬於向量式資料" }
+                    ],
+                    answer: "C",
+                    explanation: `
+**解析：**
+* (C) **正確**。向量式利用座標連線，適合表現精確邊界。
+* (A) 網格結構較簡單易疊圖。
+* (B) 解析度高資料量變大。
+* (D) 衛星影像是網格式。`
+                },
+                {
+                    id: "geo_05", number: 5, type: "單選",
+                    question: "某人擁有一塊 16 平方公里的正方形土地，若將其劃分為 $4 \\times 4$ 的網格進行 GIS 分析。假設其中符合「適合開發」條件的網格共有 5 個，請問適合開發的面積約為多少平方公里？",
+                    options: [
+                        { label: "A", text: "2 平方公里" },
+                        { label: "B", text: "5 平方公里" },
+                        { label: "C", text: "8 平方公里" },
+                        { label: "D", text: "10 平方公里" }
+                    ],
+                    answer: "B",
+                    explanation: `
+**解析：**
+* 總面積 16 平方公里，切成 16 格 ($4 \\times 4$)，每格 1 平方公里。
+* 符合條件有 5 格，故面積為 5 平方公里。`
+                },
+                {
+                    id: "geo_06", number: 6, type: "單選",
+                    question: "下列哪一種地理問題最適合使用「視域分析 (Viewshed Analysis)」來解決？",
+                    options: [
+                        { label: "A", text: "規劃救護車從醫院到事故現場的最短路徑" },
+                        { label: "B", text: "評估化工廠氣體外洩後的擴散影響範圍" },
+                        { label: "C", text: "分析某個山頂瞭望台可以監控到的森林範圍" },
+                        { label: "D", text: "計算某個行政區內的人口密度" }
+                    ],
+                    answer: "C",
+                    explanation: `
+**解析：**
+* (C) **正確**。視域分析用於計算可視範圍（如基地台覆蓋、景觀分析）。
+* (A) 為路網分析。
+* (B) 為擴散模型/環域。`
+                },
+                {
+                    id: "geo_07", number: 7, type: "單選",
+                    question: "在進行觀光飯店選址時，若要符合「保護生態環境」的原則，下列哪一個地點最**不適合**？",
+                    options: [
+                        { label: "A", text: "位於地勢平坦的非保育區" },
+                        { label: "B", text: "位於交通便利的商業用地" },
+                        { label: "C", text: "位於順向坡滑動區或生態保育地內" },
+                        { label: "D", text: "遠離河川氾濫平原的台地" }
+                    ],
+                    answer: "C",
+                    explanation: `
+**解析：**
+* (C) **正確**。順向坡有地質風險，保育地需保護生態，皆不適合開發。`
+                },
+                {
+                    id: "geo_08", number: 8, type: "單選",
+                    question: "下列關於 GIS 資料結構的敘述，哪一項描述的是「網格資料 (Raster Data)」的特性？",
+                    options: [
+                        { label: "A", text: "資料結構由點、線、面構成" },
+                        { label: "B", text: "放大後線條依然平滑，不會出現鋸齒狀" },
+                        { label: "C", text: "每一個網格紀錄單一屬性值，適合表現連續現象（如高程、雨量）" },
+                        { label: "D", text: "檔案容量通常較小，且拓樸關係明確" }
+                    ],
+                    answer: "C",
+                    explanation: `
+**解析：**
+* (C) **正確**。網格適合表現連續變化的地理現象（如地形、氣溫）。
+* (A)(B)(D) 皆為向量資料特性。`
+                },
+                {
+                    id: "geo_09", number: 9, type: "單選",
+                    question: "若要利用 GIS 找出「距離河流 500 公尺內」且「地價低於公告現值」的土地，依序需要使用哪些分析功能？",
+                    options: [
+                        { label: "A", text: "視域分析 → 路網分析" },
+                        { label: "B", text: "環域分析 → 疊圖分析" },
+                        { label: "C", text: "路網分析 → 地勢分析" },
+                        { label: "D", text: "疊圖分析 → 視域分析" }
+                    ],
+                    answer: "B",
+                    explanation: `
+**解析：**
+1. 距離河流 500m $\\rightarrow$ **環域分析**。
+2. 結合地價條件 $\\rightarrow$ **疊圖分析**。`
+                },
+                {
+                    id: "geo_10", number: 10, type: "單選",
+                    question: "某導航軟體能規劃出「避開收費站」或「最短時間」的路徑。這主要是運用了 GIS 的哪項功能？",
+                    options: [
+                        { label: "A", text: "地勢分析" },
+                        { label: "B", text: "路網分析" },
+                        { label: "C", text: "環域分析" },
+                        { label: "D", text: "空間查詢" }
+                    ],
+                    answer: "B",
+                    explanation: `
+**解析：**
+* (B) **正確**。路網分析處理路徑規劃、最佳路徑等問題。`
+                }
+            ],
+
+            // --- 生物 (Biology) ---
+            "1_2_bio": [
+                {
+                    id: "bio_01", number: 1, type: "單選",
+                    question: "脊椎動物具有紅血球的演化優勢，尤其哺乳類的雙凹圓盤狀紅血球，其內無細胞核和粒線體。此特徵的主要優勢為何？",
+                    options: [
+                        { label: "A", text: "增加細胞壽命" },
+                        { label: "B", text: "可進行更多的有氧呼吸" },
+                        { label: "C", text: "增加攜氧量並容易通過微血管" },
+                        { label: "D", text: "有利於吞噬病原體" }
+                    ],
+                    answer: "C",
+                    explanation: `
+**解析：**
+* 去核與胞器可容納更多 **血紅素**，增加攜氧。
+* 雙凹圓盤狀增加表面積，且柔軟易通過微血管。`
+                },
+                {
+                    id: "bio_17", number: 17, type: "單選",
+                    question: "若以放射性元素標定胺基酸，追蹤細胞內合成某酵素的過程，發現放射性訊號依序出現在甲→乙→丙。推測甲、乙、丙各為何種構造？",
+                    options: [
+                        { label: "A", text: "甲-平滑內質網；乙-高基氏體；丙-溶體" },
+                        { label: "B", text: "甲-細胞核；乙-粗糙內質網；丙-高基氏體" },
+                        { label: "C", text: "甲-粗糙內質網；乙-高基氏體；丙-分泌囊泡" },
+                        { label: "D", text: "甲-核糖體；乙-溶體；丙-細胞膜" }
+                    ],
+                    answer: "C",
+                    explanation: `
+**解析：**
+* 蛋白合成路徑：**粗糙內質網** $\\rightarrow$ **高基氏體** $\\rightarrow$ **分泌囊泡**。`
+                },
+                {
+                    id: "bio_18", number: 18, type: "單選",
+                    question: "承上題，推測此酵素適合的作用環境與特性為何？",
+                    options: [
+                        { label: "A", text: "適合在鹼性環境作用" },
+                        { label: "B", text: "此酵素為不具專一性的水解酶" },
+                        { label: "C", text: "此酵素能分解過氧化氫" },
+                        { label: "D", text: "此酵素參與胞內消化" }
+                    ],
+                    answer: "D",
+                    explanation: `
+**解析：**
+若形成溶體，則酵素為水解酶，負責**胞內消化**。`
+                },
+                {
+                    id: "bio_19", number: 19, type: "多選",
+                    question: "承上題圖(二)細胞構造示意圖，下列哪些構造內可能具有完整核糖體，可進行蛋白質的合成？",
+                    options: [
+                        { label: "A", text: "甲(粒線體)、乙(葉綠體)" },
+                        { label: "B", text: "丙(內質網)、丁(細胞核)" },
+                        { label: "C", text: "只有丙(內質網)" },
+                        { label: "D", text: "半自動胞器與粗糙內質網" }
+                    ],
+                    answer: "D",
+                    explanation: `
+**解析：**
+* 核糖體存在於：粗糙內質網、細胞質、粒線體、葉綠體（半自動胞器）。`
+                }
+            ],
+
+            // --- 物理 (Physics) ---
+            "1_2_phy": [
+                {
+                    id: "phy_01", number: 1, type: "單選",
+                    question: "下列關於物理學發展之敘述，何者屬於「演繹式」之推導？",
+                    options: [
+                        { label: "A", text: "只有甲乙" },
+                        { label: "B", text: "只有乙丙" },
+                        { label: "C", text: "只有甲" },
+                        { label: "D", text: "只有丙" }
+                    ],
+                    answer: "D",
+                    explanation: `
+**解析：**
+* 克卜勒、庫侖皆為歸納/實驗。
+* **牛頓** 利用運動定律推導克卜勒定律，屬演繹法。`
+                },
+                {
+                    id: "phy_02", number: 2, type: "單選",
+                    question: "下列針對地心說與日心說和克卜勒行星運動定律的敘述與比較，何者錯誤？",
+                    options: [
+                        { label: "A", text: "日心與地心說兩者星體繞行均為等速率圓周運動" },
+                        { label: "B", text: "日心說優點在能解釋逆行現象" },
+                        { label: "C", text: "克卜勒定律修正了軌道為橢圓" },
+                        { label: "D", text: "地心說無法解釋金星盈虧" }
+                    ],
+                    answer: "A",
+                    explanation: `
+**解析：**
+* (A) **錯誤**。克卜勒定律提出**橢圓軌道**與**面積速率**（非等速率）。`
+                },
+                {
+                    id: "phy_26", number: 26, type: "單選",
+                    question: "如圖所示，分別繞行地球與 H 星的各種衛星，其平均軌道半徑立方 ($r^3$) 與週期平方 ($T^2$) 之關係圖。若地球斜率為 H 星的 3 倍，則 H 星質量約為地球的多少倍？",
+                    options: [
+                        { label: "A", text: "1/3 倍" },
+                        { label: "B", text: "3 倍" },
+                        { label: "C", text: "9 倍" },
+                        { label: "D", text: "27 倍" }
+                    ],
+                    answer: "A",
+                    explanation: `
+**解析：**
+* $k = \\frac{r^3}{T^2} \\propto M$ (中心質量)。
+* 地球斜率是 H 星 3 倍 $\\Rightarrow M_{地球} = 3 M_H$。
+* $M_H = \\frac{1}{3} M_{地球}$。`
+                }
+            ],
+
+            // --- 數學 (Math) ---
+            "1_2_math": [
+                {
+                    id: "math_01", number: 1, type: "單選",
+                    question: "如附圖，直線 $L_1: y = m_1x + b_1$ 與 $L_2: y = m_2x + b_2$ 相交。根據圖形判斷，下列何者正確？",
+                    options: [
+                        { label: "A", text: "m₁ > 0, b₁ > 0" },
+                        { label: "B", text: "m₁ < 0, b₁ > 0" },
+                        { label: "C", text: "m₂ > 0, b₂ < 0" },
+                        { label: "D", text: "m₁ > m₂" }
+                    ],
+                    answer: "B",
+                    explanation: `
+**解析：**
+* $L_1$ 左上往右下 $\\Rightarrow m_1 < 0$。
+* $L_1$ 交 y 軸於正向 $\\Rightarrow b_1 > 0$。`
+                },
+                {
+                    id: "math_15", number: 15, type: "填充",
+                    question: "正方形紙張上有一點 P，P 點距離左邊界 6 公分，距離下邊界 8 公分。將紙張左下角往內摺至 P 點，則摺進去的三角形面積為何？",
+                    options: [],
+                    answer: "625/24",
+                    explanation: `
+**解析：**
+1. 摺痕 $L$ 為 $\\overline{OP}$ 垂直平分線。$P(6,8), O(0,0)$。
+2. $L$ 方程式：$3x+4y=25$。
+3. 截距：$x=25/3, y=25/4$。
+4. 面積 $= 1/2 \\times (25/3) \\times (25/4) = 625/24$。`
+                },
+                {
+                    id: "math_素養_01", number: "素養1", type: "填充",
+                    question: "Pokemon Go 題組：試寫出能碰到道館盟約永固的範圍。(Hint: 以圓方程式不等式表示)",
+                    options: [],
+                    answer: "$(x-h)^2 + (y-k)^2 \\le r^2$",
+                    explanation: `
+**解析：**
+* 玩家需在圓心 $(h,k)$、半徑 $r$ 的圓內或圓上。
+* 不等式：$(x-h)^2 + (y-k)^2 \\le r^2$。`
+                },
+                {
+                    id: "math_素養_03", number: "素養3", type: "填充",
+                    question: "S社活動當天給了「碰觸半徑增加40公尺」福利。試問哪些班級(點座標)能同時碰到兩個道館？",
+                    options: [],
+                    answer: "需代入座標計算",
+                    explanation: `
+**解析：**
+1. 新半徑 $R' = R + 40$。
+2. 需同時滿足：
+   $C_1: (x-x_1)^2 + (y-y_1)^2 \\le (R')^2$
+   $C_2: (x-x_2)^2 + (y-y_2)^2 \\le (R')^2$。`
+                }
+            ]
+        };
+
+        // --- 2. Components ---
+
+        const LucideIcon = ({ name, size = 20, className = "" }) => {
+            const [svgHtml, setSvgHtml] = React.useState("");
+            React.useEffect(() => {
+                if (window.lucide && window.lucide.icons && window.lucide.createElement) {
+                    const pascalName = name.split('-').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join('');
+                    const iconDef = window.lucide.icons[pascalName];
+                    if (iconDef) {
+                        const el = window.lucide.createElement(iconDef);
+                        el.setAttribute('width', size);
+                        el.setAttribute('height', size);
+                        if (className) el.setAttribute('class', className);
+                        setSvgHtml(el.outerHTML);
+                    }
+                }
+            }, [name, size, className]);
+            return <span dangerouslySetInnerHTML={{ __html: svgHtml }} className="inline-flex items-center" />;
+        };
+
+        const MarkdownText = ({ text }) => {
+            const [html, setHtml] = React.useState("");
+            React.useEffect(() => {
+                if (!text) return;
+                let processed = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br/>');
+                if (window.katex) {
+                    processed = processed.replace(/\$\$(.*?)\$\$/g, (_, f) => katex.renderToString(f, { displayMode: true, throwOnError: false }));
+                    processed = processed.replace(/\$(.*?)\$/g, (_, f) => katex.renderToString(f, { displayMode: false, throwOnError: false }));
+                }
+                setHtml(processed);
+            }, [text]);
+            return <div className="text-gray-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: html }} />;
+        };
+
+        const QuestionItem = ({ q }) => {
+            const [showExp, setShowExp] = React.useState(false);
+            return (
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6 hover:shadow-md transition-shadow">
+                    <div className="flex items-start gap-3 mb-4">
+                        <span className="bg-blue-100 text-blue-800 text-sm font-bold px-3 py-1 rounded-full whitespace-nowrap mt-1">第 {q.number} 題</span>
+                        <div className="flex-1"><MarkdownText text={q.question} /></div>
+                    </div>
+                    <div className="ml-0 md:ml-14 mb-6 space-y-2">
+                        {q.options && q.options.length > 0 ? (
+                            q.options.map((opt, idx) => (
+                                <div key={idx} className="flex items-start gap-3 p-2 rounded hover:bg-gray-50 group">
+                                    <div className="w-6 h-6 rounded-full border border-gray-300 text-gray-500 flex items-center justify-center text-xs font-bold group-hover:border-blue-400 group-hover:text-blue-600">{opt.label}</div>
+                                    <div className="text-gray-700">{opt.text}</div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="text-gray-400 italic text-sm pl-2">(本題為填充或計算題，請直接查看詳解核對答案)</div>
+                        )}
+                    </div>
+                    <div className="flex items-center justify-between border-t border-gray-100 pt-4 ml-0 md:ml-14">
+                        <div className="text-sm text-gray-400">{showExp ? <span className="text-green-600 font-bold">正確答案：{q.answer}</span> : <span>???</span>}</div>
+                        <button onClick={() => setShowExp(!showExp)} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${showExp ? 'bg-gray-100 text-gray-600 hover:bg-gray-200' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}>
+                            <LucideIcon name={showExp ? "eye-off" : "eye"} size={16} />{showExp ? "隱藏詳解" : "顯示詳解選項"}
+                        </button>
+                    </div>
+                    {showExp && (
+                        <div className="mt-4 ml-0 md:ml-14 bg-green-50/50 p-5 rounded-lg border border-green-100 explanation-box">
+                            <h4 className="flex items-center gap-2 text-green-800 font-bold mb-3"><LucideIcon name="book-open" size={18} />詳細解析</h4>
+                            <MarkdownText text={q.explanation} />
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const SelectionScreen = ({ onStart }) => {
+            const [grade, setGrade] = React.useState(null);
+            const [exam, setExam] = React.useState(null);
+            const [subject, setSubject] = React.useState(null);
+            const isReady = grade && exam && subject;
+            const isValidPath = grade === 1 && exam === 2;
+            const SUBJECT_LIST = [
+                { id: 'math', name: '數學', icon: 'calculator' }, { id: 'phy', name: '物理', icon: 'zap' },
+                { id: 'chem', name: '化學', icon: 'flask-conical' }, { id: 'bio', name: '生物', icon: 'dna' },
+                { id: 'earth', name: '地科', icon: 'globe' }, { id: 'geo', name: '地理', icon: 'map' }
+            ];
+
+            return (
+                <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50">
+                    <div className="bg-white max-w-5xl w-full rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row">
+                        <div className="bg-blue-600 p-8 md:w-1/3 flex flex-col justify-between text-white">
+                            <div>
+                                <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-6"><LucideIcon name="library" size={28} className="text-white" /></div>
+                                <h1 className="text-3xl font-bold mb-2">高中段考<br />題庫中心</h1>
+                                <p className="text-blue-100 opacity-90">歷屆試題 • 完整解析 • 自我檢測</p>
+                            </div>
+                            <div className="mt-12 text-sm text-blue-200">系統版本 v3.1<br />新增地科完整試題與試卷檢視功能</div>
+                        </div>
+                        <div className="p-8 md:w-2/3">
+                            <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2"><span className="w-2 h-6 bg-blue-500 rounded-full"></span>請選擇測驗範圍</h2>
+                            <div className="space-y-6">
+                                <div><label className="block text-sm font-medium text-gray-500 mb-2">年級</label><div className="flex gap-3">{[1, 2, 3].map(g => (<button key={g} onClick={() => setGrade(g)} className={`flex-1 py-3 px-4 rounded-xl border font-medium transition-all ${grade === g ? 'bg-blue-600 text-white border-blue-600 shadow-md transform -translate-y-1' : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:bg-blue-50'}`}>{g} 年級</button>))}</div></div>
+                                <div><label className="block text-sm font-medium text-gray-500 mb-2">段考</label><div className="flex gap-3">{[1, 2, 3].map(e => (<button key={e} onClick={() => setExam(e)} className={`flex-1 py-3 px-4 rounded-xl border font-medium transition-all ${exam === e ? 'bg-blue-600 text-white border-blue-600 shadow-md transform -translate-y-1' : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:bg-blue-50'}`}>第 {e} 次</button>))}</div></div>
+                                <div><label className="block text-sm font-medium text-gray-500 mb-2">科目</label><div className="grid grid-cols-3 gap-3">{SUBJECT_LIST.map(s => (<button key={s.id} onClick={() => setSubject(s.id)} className={`py-2 px-3 rounded-lg border text-sm transition-all flex flex-col items-center justify-center gap-1 ${subject === s.id ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:bg-blue-50'}`}><LucideIcon name={s.icon} size={18} />{s.name}</button>))}</div></div>
+                            </div>
+                            <div className="mt-10"><button onClick={() => isReady && onStart(grade, exam, subject)} disabled={!isReady} className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${isReady ? 'bg-green-500 hover:bg-green-600 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-1' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}>{isReady && !isValidPath ? <><LucideIcon name="alert-circle" /> 此範圍暫無資料 (請選 一年級/第二次)</> : <><LucideIcon name="play-circle" /> 開始練習</>}</button></div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [view, setView] = React.useState('select');
+            const [questions, setQuestions] = React.useState([]);
+            const [context, setContext] = React.useState({});
+            const handleStart = (g, e, s) => {
+                const key = `${g}_${e}_${s}`;
+                const data = QUESTION_DATABASE[key];
+                if (data) { setQuestions(data); setContext({ g, e, s }); setView('exam'); }
+                else { alert("目前僅開放「一年級 / 第二次段考」的各科題庫！"); }
+            };
+            if (view === 'select') return <SelectionScreen onStart={handleStart} />;
+            const getSubjectName = (sid) => ({ chem: '化學', geo: '地理', earth: '地科', bio: '生物', phy: '物理', math: '數學' }[sid] || sid);
+            const pdfLink = PDF_LINKS[`${context.g}_${context.e}_${context.s}`];
+
+            return (
+                <div className="min-h-screen bg-gray-100">
+                    <div className="bg-white border-b border-gray-200 sticky top-0 z-10 px-4 py-3 shadow-sm flex justify-between items-center">
+                        <div className="flex items-center gap-4">
+                            <button onClick={() => setView('select')} className="p-2 hover:bg-gray-100 rounded-full text-gray-500 transition-colors"><LucideIcon name="arrow-left" /></button>
+                            <div><h1 className="font-bold text-gray-800 text-lg">{getSubjectName(context.s)}科 題庫解析</h1><p className="text-xs text-gray-500">一年級 • 第二次段考</p></div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            {pdfLink && pdfLink !== '#' && (
+                                <a href={pdfLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-full text-sm font-medium hover:bg-red-100 transition-colors">
+                                    <LucideIcon name="file-text" size={16} /> 查看原始試卷
+                                </a>
+                            )}
+                            <div className="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">共 {questions.length} 題</div>
+                        </div>
+                    </div>
+                    <div className="max-w-3xl mx-auto p-4 md:p-8">
+                        {questions.map((q, idx) => (<QuestionItem key={q.id} q={q} />))}
+                        <div className="text-center text-gray-400 text-sm mt-10 mb-20 flex flex-col items-center gap-2"><LucideIcon name="check-circle" size={32} className="text-green-500 opacity-50" /><span>- 試題結束，請檢查您的答案 -</span></div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
