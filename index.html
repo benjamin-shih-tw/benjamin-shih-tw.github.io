@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>高中段考題庫系統</title>
+    <title>花蓮高中數理班段考題庫系統</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -27,7 +27,7 @@
         }
     </style>
 </head>
-<body class="bg-white text-gray-900 font-sans">
+<body class="bg-slate-50 text-gray-900 font-sans">
     <div id="root"></div>
 
     <script type="text/babel">
@@ -203,7 +203,7 @@
           { id: 308, type: 'single', grade: 1, semester: 1, exam: 2, subject: '生物', question: '下列物質進入細胞的方法，哪些正確?', options: ['牛奶以滲透作用進入根細胞', '碘離子以主動運輸進入海帶細胞', '酒精經主動運輸進入腦細胞', '肺泡氣體交換藉主動運輸'], correctIndices: [1], explanation: '海帶細胞碘濃度高於海水，需主動運輸累積。(C)(D)為擴散。' },
           { id: 309, type: 'single', grade: 1, semester: 1, exam: 2, subject: '生物', question: '細胞代謝作用包含同化與異化，比較何者正確?', options: ['同化:加水, 異化:脫水', '同化:釋能, 異化:耗能', '同化:大變小, 異化:小變大', '兩者常伴隨發生(偶聯反應)'], correctIndices: [3], explanation: '細胞常利用異化作用釋放的能量來驅動同化作用。' },
           { id: 310, type: 'single', grade: 1, semester: 1, exam: 2, subject: '生物', hasImage: true, question: '[需參考圖片] 剔除酵素甲基因不同區域(①~⑤)後測活性。甲(全有)高活性, 乙(缺1,3)高活性, 丙(缺3,5)中活性, 丁(缺1,4)低活性。推論?', options: ['甲活性不因pH影響', '酵素丙無法結合受質', '提供丁更多受質活性可持續上升', '對於酵素活性而言，區域5的重要性較低'], correctIndices: [3], explanation: '區域4缺失(丁)導致活性喪失，4最重要。區域5缺失(丙)活性尚可，區域1,3缺失(乙)活性高。故5的重要性低於4。' },
-          { id: 311, type: 'single', grade: 1, semester: 1, exam: 2, subject: '生物', question: '痛痛病主因鎘中毒，鎘造成的影響為何?', options: ['是輔因子，增強酶活性', '是酶抑制物，降低酶活性', '是催化劑，降低活化能', '是反應物，抑制磷酸酶'], correctIndices: [1], explanation: '重金屬通常為酵素抑制劑(不可逆或非競爭)。' },
+          { id: 311, type: 'single', grade: 1, semester: 1, exam: 2, subject: '生物', question: '痛痛病主因鎘中毒，鎔造成的影響為何?', options: ['是輔因子，增強酶活性', '是酶抑制物，降低酶活性', '是催化劑，降低活化能', '是反應物，抑制磷酸酶'], correctIndices: [1], explanation: '重金屬通常為酵素抑制劑(不可逆或非競爭)。' },
           { id: 312, type: 'single', grade: 1, semester: 1, exam: 2, subject: '生物', question: '關於真核細胞構造與機能，何者正確?', options: ['粒線體和葉綠體皆與能量轉換有關', '核糖體和內質網皆與物質運輸有關', '核仁及核質皆與製造核糖體有關', '高基氏體及液泡皆與細胞分泌有關'], correctIndices: [0], explanation: '粒線體(呼吸)與葉綠體(光合)皆負責能量轉換。' },
           { id: 313, type: 'single', grade: 1, semester: 1, exam: 2, subject: '生物', question: '植物細胞壁的中膠層可在哪裡找到?', options: ['初生細胞壁和初生細胞壁之間', '初生細胞壁和次生細胞壁之間', '次生細胞壁和次生細胞壁之間', '細胞壁和細胞膜之間'], correctIndices: [0], explanation: '中膠層位於兩相鄰細胞的初生細胞壁之間，黏合細胞。' },
           { id: 314, type: 'single', grade: 1, semester: 1, exam: 2, subject: '生物', hasImage: true, question: '[需參考圖片] 胃幽門螺旋菌可產生毒素造成胃潰瘍，敘述何者正確?', options: ['此細菌能在pH2的環境中存活', '由高基氏體分泌毒性蛋白質', '細胞核內可發現DNA', '在35~40℃的活性較差'], correctIndices: [0], explanation: '胃液pH約2，該菌能在此生存。(B)(C)細菌無胞器與核。(D)人體寄生菌適溫約37度。' },
@@ -271,18 +271,14 @@
           { id: 518, type: 'single', grade: 1, semester: 1, exam: 2, subject: '數學', hasImage: true, question: '[需參考圖片] 若碰觸半徑增為7單位，哪些班級能「同時」碰到道館A(0,3)與道館B(10,2)？', options: ['C308(4,0), C309(5,0)', 'C307, C308', 'C309, C111', 'C211, C311'], correctIndices: [0], explanation: '同時滿足A: x²+(0-3)²≤49 (|x|≤6.3) 與 B: (x-10)²+(0-2)²≤49 (3.3≤x≤16.7)。交集 3.3≤x≤6.3。符合者為 C308(4), C309(5)。' }
         ];
 
-        // ----------------------------------------------------------------------
-        // 極簡化後的 SUBJECT_CONFIG
-        // ----------------------------------------------------------------------
         const SUBJECT_CONFIG = {
-          '化學': { icon: Icons.FlaskConical, color: 'bg-white text-purple-700 border-gray-200 hover:border-purple-300' },
-          '地科': { icon: Icons.Globe, color: 'bg-white text-blue-700 border-gray-200 hover:border-blue-300' },
-          '地理': { icon: Icons.Mountain, color: 'bg-white text-emerald-700 border-gray-200 hover:border-emerald-300' },
-          '數學': { icon: Icons.Calculator, color: 'bg-white text-red-700 border-gray-200 hover:border-red-300' },
-          '物理': { icon: Icons.Zap, color: 'bg-white text-yellow-700 border-gray-200 hover:border-yellow-300' },
-          '生物': { icon: Icons.Microscope, color: 'bg-white text-green-700 border-gray-200 hover:border-green-300' },
+          '化學': { icon: Icons.FlaskConical, color: 'bg-purple-100 text-purple-600 border-purple-200' },
+          '地科': { icon: Icons.Globe, color: 'bg-blue-100 text-blue-600 border-blue-200' },
+          '地理': { icon: Icons.Mountain, color: 'bg-emerald-100 text-emerald-600 border-emerald-200' },
+          '數學': { icon: Icons.Calculator, color: 'bg-red-100 text-red-600 border-red-200' },
+          '物理': { icon: Icons.Zap, color: 'bg-yellow-100 text-yellow-600 border-yellow-200' },
+          '生物': { icon: Icons.Microscope, color: 'bg-green-100 text-green-600 border-green-200' },
         };
-        // ----------------------------------------------------------------------
 
         const App = () => {
           const [step, setStep] = useState('selection');
@@ -371,17 +367,18 @@
             <div className="max-w-4xl mx-auto p-6 animate-fade-in">
               <div className="text-center mb-10">
                 <h1 className="text-3xl font-bold text-gray-800 mb-2">高中段考題庫中心</h1>
-                <p className="text-gray-500">段考題庫 (化學/地理/地科/生物/物理/數學) 若題目需看圖 請點選上方：查看原始PDF選項</p>
+                <p className="text-gray-500">段考題庫 (化學/地理/地科/生物/物理/數學) made by 石謙信 </p>
               </div>
 
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-8">
+              {/* 調整：年級選擇按鈕改為中性黑白，維持簡潔 */}
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-8">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">年級</label>
                     <div className="flex space-x-2">
                       {[1, 2, 3].map(g => (
                         <button key={g} onClick={() => setSelection({ ...selection, grade: g })}
-                          className={`flex-1 py-2 rounded-md border ${selection.grade === g ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
+                          className={`flex-1 py-2 rounded-lg border ${selection.grade === g ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
                           {g} 年級
                         </button>
                       ))}
@@ -392,7 +389,7 @@
                     <div className="flex space-x-2">
                       {[1, 2].map(s => (
                         <button key={s} onClick={() => setSelection({ ...selection, semester: s })}
-                          className={`flex-1 py-2 rounded-md border ${selection.semester === s ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
+                          className={`flex-1 py-2 rounded-lg border ${selection.semester === s ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
                           {s === 1 ? '上學期' : '下學期'}
                         </button>
                       ))}
@@ -403,7 +400,7 @@
                     <div className="flex space-x-2">
                       {[1, 2, 3].map(e => (
                         <button key={e} onClick={() => setSelection({ ...selection, exam: e })}
-                          className={`flex-1 py-2 rounded-md border ${selection.exam === e ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
+                          className={`flex-1 py-2 rounded-lg border ${selection.exam === e ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
                           第 {e} 次
                         </button>
                       ))}
@@ -412,14 +409,18 @@
                 </div>
               </div>
 
+              {/* 保持科目顏色，但去除背景淺色，以符合極簡風格 */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {Object.keys(SUBJECT_CONFIG).map((subj) => {
                   const Config = SUBJECT_CONFIG[subj];
                   const IconComp = Config.icon;
+                  // 移除 Config.color 中的 bg-xxx-100，只保留 text-xxx-600 和 border-xxx-200
+                  const cleanColorClass = Config.color.replace(/bg-[a-z]+-100/g, 'bg-white hover:bg-gray-50');
                   return (
                     <button key={subj} onClick={() => startQuiz(subj)}
-                      className={`p-6 rounded-xl border-2 transition-all hover:shadow-sm hover:-translate-y-0.5 flex flex-col items-center gap-3 ${Config.color}`}>
-                      <IconComp size={30} className="text-gray-700" />
+                      className={`p-6 rounded-xl border-2 transition-all hover:shadow-md hover:-translate-y-1 flex flex-col items-center gap-3 ${cleanColorClass}`}>
+                      {/* 將圖示顏色強制改為文字顏色 (text-current) 或接近黑色 */}
+                      <IconComp size={32} className="text-gray-700" />
                       <span className="font-bold text-lg text-gray-800">{subj}</span>
                     </button>
                   );
@@ -444,7 +445,8 @@
                      <div className="text-sm font-medium text-gray-500">
                        {selection.grade}年級 {selection.subject} 第{selection.exam}次段考 (Q{currentQIndex + 1}/{currentQuestions.length})
                      </div>
-                     <a href={SOURCE_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-gray-500 hover:underline bg-gray-50 px-2 py-1 rounded-full">
+                     {/* 將連結顏色改為中性，維持排版 */}
+                     <a href={SOURCE_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-gray-600 hover:underline bg-gray-100 px-2 py-1 rounded-full">
                        <Icons.ExternalLink size={12} /> 查看原始試題 PDF
                      </a>
                   </div>
@@ -452,27 +454,25 @@
                   <div className="w-8 hidden md:block"></div>
                 </div>
 
-                {/* 進度條改為中性色 */}
-                <div className="w-full bg-gray-200 rounded-full h-1.5 mb-8">
-                  <div className="bg-gray-700 h-1.5 rounded-full transition-all duration-300" style={{ width: `${progress}%` }}></div>
+                {/* 進度條改為中性黑灰 */}
+                <div className="w-full bg-gray-200 rounded-full h-2.5 mb-8">
+                  <div className="bg-gray-700 h-2.5 rounded-full transition-all duration-300" style={{ width: `${progress}%` }}></div>
                 </div>
 
-                {/* 卡片陰影簡化 */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden relative">
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden relative">
                   <div className="p-6 md:p-8">
                     <div className="flex items-start gap-4 mb-4">
-                      {/* 題型標籤簡化 */}
-                      <span className={`px-2 py-0.5 rounded-md text-sm whitespace-nowrap font-medium border ${isMulti ? 'border-purple-300 text-purple-700' : 'border-gray-300 text-gray-500'}`}>
+                      <span className={`px-3 py-1 rounded-lg text-sm whitespace-nowrap font-bold ${isMulti ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700'}`}>
                         {isMulti ? '多選題' : '單選題'}
                       </span>
                       <div className="space-y-4 w-full">
-                        {/* 問句加粗，調整行高 */}
-                        <h2 className="text-xl font-bold text-gray-900 leading-normal whitespace-pre-line">
+                        {/* 調整行高為更舒適的 leading-loose */}
+                        <h2 className="text-xl font-bold text-gray-800 leading-loose whitespace-pre-line">
                           {question.question.replace('[需參考圖片]', '')}
                         </h2>
                         
                         {question.hasImage && (
-                          <div className="w-full h-48 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-gray-400 gap-2">
+                          <div className="w-full h-48 bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 gap-2">
                             <Icons.Image size={32} />
                             <span className="text-sm">此處為試題圖片顯示區 (請點擊上方連結查看原始 PDF)</span>
                           </div>
@@ -485,19 +485,21 @@
                         const isSelected = selectedOptions.includes(idx);
                         const isCorrect = question.correctIndices.includes(idx);
                         
-                        let btnClass = "w-full text-left p-4 rounded-lg border-2 transition-all duration-200 flex items-center justify-between ";
+                        let btnClass = "w-full text-left p-4 rounded-xl border-2 transition-all duration-200 flex items-center justify-between ";
                         
                         if (!isAnswered) {
+                          // 點選狀態 (未作答確認)
                           btnClass += isSelected 
-                            ? "border-gray-900 bg-gray-50 text-gray-900 "  // 極簡選中色
-                            : "border-gray-200 hover:border-gray-400 hover:bg-gray-50 ";
+                            ? "border-blue-500 bg-blue-50 text-blue-900 " 
+                            : "border-gray-100 hover:border-gray-200 hover:bg-gray-50 ";
                         } else {
+                          // 作答後狀態 (藍綠色為對，紅色為錯)
                           if (isCorrect) {
-                            btnClass += "border-green-500 bg-green-50 text-green-800 ";
+                            btnClass += "border-teal-500 bg-teal-50 text-teal-800 "; // 答對: 藍綠色
                           } else if (isSelected && !isCorrect) {
-                            btnClass += "border-red-500 bg-red-50 text-red-800 ";
+                            btnClass += "border-red-500 bg-red-50 text-red-800 "; // 答錯: 紅色
                           } else {
-                            btnClass += "border-gray-100 opacity-60 ";
+                            btnClass += "border-gray-100 opacity-60 "; // 未選中且非正確答案，淡化
                           }
                         }
 
@@ -509,16 +511,17 @@
                             className={btnClass}
                           >
                             <div className="flex items-center gap-3">
-                              {/* 選項標記改為黑白圓圈 */}
-                              <div className={`w-6 h-6 rounded-full border flex items-center justify-center text-xs font-bold ${isSelected ? 'bg-gray-900 border-gray-900 text-white' : 'border-gray-400 text-gray-500'}`}>
+                              {/* 圓點標記顏色邏輯更新 */}
+                              <div className={`w-6 h-6 rounded-full border flex items-center justify-center text-xs ${isSelected && !isAnswered ? 'bg-blue-600 border-blue-600 text-white' : isCorrect && isAnswered ? 'bg-teal-500 border-teal-500 text-white' : isSelected && isAnswered && !isCorrect ? 'bg-red-500 border-red-500 text-white' : 'border-gray-300 text-gray-400'}`}>
                                 {String.fromCharCode(65 + idx)}
                               </div>
-                              <span className="font-medium text-gray-800">{opt}</span>
+                              <span className="font-medium">{opt}</span>
                             </div>
                             
                             {isAnswered && (
                                <>
-                                 {isCorrect && <Icons.CheckCircle className="text-green-600 shrink-0" size={20} />}
+                                  {/* 答案圖示顏色更新 */}
+                                 {isCorrect && <Icons.CheckCircle className="text-teal-600 shrink-0" size={20} />}
                                  {isSelected && !isCorrect && <Icons.XCircle className="text-red-600 shrink-0" size={20} />}
                                </>
                             )}
@@ -532,7 +535,7 @@
                         <button 
                           onClick={submitMultipleChoice}
                           disabled={selectedOptions.length === 0}
-                          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${selectedOptions.length > 0 ? 'bg-gray-900 text-white shadow-md hover:bg-black' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${selectedOptions.length > 0 ? 'bg-gray-900 text-white shadow-lg hover:bg-black' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
                         >
                           <Icons.CheckSquare size={18} /> 確認送出答案
                         </button>
@@ -541,18 +544,19 @@
                   </div>
 
                   {isAnswered && (
-                    <div className="bg-gray-50 p-6 border-t border-gray-100 animate-slide-up">
+                    <div className="bg-slate-50 p-6 border-t border-gray-100 animate-slide-up">
                       <div className="flex gap-2 items-center mb-2">
-                        <Icons.BookOpen size={18} className="text-gray-600" />
+                        <Icons.BookOpen size={18} className="text-gray-600" /> {/* 解析標題色改為中性 */}
                         <h3 className="font-bold text-gray-800">試題解析</h3>
                       </div>
-                      <p className="text-gray-700 leading-normal text-sm md:text-base">
+                      {/* 調整行高為更舒適的 leading-loose */}
+                      <p className="text-gray-700 leading-loose text-sm md:text-base">
                         {question.explanation}
                       </p>
                       
                       <div className="mt-6 flex justify-end">
                         <button onClick={nextQuestion}
-                          className="bg-gray-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-md">
+                          className="bg-gray-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-lg">
                           {currentQIndex < currentQuestions.length - 1 ? '下一題 →' : '查看成績'}
                         </button>
                       </div>
@@ -565,27 +569,28 @@
 
           const ResultScreen = () => (
             <div className="max-w-md mx-auto mt-10 p-6 text-center animate-fade-in">
-              <div className="bg-white rounded-xl shadow-sm p-8 border border-gray-100">
-                {/* 圖示簡化 */}
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 border border-gray-200">
-                  <Icons.Award size={30} className="text-gray-500" />
+              {/* 結果卡片維持簡潔風格 */}
+              <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
+                <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Icons.Award size={48} className="text-gray-500" />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">測驗完成</h2>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">測驗完成</h2>
                 <p className="text-gray-500 mb-8">{selection.grade}年級 {selection.subject} 第{selection.exam}次段考</p>
                 
                 <div className="flex justify-center items-end gap-2 mb-8">
-                  <span className="text-7xl font-extrabold text-gray-900">{score}</span>
-                  <span className="text-xl text-gray-500 font-medium mb-3">/ {currentQuestions.length} 題</span>
+                  {/* 分數標記採用藍綠色，符合「答對」的強調色 */}
+                  <span className="text-7xl font-extrabold text-teal-600">{score}</span>
+                  <span className="text-xl text-gray-400 font-medium mb-3">/ {currentQuestions.length} 題</span>
                 </div>
                 
                 <div className="space-y-3">
-                  {/* 按鈕使用黑色強調色 */}
+                  {/* 主要動作按鈕使用極簡黑灰 */}
                   <button onClick={() => startQuiz(selection.subject)}
-                    className="w-full flex items-center justify-center gap-2 bg-gray-900 text-white py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-md">
+                    className="w-full flex items-center justify-center gap-2 bg-gray-900 text-white py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-lg">
                     <Icons.RefreshCw size={18} /> 再測一次
                   </button>
                   <button onClick={resetSystem}
-                    className="w-full py-3 text-gray-500 font-medium hover:bg-gray-50 rounded-xl transition-colors">
+                    className="w-full py-3 text-gray-500 font-medium hover:bg-gray-100 rounded-xl transition-colors">
                     回首頁
                   </button>
                 </div>
@@ -594,7 +599,7 @@
           );
 
           return (
-            <div className="min-h-screen bg-white font-sans text-gray-900">
+            <div className="min-h-screen bg-slate-50 font-sans text-gray-900">
               {step === 'selection' && <SelectionScreen />}
               {step === 'quiz' && <QuizScreen />}
               {step === 'result' && <ResultScreen />}
