@@ -370,14 +370,14 @@
           const SelectionScreen = () => (
             <div className="max-w-4xl mx-auto p-6 animate-fade-in">
               <div className="text-center mb-10">
-                <h1 className="text-3xl font-bold text-gray-800 mb-2">高中段考題庫中心</h1>
+                <h1 className="text-3xl font-extrabold text-gray-800 mb-2">高中段考題庫中心</h1>
                 <p className="text-gray-500">段考題庫 (化學/地理/地科/生物/物理/數學) made by ~ 石謙信</p>
               </div>
 
               <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-8">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">年級</label>
+                    <label className="block text-sm font-extrabold text-gray-700 mb-2">年級</label>
                     <div className="flex space-x-2">
                       {[1, 2, 3].map(g => (
                         <button key={g} onClick={() => setSelection({ ...selection, grade: g })}
@@ -388,7 +388,7 @@
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">學期</label>
+                    <label className="block text-sm font-extrabold text-gray-700 mb-2">學期</label>
                     <div className="flex space-x-2">
                       {[1, 2].map(s => (
                         <button key={s} onClick={() => setSelection({ ...selection, semester: s })}
@@ -399,7 +399,7 @@
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">段考別</label>
+                    <label className="block text-sm font-extrabold text-gray-700 mb-2">段考別</label>
                     <div className="flex space-x-2">
                       {[1, 2, 3].map(e => (
                         <button key={e} onClick={() => setSelection({ ...selection, exam: e })}
@@ -420,7 +420,7 @@
                     <button key={subj} onClick={() => startQuiz(subj)}
                       className={`p-6 rounded-xl border-2 transition-all hover:shadow-md hover:-translate-y-1 flex flex-col items-center gap-3 ${Config.color}`}>
                       <IconComp size={32} />
-                      <span className="font-bold text-lg">{subj}</span>
+                      <span className="font-extrabold text-lg">{subj}</span>
                     </button>
                   );
                 })}
@@ -441,7 +441,7 @@
                   </button>
                   
                   <div className="flex flex-col items-center gap-1">
-                     <div className="text-sm font-medium text-gray-500">
+                     <div className="text-sm font-extrabold text-gray-500">
                        {selection.grade}年級 {selection.subject} 第{selection.exam}次段考 (Q{currentQIndex + 1}/{currentQuestions.length})
                      </div>
                      <a href={SOURCE_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-blue-600 hover:underline bg-blue-50 px-2 py-1 rounded-full">
@@ -459,11 +459,11 @@
                 <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden relative">
                   <div className="p-6 md:p-8">
                     <div className="flex items-start gap-4 mb-4">
-                      <span className={`px-3 py-1 rounded-lg text-sm whitespace-nowrap font-bold ${isMulti ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
+                      <span className={`px-3 py-1 rounded-lg text-sm whitespace-nowrap font-extrabold ${isMulti ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
                         {isMulti ? '多選題' : '單選題'}
                       </span>
                       <div className="space-y-4 w-full">
-                        <h2 className="text-xl font-bold text-gray-800 leading-relaxed whitespace-pre-line">
+                        <h2 className="text-xl font-extrabold text-gray-800 leading-relaxed whitespace-pre-line">
                           {question.question.replace('[需參考圖片]', '')}
                         </h2>
                         
@@ -508,7 +508,7 @@
                               <div className={`w-6 h-6 rounded-full border flex items-center justify-center text-xs ${isSelected ? 'bg-blue-600 border-blue-600 text-white' : 'border-gray-300 text-gray-400'}`}>
                                 {String.fromCharCode(65 + idx)}
                               </div>
-                              <span className="font-medium">{opt}</span>
+                              <span className="font-extrabold">{opt}</span>
                             </div>
                             
                             {isAnswered && (
@@ -527,7 +527,7 @@
                         <button 
                           onClick={submitMultipleChoice}
                           disabled={selectedOptions.length === 0}
-                          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${selectedOptions.length > 0 ? 'bg-blue-600 text-white shadow-lg hover:bg-blue-700' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-extrabold transition-all ${selectedOptions.length > 0 ? 'bg-blue-600 text-white shadow-lg hover:bg-blue-700' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
                         >
                           <Icons.CheckSquare size={18} /> 確認送出答案
                         </button>
@@ -539,7 +539,7 @@
                     <div className="bg-slate-50 p-6 border-t border-gray-100 animate-slide-up">
                       <div className="flex gap-2 items-center mb-2">
                         <Icons.BookOpen size={18} className="text-blue-600" />
-                        <h3 className="font-bold text-gray-800">試題解析</h3>
+                        <h3 className="font-extrabold text-gray-800">試題解析</h3>
                       </div>
                       <p className="text-gray-600 leading-relaxed text-sm md:text-base">
                         {question.explanation}
@@ -547,7 +547,7 @@
                       
                       <div className="mt-6 flex justify-end">
                         <button onClick={nextQuestion}
-                          className="bg-gray-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-lg">
+                          className="bg-gray-900 text-white px-8 py-3 rounded-xl font-extrabold hover:bg-black transition-colors shadow-lg">
                           {currentQIndex < currentQuestions.length - 1 ? '下一題 →' : '查看成績'}
                         </button>
                       </div>
@@ -564,21 +564,21 @@
                 <div className="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Icons.Award size={48} className="text-yellow-600" />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">測驗完成</h2>
+                <h2 className="text-2xl font-extrabold text-gray-800 mb-2">測驗完成</h2>
                 <p className="text-gray-500 mb-8">{selection.grade}年級 {selection.subject} 第{selection.exam}次段考</p>
                 
                 <div className="flex justify-center items-end gap-2 mb-8">
                   <span className="text-7xl font-extrabold text-blue-600">{score}</span>
-                  <span className="text-xl text-gray-400 font-medium mb-3">/ {currentQuestions.length} 題</span>
+                  <span className="text-xl text-gray-400 font-extrabold mb-3">/ {currentQuestions.length} 題</span>
                 </div>
                 
                 <div className="space-y-3">
                   <button onClick={() => startQuiz(selection.subject)}
-                    className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors">
+                    className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-xl font-extrabold hover:bg-blue-700 transition-colors">
                     <Icons.RefreshCw size={18} /> 再測一次
                   </button>
                   <button onClick={resetSystem}
-                    className="w-full py-3 text-gray-500 font-medium hover:bg-gray-50 rounded-xl transition-colors">
+                    className="w-full py-3 text-gray-500 font-extrabold hover:bg-gray-50 rounded-xl transition-colors">
                     回首頁
                   </button>
                 </div>
