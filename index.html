@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
@@ -79,7 +78,7 @@
         // ----------------------------------------------------------------------
 
         const SOURCE_URL = "https://drive.google.com/drive/folders/1H0IIHGhbdAJZkaBHJIbexbC5CbK7kh0M?mcp_token=eyJwaWQiOjk4MjAxMCwic2lkIjoxMjY1Nzc5MjU0LCJheCI6ImNiYTI0NmQ5MTBmMWQ3MjhkODUzMzUzNDNiNWYyZGRkIiwidHMiOjE3NTM2NzAyNTMsImV4cCI6MTc1NjA4OTQ1M30.nEvM8L28F1tynKZdPdZnBblIjVy6Hkjj_d5hbu3f_d4";
-        import PageTitle from "@/components/PageTitle";
+
         const MOCK_DATABASE = [
           // --- 化學 (1-25) ---
           { id: 1, type: 'single', grade: 1, semester: 1, exam: 2, subject: '化學', question: '取 3.2 克的 TiO₂ 於氫氣中受熱，失去部分的氧，質量減少 0.32 克，形成另一種氧化物，則此氧化物之化學式為何？', options: ['TiO₂', 'TiO', 'Ti₂O₃', 'Ti₃O₄'], correctIndices: [2], explanation: '鈦的莫耳數 = 3.2/80 = 0.04 mol。失去氧的莫耳數 = 0.32/16 = 0.02 mol。原有氧 0.08 mol，剩餘 0.06 mol。Ti:O = 0.04:0.06 = 2:3。' },
@@ -371,14 +370,8 @@
           const SelectionScreen = () => (
             <div className="max-w-4xl mx-auto p-6 animate-fade-in">
               <div className="text-center mb-10">
-
-                <PageTitle>高中段考題庫中心</PageTitle>
-
-                <p className="text-gray-500">
-                  段考題庫 (化學/地理/地科/生物/物理/數學)
-                  若題目需看圖 請點選上方：查看原始PDF選項
-                </p>
-
+                <h1 className="text-3xl font-bold text-gray-800 mb-2">高中段考題庫中心</h1>
+                <p className="text-gray-500">段考題庫 (化學/地理/地科/生物/物理/數學) 若題目需看圖 請點選上方：查看原始PDF選項</p>
               </div>
 
               <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-8">
