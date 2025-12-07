@@ -276,12 +276,12 @@
         ];
 
         const SUBJECT_CONFIG = {
-          '化學': { icon: Icons.FlaskConical, color: 'bg-white-100 text-teal-600 border-white-200' },
-          '地科': { icon: Icons.Globe, color: 'bg-white-100 text-teal-600 border-white-200' },
-          '地理': { icon: Icons.Mountain, color: 'bg-white-100 text-teal-600 border-white-200' },
-          '數學': { icon: Icons.Calculator, color: 'bg-white-100 text-teal-600 border-white-200' },
-          '物理': { icon: Icons.Zap, color: 'bg-white-100 text-teal-600 border-white-200' },
-          '生物': { icon: Icons.Microscope, color: 'bg-white-100 text-teal-600 border-white-200' },
+          '化學': { icon: Icons.FlaskConical, color: 'bg-white-100 text-purple-600 border-black-200' },
+          '地科': { icon: Icons.Globe, color: 'bg-white-100 text-blue-600 border-black-200' },
+          '地理': { icon: Icons.Mountain, color: 'bg-white-100 text-emerald-600 border-black-200' },
+          '數學': { icon: Icons.Calculator, color: 'bg-white-100 text-red-600 border-black-200' },
+          '物理': { icon: Icons.Zap, color: 'bg-white-100 text-yellow-600 border-black-200' },
+          '生物': { icon: Icons.Microscope, color: 'bg-white-100 text-green-600 border-black-200' },
         };
 
         const App = () => {
@@ -370,8 +370,8 @@
           const SelectionScreen = () => (
             <div className="max-w-4xl mx-auto p-6 animate-fade-in">
               <div className="text-center mb-10">
-                <h1 className="text-3xl font-extrabold text-gray-800 mb-2">段考題庫中心</h1>
-                <p className="text-gray-500">段考題庫 (化學/地理/地科/生物/物理/數學) made by 石謙信</p>
+                <h1 className="text-3xl font-bold text-gray-800 mb-2">高中段考題庫中心</h1>
+                <p className="text-gray-500">段考題庫 (化學/地理/地科/生物/物理/數學) made by ~ 石謙信</p>
               </div>
 
               <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-8">
@@ -420,7 +420,7 @@
                     <button key={subj} onClick={() => startQuiz(subj)}
                       className={`p-6 rounded-xl border-2 transition-all hover:shadow-md hover:-translate-y-1 flex flex-col items-center gap-3 ${Config.color}`}>
                       <IconComp size={32} />
-                      <span className="font-extrabold text-lg">{subj}</span>
+                      <span className="font-bold text-lg">{subj}</span>
                     </button>
                   );
                 })}
@@ -459,11 +459,11 @@
                 <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden relative">
                   <div className="p-6 md:p-8">
                     <div className="flex items-start gap-4 mb-4">
-                      <span className={`px-3 py-1 rounded-lg text-sm whitespace-nowrap font-extrabold ${isMulti ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
+                      <span className={`px-3 py-1 rounded-lg text-sm whitespace-nowrap font-bold ${isMulti ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
                         {isMulti ? '多選題' : '單選題'}
                       </span>
                       <div className="space-y-4 w-full">
-                        <h2 className="text-xl font-extrabold text-gray-800 leading-relaxed whitespace-pre-line">
+                        <h2 className="text-xl font-bold text-gray-800 leading-relaxed whitespace-pre-line">
                           {question.question.replace('[需參考圖片]', '')}
                         </h2>
                         
@@ -527,7 +527,7 @@
                         <button 
                           onClick={submitMultipleChoice}
                           disabled={selectedOptions.length === 0}
-                          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-extrabold transition-all ${selectedOptions.length > 0 ? 'bg-blue-600 text-white shadow-lg hover:bg-blue-700' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${selectedOptions.length > 0 ? 'bg-blue-600 text-white shadow-lg hover:bg-blue-700' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
                         >
                           <Icons.CheckSquare size={18} /> 確認送出答案
                         </button>
@@ -539,7 +539,7 @@
                     <div className="bg-slate-50 p-6 border-t border-gray-100 animate-slide-up">
                       <div className="flex gap-2 items-center mb-2">
                         <Icons.BookOpen size={18} className="text-blue-600" />
-                        <h3 className="font-extrabold text-gray-800">試題解析</h3>
+                        <h3 className="font-bold text-gray-800">試題解析</h3>
                       </div>
                       <p className="text-gray-600 leading-relaxed text-sm md:text-base">
                         {question.explanation}
@@ -547,7 +547,7 @@
                       
                       <div className="mt-6 flex justify-end">
                         <button onClick={nextQuestion}
-                          className="bg-gray-900 text-white px-8 py-3 rounded-xl font-extrabold hover:bg-black transition-colors shadow-lg">
+                          className="bg-gray-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-lg">
                           {currentQIndex < currentQuestions.length - 1 ? '下一題 →' : '查看成績'}
                         </button>
                       </div>
@@ -564,7 +564,7 @@
                 <div className="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Icons.Award size={48} className="text-yellow-600" />
                 </div>
-                <h2 className="text-2xl font-extrabold text-gray-800 mb-2">測驗完成</h2>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">測驗完成</h2>
                 <p className="text-gray-500 mb-8">{selection.grade}年級 {selection.subject} 第{selection.exam}次段考</p>
                 
                 <div className="flex justify-center items-end gap-2 mb-8">
@@ -574,7 +574,7 @@
                 
                 <div className="space-y-3">
                   <button onClick={() => startQuiz(selection.subject)}
-                    className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-xl font-extrabold hover:bg-blue-700 transition-colors">
+                    className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors">
                     <Icons.RefreshCw size={18} /> 再測一次
                   </button>
                   <button onClick={resetSystem}
