@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>網頁版暗棋 (Dark Chess)</title>
+    <title>終極暗棋：砲火全開版</title>
     <style>
         :root {
             --board-bg: #eecfa1;
@@ -23,24 +23,28 @@
             color: white;
         }
 
-        h1 { margin-bottom: 10px; }
+        h1 { margin-bottom: 5px; font-size: 1.5rem; text-align: center;}
+        .rules { font-size: 0.8rem; color: #ccc; margin-bottom: 10px; text-align: center; line-height: 1.4; }
+        .highlight-rule { color: #f1c40f; font-weight: bold; }
 
         #game-info {
             background: rgba(0, 0, 0, 0.5);
             padding: 10px 20px;
             border-radius: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             text-align: center;
+            min-width: 280px;
         }
 
         #status { font-size: 1.2em; font-weight: bold; color: #f1c40f; }
         #player-color { margin-top: 5px; font-size: 0.9em; }
+        #combo-msg { color: #e74c3c; font-weight: bold; height: 1.4em; margin-top: 5px;}
 
         /* 棋盤 Grid */
         #board {
             display: grid;
-            grid-template-columns: repeat(8, 1fr); /* 8列 */
-            grid-template-rows: repeat(4, 1fr);    /* 4行 */
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(4, 1fr);
             gap: 2px;
             background-color: var(--border-color);
             border: 5px solid var(--border-color);
@@ -72,90 +76,97 @@
             box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
             user-select: none;
             border: 2px solid #8b4513;
+            z-index: 2;
+            transition: transform 0.2s;
         }
 
-        /* 蓋牌狀態 */
         .piece.hidden {
             background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
             color: transparent;
             border: 2px solid #5c4033;
         }
         .piece.hidden::after {
-            content: "☁"; /* 蓋牌圖示 */
+            content: "☁";
             color: rgba(255,255,255,0.3);
             font-size: 1.2rem;
         }
 
-        /* 紅方 */
-        .piece.red {
-            background-color: #fce4d6;
-            color: #d00000;
-            border-color: #d00000;
-        }
-
-        /* 黑方 */
-        .piece.black {
-            background-color: #fce4d6;
-            color: #000000;
-            border-color: #000000;
-        }
+        .piece.red { background-color: #fce4d6; color: #d00000; border-color: #d00000; }
+        .piece.black { background-color: #fce4d6; color: #000000; border-color: #000000; }
 
         /* 選中狀態 */
         .piece.selected {
-            box-shadow: 0 0 10px 4px yellow;
-            transform: scale(1.1);
+            box-shadow: 0 0 15px 5px yellow;
+            transform: scale(1.15);
             z-index: 10;
+            animation: pulse 1s infinite;
         }
 
-        /* 被吃掉的動畫 */
-        .captured {
-            opacity: 0;
-            transform: scale(0);
-            transition: all 0.3s ease;
+        @keyframes pulse {
+            0% { box-shadow: 0 0 10px 3px yellow; }
+            50% { box-shadow: 0 0 20px 8px yellow; }
+            100% { box-shadow: 0 0 10px 3px yellow; }
         }
 
-        /* 提示最後一步 */
-        .last-move {
-            background-color: rgba(255, 255, 0, 0.3);
-        }
+        /* 鎖定非活動棋子 (連吃模式時) */
+        .dimmed { opacity: 0.5; pointer-events: none; }
 
+        .btn-group { margin-top: 15px; display: flex; gap: 10px; }
+        
         button {
-            margin-top: 20px;
             padding: 10px 20px;
             font-size: 1rem;
             cursor: pointer;
-            background: #27ae60;
-            color: white;
             border: none;
             border-radius: 5px;
+            color: white;
+            font-weight: bold;
         }
-        button:hover { background: #2ecc71; }
 
+        .btn-restart { background: #27ae60; }
+        .btn-restart:hover { background: #2ecc71; }
+
+        .btn-pass { 
+            background: #c0392b; 
+            display: none;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .btn-pass:hover { background: #e74c3c; }
+
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body>
 
-    <h1>象棋暗棋 (Dark Chess)</h1>
+    <h1>暗棋 (Dark Chess)</h1>
+    <div class="rules">
+        規則：可盲吃暗棋 | 吃子後可連吃<br>
+        <span class="highlight-rule">砲吃子規則：隔一顆棋子跳吃，距離不限</span>
+    </div>
     
     <div id="game-info">
         <div id="status">當前回合：玩家 1</div>
         <div id="player-color">顏色未定</div>
+        <div id="combo-msg"></div>
     </div>
 
     <div id="board"></div>
 
-    <button onclick="initGame()">重新開始</button>
+    <div class="btn-group">
+        <button id="btnPass" class="btn-pass" onclick="forceEndTurn()">停止連吃 (換人)</button>
+        <button class="btn-restart" onclick="initGame()">重新開始</button>
+    </div>
 
     <script>
-        // --- 遊戲常數與設定 ---
         const ROWS = 4;
         const COLS = 8;
         
-        // 定義階級 (數字越大階級越高，除了特殊的帥/將 vs 兵/卒)
-        // 7:將/帥, 6:士/仕, 5:象/相, 4:車/俥, 3:馬/傌, 2:包/砲, 1:卒/兵
         const PIECE_TYPES = {
             red: [
-                { name: '帥', rank: 7, count: 1 }, // 修正：標準盤面只能放1個帥
+                { name: '帥', rank: 7, count: 1 },
                 { name: '仕', rank: 6, count: 2 },
                 { name: '相', rank: 5, count: 2 },
                 { name: '俥', rank: 4, count: 2 },
@@ -164,7 +175,7 @@
                 { name: '兵', rank: 1, count: 5 }
             ],
             black: [
-                { name: '將', rank: 7, count: 1 }, // 修正：標準盤面只能放1個將
+                { name: '將', rank: 7, count: 1 },
                 { name: '士', rank: 6, count: 2 },
                 { name: '象', rank: 5, count: 2 },
                 { name: '車', rank: 4, count: 2 },
@@ -174,19 +185,23 @@
             ]
         };
 
-        let boardState = []; // 儲存盤面資訊
-        let selectedIndex = -1; // 當前選中的格子索引
-        let currentPlayer = 1; // 1 或 2
-        let playerColors = { 1: null, 2: null }; // 玩家代表的顏色 ('red' 或 'black')
+        let boardState = [];
+        let selectedIndex = -1;
+        let currentPlayer = 1;
+        let playerColors = { 1: null, 2: null };
         let isGameOver = false;
+
+        // 連吃模式變數
+        let isComboMode = false;
+        let comboPieceIndex = -1;
 
         const boardEl = document.getElementById('board');
         const statusEl = document.getElementById('status');
         const colorEl = document.getElementById('player-color');
+        const comboMsgEl = document.getElementById('combo-msg');
+        const btnPass = document.getElementById('btnPass');
 
-        // --- 初始化遊戲 ---
         function initGame() {
-            // 1. 產生所有棋子
             let pieces = [];
             ['red', 'black'].forEach(color => {
                 PIECE_TYPES[color].forEach(type => {
@@ -195,21 +210,20 @@
                             color: color,
                             name: type.name,
                             rank: type.rank,
-                            revealed: false // 預設蓋牌
+                            revealed: false
                         });
                     }
                 });
             });
 
-            // 2. 洗牌 (Fisher-Yates Shuffle)
+            // 洗牌
             for (let i = pieces.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [pieces[i], pieces[j]] = [pieces[j], pieces[i]];
             }
 
-            // 3. 填入盤面
             boardState = pieces;
-            selectedIndex = -1;
+            resetTurnState();
             currentPlayer = 1;
             playerColors = { 1: null, 2: null };
             isGameOver = false;
@@ -218,7 +232,14 @@
             updateStatus();
         }
 
-        // --- 渲染畫面 ---
+        function resetTurnState() {
+            selectedIndex = -1;
+            isComboMode = false;
+            comboPieceIndex = -1;
+            btnPass.style.display = 'none';
+            comboMsgEl.innerText = '';
+        }
+
         function renderBoard() {
             boardEl.innerHTML = '';
             boardState.forEach((piece, index) => {
@@ -230,7 +251,15 @@
                 if (piece) {
                     const pieceEl = document.createElement('div');
                     pieceEl.className = `piece ${piece.revealed ? piece.color : 'hidden'}`;
-                    if (index === selectedIndex) pieceEl.classList.add('selected');
+                    
+                    if (index === selectedIndex) {
+                        pieceEl.classList.add('selected');
+                    }
+                    // 連吃時，除了主角外其他變暗
+                    if (isComboMode && index !== selectedIndex) {
+                        pieceEl.classList.add('dimmed');
+                    }
+
                     pieceEl.innerText = piece.name;
                     cell.appendChild(pieceEl);
                 }
@@ -238,169 +267,179 @@
             });
         }
 
-        // --- 點擊處理核心邏輯 ---
         function handleCellClick(index) {
             if (isGameOver) return;
 
             const targetPiece = boardState[index];
-            
-            // 情況 A: 翻牌 (點擊暗棋)
+
+            // 1. 連吃模式處理
+            if (isComboMode) {
+                if (index === comboPieceIndex) return; // 點自己
+                
+                // 必須是吃子動作才有效，移動到空格視為結束
+                if (!targetPiece || (targetPiece && targetPiece !== boardState[comboPieceIndex])) {
+                    attemptMove(comboPieceIndex, index);
+                }
+                return;
+            }
+
+            // 2. 正常回合
+            // A. 翻牌 (或砲盲吃)
             if (targetPiece && !targetPiece.revealed) {
-                // 如果已經選中某顆棋子，不能去翻牌，必須先取消選取 (或是依規則，這算非法移動)
-                // 這裡簡化：如果選中了棋子，點擊暗棋視為「取消選取並嘗試翻牌」(但通常翻牌需耗回合)
-                // 為了嚴謹，若已選中棋子，點其他暗棋應視為無效或取消，這裡我們做成取消選取。
+                // 如果已選中棋子，嘗試盲吃
                 if (selectedIndex !== -1) {
-                    selectedIndex = -1;
-                    renderBoard();
+                    attemptMove(selectedIndex, index);
                     return;
                 }
                 flipPiece(index);
                 return;
             }
 
-            // 情況 B: 選取自己的棋子 (準備移動)
+            // B. 選棋
             if (targetPiece && targetPiece.revealed) {
-                // 檢查是否是自己的顏色
                 if (playerColors[currentPlayer] && targetPiece.color !== playerColors[currentPlayer]) {
-                    // 點到對手的棋子 -> 視為攻擊目標 (如果有選中自己的棋子)
-                    if (selectedIndex !== -1) {
-                        attemptMove(selectedIndex, index);
-                    }
+                    // 點敵方 -> 攻擊
+                    if (selectedIndex !== -1) attemptMove(selectedIndex, index);
                     return;
                 }
-
-                // 點到自己的棋子 -> 選取 / 切換選取
+                // 點我方 -> 選取
                 selectedIndex = index;
                 renderBoard();
                 return;
             }
 
-            // 情況 C: 移動到空格
+            // C. 移動到空格
             if (!targetPiece && selectedIndex !== -1) {
                 attemptMove(selectedIndex, index);
             }
         }
 
-        // --- 翻牌邏輯 ---
         function flipPiece(index) {
             const piece = boardState[index];
             piece.revealed = true;
-
-            // 決定顏色 (如果是全場第一顆翻開的)
             if (playerColors[1] === null) {
                 playerColors[currentPlayer] = piece.color;
                 playerColors[currentPlayer === 1 ? 2 : 1] = (piece.color === 'red' ? 'black' : 'red');
             }
-
             endTurn();
         }
 
-        // --- 移動與攻擊判定 ---
         function attemptMove(fromIndex, toIndex) {
             const fromPiece = boardState[fromIndex];
-            const toPiece = boardState[toIndex]; // 可能為 null (空格) 或 對手棋子
+            const toPiece = boardState[toIndex];
+            
+            // 判斷是否為砲吃子 (目標是棋子，無論明暗)
+            const isCannonAttack = (fromPiece.rank === 2 && toPiece !== null);
 
-            // 基本驗證：是否相鄰 (上下左右)
-            if (!isAdjacent(fromIndex, toIndex)) {
-                // 特殊例外：如果是砲，且是為了吃子，可以不相鄰
-                if (!(fromPiece.rank === 2 && toPiece !== null)) {
-                    // 如果不是砲吃子，且不相鄰 -> 無效
-                    selectedIndex = -1;
-                    renderBoard();
-                    return;
-                }
-            }
-
-            // 攻擊判定
-            if (toPiece) {
-                if (!canCapture(fromPiece, toPiece, fromIndex, toIndex)) {
-                    alert("無法吃子：違反規則！");
-                    selectedIndex = -1;
-                    renderBoard();
-                    return;
+            if (isCannonAttack) {
+                // 砲吃子檢查：必須隔一顆，距離不限
+                if (!isValidCannonJump(fromIndex, toIndex)) {
+                    if(!isComboMode) { selectedIndex = -1; renderBoard(); }
+                    return; // 無效的砲擊
                 }
             } else {
-                // 移動到空格：砲只能走一格
-                if (fromPiece.rank === 2 && !isAdjacent(fromIndex, toIndex)) {
-                     selectedIndex = -1;
-                     renderBoard();
+                // 一般移動或吃子：必須相鄰
+                if (!isAdjacent(fromIndex, toIndex)) {
+                     if(!isComboMode) { selectedIndex = -1; renderBoard(); }
                      return;
                 }
             }
 
-            // 執行移動
+            let isCapture = false;
+            if (toPiece) {
+                // 吃子階級判定 (盲吃無條件，明棋比大小)
+                if (toPiece.revealed) {
+                    if (!canCapture(fromPiece, toPiece)) {
+                        alert("階級不符，無法吃子！");
+                        if(!isComboMode) { selectedIndex = -1; renderBoard(); }
+                        return;
+                    }
+                }
+                isCapture = true;
+            } else {
+                // 移動到空格 (砲如果不吃子只能走一格)
+                if (fromPiece.rank === 2 && !isAdjacent(fromIndex, toIndex)) {
+                     if(!isComboMode) { selectedIndex = -1; renderBoard(); }
+                     return;
+                }
+            }
+
+            // 執行移動/吃子
             boardState[toIndex] = fromPiece;
             boardState[fromIndex] = null;
-            
-            // 檢查勝利條件 (簡單版：如果對手沒棋子了)
-            checkWin();
 
-            endTurn();
+            if (isCapture) {
+                // 連吃機制啟動
+                isComboMode = true;
+                comboPieceIndex = toIndex;
+                selectedIndex = toIndex;
+                
+                checkWin();
+                if(isGameOver) return;
+
+                comboMsgEl.innerText = "🔥 連吃中！繼續吃或換人";
+                btnPass.style.display = 'block';
+                renderBoard();
+            } else {
+                // 純移動 -> 結束回合
+                endTurn();
+            }
         }
 
-        // --- 規則判定函數 ---
+        function forceEndTurn() {
+            if (isComboMode) endTurn();
+        }
 
-        // 判斷相鄰
         function isAdjacent(i1, i2) {
             const r1 = Math.floor(i1 / COLS), c1 = i1 % COLS;
             const r2 = Math.floor(i2 / COLS), c2 = i2 % COLS;
-            const dist = Math.abs(r1 - r2) + Math.abs(c1 - c2);
-            return dist === 1;
+            return (Math.abs(r1 - r2) + Math.abs(c1 - c2)) === 1;
         }
 
-        // 判斷是否能吃
-        function canCapture(attacker, defender, fromIdx, toIdx) {
-            // 砲的特殊規則 (rank 2)
-            if (attacker.rank === 2) {
-                return isValidCannonJump(fromIdx, toIdx);
-            }
-
-            // 一般棋子：只能吃相鄰
-            if (!isAdjacent(fromIdx, toIdx)) return false;
-
-            // 卒(1) 吃 將(7)
-            if (attacker.rank === 1 && defender.rank === 7) return true;
-            
-            // 將(7) 不能吃 卒(1) (除了砲之外，小的不能吃大的，大的能吃小的)
-            // 規則說：小的不能吃大的 (除了兵吃將)
-            // 所以：攻擊者 >= 防禦者 (且排除 將吃卒 的情況)
-            if (attacker.rank === 7 && defender.rank === 1) return false;
-
+        function canCapture(attacker, defender) {
+            if (attacker.rank === 2) return true; // 砲可以吃任何階級
+            if (attacker.rank === 1 && defender.rank === 7) return true; // 卒吃將
+            if (attacker.rank === 7 && defender.rank === 1) return false; // 將不可吃卒
             return attacker.rank >= defender.rank;
         }
 
-        // 砲的跳躍邏輯
+        // --- 核心修改：砲的跳吃邏輯 (距離不限，隔一顆) ---
         function isValidCannonJump(fromIdx, toIdx) {
             const r1 = Math.floor(fromIdx / COLS), c1 = fromIdx % COLS;
             const r2 = Math.floor(toIdx / COLS), c2 = toIdx % COLS;
 
-            // 必須在同一行或同一列
+            // 必須同行或同列
             if (r1 !== r2 && c1 !== c2) return false;
 
             let obstacles = 0;
 
-            if (r1 === r2) { // 同一列
-                const minC = Math.min(c1, c2);
-                const maxC = Math.max(c1, c2);
+            if (r1 === r2) { // 同一列 (左右跳)
+                const minC = Math.min(c1, c2), maxC = Math.max(c1, c2);
+                // 檢查起點和終點之間所有的格子
                 for (let c = minC + 1; c < maxC; c++) {
                     const idx = r1 * COLS + c;
-                    if (boardState[idx] !== null) obstacles++;
+                    if (boardState[idx] !== null) {
+                        obstacles++;
+                    }
                 }
-            } else { // 同一行
-                const minR = Math.min(r1, r2);
-                const maxR = Math.max(r1, r2);
+            } else { // 同一行 (上下跳)
+                const minR = Math.min(r1, r2), maxR = Math.max(r1, r2);
+                // 檢查起點和終點之間所有的格子
                 for (let r = minR + 1; r < maxR; r++) {
                     const idx = r * COLS + c1;
-                    if (boardState[idx] !== null) obstacles++;
+                    if (boardState[idx] !== null) {
+                        obstacles++;
+                    }
                 }
             }
 
-            // 砲必須正好跳過一顆棋子 (炮台)
+            // 規則重點：中間必須「正好只有一顆」棋子 (空格不計)
+            // 這樣就達成了「距離不限，隔一顆吃」的效果
             return obstacles === 1;
         }
 
         function endTurn() {
-            selectedIndex = -1;
+            resetTurnState();
             currentPlayer = currentPlayer === 1 ? 2 : 1;
             renderBoard();
             updateStatus();
@@ -441,7 +480,6 @@
             }
         }
 
-        // 啟動遊戲
         initGame();
 
     </script>
