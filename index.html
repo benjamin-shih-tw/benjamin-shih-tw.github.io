@@ -3,485 +3,967 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>終極暗棋：砲火全開版</title>
+    <title>URL, Link & Graph - 互動式講義</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            light: '#2E75B6',
+                            dark: '#60A5FA'
+                        },
+                        accent: {
+                            light: '#548235',
+                            dark: '#86EFAC'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --board-bg: #eecfa1;
-            --border-color: #5c4033;
-            --piece-size: 60px;
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+        
+        * {
+            font-family: 'IBM Plex Sans', system-ui, sans-serif;
         }
-
-        body {
-            font-family: "Microsoft JhengHei", sans-serif;
-            background-color: #2c3e50;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            color: white;
+        
+        code, pre {
+            font-family: 'IBM Plex Mono', monospace;
         }
-
-        h1 { margin-bottom: 5px; font-size: 1.5rem; text-align: center;}
-        .rules { font-size: 0.8rem; color: #ccc; margin-bottom: 10px; text-align: center; line-height: 1.4; }
-        .highlight-rule { color: #f1c40f; font-weight: bold; }
-
-        #game-info {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 10px 20px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            text-align: center;
-            min-width: 280px;
+        
+        .highlight {
+            background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 40%;
+            background-position: 0 85%;
         }
-
-        #status { font-size: 1.2em; font-weight: bold; color: #f1c40f; }
-        #player-color { margin-top: 5px; font-size: 0.9em; }
-        #combo-msg { color: #e74c3c; font-weight: bold; height: 1.4em; margin-top: 5px;}
-
-        /* 棋盤 Grid */
-        #board {
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            grid-template-rows: repeat(4, 1fr);
-            gap: 2px;
-            background-color: var(--border-color);
-            border: 5px solid var(--border-color);
-            padding: 5px;
+        
+        .dark .highlight {
+            background: linear-gradient(120deg, rgba(251, 191, 36, 0.3) 0%, rgba(251, 191, 36, 0.3) 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 40%;
+            background-position: 0 85%;
+        }
+        
+        .smooth-scroll {
+            scroll-behavior: smooth;
+        }
+        
+        .section-link {
+            transition: all 0.2s;
+        }
+        
+        .section-link:hover {
+            transform: translateX(4px);
+        }
+        
+        .interactive-box {
+            transition: all 0.3s;
+        }
+        
+        .interactive-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        
+        .dark .interactive-box:hover {
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
             border-radius: 4px;
         }
-
-        .cell {
-            width: var(--piece-size);
-            height: var(--piece-size);
-            background-color: var(--board-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            position: relative;
-        }
-
-        /* 棋子樣式 */
-        .piece {
-            width: 85%;
-            height: 85%;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
-            user-select: none;
-            border: 2px solid #8b4513;
-            z-index: 2;
-            transition: transform 0.2s;
-        }
-
-        .piece.hidden {
-            background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
-            color: transparent;
-            border: 2px solid #5c4033;
-        }
-        .piece.hidden::after {
-            content: "☁";
-            color: rgba(255,255,255,0.3);
-            font-size: 1.2rem;
-        }
-
-        .piece.red { background-color: #fce4d6; color: #d00000; border-color: #d00000; }
-        .piece.black { background-color: #fce4d6; color: #000000; border-color: #000000; }
-
-        /* 選中狀態 */
-        .piece.selected {
-            box-shadow: 0 0 15px 5px yellow;
-            transform: scale(1.15);
-            z-index: 10;
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 10px 3px yellow; }
-            50% { box-shadow: 0 0 20px 8px yellow; }
-            100% { box-shadow: 0 0 10px 3px yellow; }
-        }
-
-        /* 鎖定非活動棋子 (連吃模式時) */
-        .dimmed { opacity: 0.5; pointer-events: none; }
-
-        .btn-group { margin-top: 15px; display: flex; gap: 10px; }
         
-        button {
-            padding: 10px 20px;
-            font-size: 1rem;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            font-weight: bold;
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
         }
-
-        .btn-restart { background: #27ae60; }
-        .btn-restart:hover { background: #2ecc71; }
-
-        .btn-pass { 
-            background: #c0392b; 
-            display: none;
-            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
-        .btn-pass:hover { background: #e74c3c; }
-
-        @keyframes popIn {
-            from { transform: scale(0); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+        
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
         }
     </style>
 </head>
-<body>
-
-    <h1>暗棋 (Dark Chess)</h1>
-    <div class="rules">
-        規則：可盲吃暗棋 | 吃子後可連吃<br>
-        <span class="highlight-rule">砲吃子規則：隔一顆棋子跳吃，距離不限</span>
-    </div>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200 smooth-scroll">
     
-    <div id="game-info">
-        <div id="status">當前回合：玩家 1</div>
-        <div id="player-color">顏色未定</div>
-        <div id="combo-msg"></div>
-    </div>
+    <!-- Header with Theme Toggle -->
+    <header class="fixed top-0 left-0 right-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-semibold text-gray-900 dark:text-white">URL, Link & Graph</h1>
+            <div class="flex items-center gap-4">
+                <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                    <svg id="theme-icon-light" class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                    <svg id="theme-icon-dark" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                </button>
+                <button id="toc-toggle" class="md:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
 
-    <div id="board"></div>
+    <div class="flex pt-16">
+        <!-- Sidebar TOC -->
+        <aside id="toc-sidebar" class="hidden md:block fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 border-r border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 overflow-y-auto p-6">
+            <nav class="space-y-2">
+                <div class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">目錄</div>
+                <a href="#intro" class="section-link block px-3 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800">開場引言</a>
+                <div class="ml-2 space-y-1">
+                    <a href="#part1" class="section-link block px-3 py-2 rounded-lg text-sm font-semibold text-primary-light dark:text-primary-dark hover:bg-gray-200 dark:hover:bg-gray-800">Part 1: URL & Link</a>
+                    <a href="#game1" class="section-link block px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 ml-2">遊戲 1: Wiki 連結</a>
+                    <a href="#url-intro" class="section-link block px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 ml-2">連結簡介</a>
+                    <a href="#url-structure" class="section-link block px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 ml-2">URL 結構</a>
+                </div>
+                <div class="ml-2 space-y-1">
+                    <a href="#part2" class="section-link block px-3 py-2 rounded-lg text-sm font-semibold text-primary-light dark:text-primary-dark hover:bg-gray-200 dark:hover:bg-gray-800">Part 2: Graph</a>
+                    <a href="#game2" class="section-link block px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 ml-2">遊戲 2: 一筆畫</a>
+                    <a href="#graph-intro" class="section-link block px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 ml-2">圖論簡介</a>
+                    <a href="#mst" class="section-link block px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 ml-2">最小生成樹</a>
+                </div>
+                <a href="#part3" class="section-link block px-3 py-2 rounded-lg text-sm font-semibold text-primary-light dark:text-primary-dark hover:bg-gray-200 dark:hover:bg-gray-800 ml-2">Part 3: Merge</a>
+            </nav>
+        </aside>
 
-    <div class="btn-group">
-        <button id="btnPass" class="btn-pass" onclick="forceEndTurn()">停止連吃 (換人)</button>
-        <button class="btn-restart" onclick="initGame()">重新開始</button>
+        <!-- Main Content -->
+        <main class="flex-1 md:ml-64 px-4 sm:px-6 lg:px-8 py-8 max-w-4xl">
+            
+            <!-- Intro Section -->
+            <section id="intro" class="mb-16 fade-in-up">
+                <div class="prose prose-lg dark:prose-invert max-w-none">
+                    <h1 class="text-4xl font-bold mb-6 text-gray-900 dark:text-white">URL, Link & Graph</h1>
+                    <p class="text-xl text-gray-600 dark:text-gray-300 mb-8">從網頁連結到圖論的奇妙旅程</p>
+                    
+                    <div class="border-l-4 border-primary-light dark:border-primary-dark pl-6 py-4 my-8 bg-gray-50 dark:bg-gray-800/50 rounded-r-lg">
+                        <p class="italic text-gray-700 dark:text-gray-300 mb-3">
+                            "What we are looking for is how everything works. What makes everything work."
+                        </p>
+                        <p class="italic text-gray-700 dark:text-gray-300 mb-3">
+                            "The truth is so remarkable, so amazing, and I have this disease – like many other people who have studied far enough to begin to understand a little of how things work. They are fascinated by it."
+                        </p>
+                        <p class="italic text-gray-700 dark:text-gray-300">
+                            "But it is curiosity as to where we are, what we are."
+                        </p>
+                    </div>
+
+                    <p class="text-lg">
+                        你有沒有想過，當你在維基百科上點擊一個又一個連結時，你其實是在一個巨大的「圖」裡面遊走？或者當你用 Google Maps 找最短路線時，背後其實是數學家們幾百年前就想出來的「最小生成樹」在幫你計算？
+                    </p>
+                    
+                    <p class="text-lg">
+                        今天，我們要一起揭開這些看似無關的東西背後的<span class="highlight font-semibold">共同秘密</span>！準備好了嗎？Let's dive in!
+                    </p>
+                </div>
+            </section>
+
+            <!-- Part 1: URL & Link -->
+            <section id="part1" class="mb-16">
+                <h2 class="text-3xl font-bold mb-8 text-gray-900 dark:text-white border-b-2 border-primary-light dark:border-primary-dark pb-3">Part 1: URL & Link（≤ 30 分鐘）</h2>
+                
+                <!-- Game 1: Wiki Game -->
+                <div id="game1" class="mb-12">
+                    <h3 class="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">🎮 遊戲 1: Wiki 連結挑戰賽</h3>
+                    
+                    <div class="bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-xl p-6 mb-6 border border-yellow-200 dark:border-yellow-800">
+                        <h4 class="font-semibold text-lg mb-4 text-gray-900 dark:text-white">互動式遊戲體驗</h4>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">從這裡開始：</label>
+                                <input type="text" id="wiki-start" value="台灣" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark outline-none">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-2">目標抵達：</label>
+                                <input type="text" id="wiki-end" value="量子力學" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark outline-none">
+                            </div>
+                            
+                            <div class="flex items-center gap-4">
+                                <button onclick="startWikiGame()" class="px-6 py-3 bg-primary-light dark:bg-primary-dark text-white rounded-lg hover:opacity-90 transition-opacity font-medium">
+                                    開始挑戰
+                                </button>
+                                <div id="wiki-clicks" class="text-lg font-semibold">點擊次數: <span class="text-primary-light dark:text-primary-dark">0</span></div>
+                            </div>
+                            
+                            <div id="wiki-path" class="mt-4 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hidden">
+                                <div class="text-sm font-medium mb-2">你的路徑：</div>
+                                <div id="wiki-path-content" class="text-sm text-gray-600 dark:text-gray-400"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h4 class="text-xl font-semibold mb-4">遊戲規則</h4>
+                        <ul class="space-y-2">
+                            <li>從指定的維基百科條目 A，<strong>只透過點擊條目內的連結</strong>，最終到達另一個指定條目 B</li>
+                            <li>點擊次數越少越好！</li>
+                            <li>不能用瀏覽器的「上一頁」功能，不能直接搜尋</li>
+                        </ul>
+                        
+                        <div class="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 p-4 my-6 rounded-r-lg">
+                            <p class="text-sm font-medium text-green-800 dark:text-green-300">
+                                💡 這個遊戲會讓學生自己發現：連結不是隨機的，而是形成了某種「網絡」！
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- URL Introduction -->
+                <div id="url-intro" class="mb-12">
+                    <h3 class="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">🔗 什麼是「連結」？</h3>
+                    
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <p>
+                            剛剛的遊戲好玩嗎？你們有沒有注意到，每次點擊那個藍色的字，你就會<strong class="text-primary-light dark:text-primary-dark">「跳」</strong>到另一個完全不同的頁面？這個「跳躍」，就是我們今天要研究的第一個主角：<strong class="highlight">連結（Link）</strong>！
+                        </p>
+                        
+                        <p>
+                            想像一下，網際網路就像一個超級巨大的圖書館，而每個網頁就是一本書。連結就像是書裡面寫著「如果你想知道更多，請翻到第 X 頁」或「請參考另一本書《XXX》」的標註。
+                        </p>
+                        
+                        <p>
+                            但這個「圖書館」有個超酷的功能：你不需要真的走到另一個書架，也不需要翻頁——<strong class="text-red-600 dark:text-red-400">只要點一下，瞬間就到了</strong>！這就是數位世界的魔法。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- URL Structure -->
+                <div id="url-structure" class="mb-12">
+                    <h3 class="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">🧩 URL 的秘密結構</h3>
+                    
+                    <div class="prose prose-lg dark:prose-invert max-w-none mb-8">
+                        <p>
+                            一個完整的 <strong class="highlight">URL（Uniform Resource Locator）</strong>——也就是「網址」，就像是網路世界的門牌地址！
+                        </p>
+                    </div>
+
+                    <!-- Interactive URL Breakdown -->
+                    <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 mb-8 border border-gray-200 dark:border-gray-700">
+                        <h4 class="font-semibold text-lg mb-4">互動式 URL 拆解</h4>
+                        
+                        <div class="mb-6">
+                            <input type="text" id="url-input" value="https://www.wikipedia.org/wiki/Graph_theory" 
+                                   class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 font-mono text-sm focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark outline-none"
+                                   oninput="parseURL()">
+                        </div>
+                        
+                        <div id="url-breakdown" class="space-y-4">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-6 mb-8">
+                        <div class="interactive-box bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800">
+                            <div class="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">[1] 協定 Protocol</div>
+                            <div class="font-mono text-lg font-bold text-blue-600 dark:text-blue-400 mb-3">https://</div>
+                            <p class="text-sm text-gray-700 dark:text-gray-300">規定「怎麼傳資料」，就像郵局規定你要用「平信」還是「掛號」</p>
+                        </div>
+                        
+                        <div class="interactive-box bg-purple-50 dark:bg-purple-900/20 p-6 rounded-xl border-2 border-purple-200 dark:border-purple-800">
+                            <div class="text-sm font-semibold text-purple-900 dark:text-purple-300 mb-2">[2] 域名 Domain</div>
+                            <div class="font-mono text-lg font-bold text-purple-600 dark:text-purple-400 mb-3">www.wikipedia.org</div>
+                            <p class="text-sm text-gray-700 dark:text-gray-300">「誰」在提供這個網頁，就像你家的門牌號碼</p>
+                        </div>
+                        
+                        <div class="interactive-box bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border-2 border-green-200 dark:border-green-800">
+                            <div class="text-sm font-semibold text-green-900 dark:text-green-300 mb-2">[3] 路徑 Path</div>
+                            <div class="font-mono text-lg font-bold text-green-600 dark:text-green-400 mb-3">/wiki/Graph_theory</div>
+                            <p class="text-sm text-gray-700 dark:text-gray-300">你要的「具體是哪個東西」，就像房間號碼</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Part 2: Graph -->
+            <section id="part2" class="mb-16">
+                <h2 class="text-3xl font-bold mb-8 text-gray-900 dark:text-white border-b-2 border-primary-light dark:border-primary-dark pb-3">Part 2: Graph 圖論（≤ 40 分鐘）</h2>
+                
+                <!-- Game 2: One-stroke -->
+                <div id="game2" class="mb-12">
+                    <h3 class="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">🎮 遊戲 2: 一筆畫挑戰賽</h3>
+                    
+                    <div class="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl p-6 mb-6 border border-purple-200 dark:border-purple-800">
+                        <h4 class="font-semibold text-lg mb-4 text-gray-900 dark:text-white">互動式一筆畫遊戲</h4>
+                        
+                        <canvas id="one-stroke-canvas" width="600" height="400" 
+                                class="w-full border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 cursor-crosshair mb-4">
+                        </canvas>
+                        
+                        <div class="flex gap-4 mb-4 flex-wrap">
+                            <button onclick="resetCanvas()" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                                重置
+                            </button>
+                            <button onclick="loadTriangle()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                                三角形
+                            </button>
+                            <button onclick="loadSquare()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                正方形
+                            </button>
+                            <button onclick="loadComplex()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                                複雜圖形
+                            </button>
+                        </div>
+                        
+                        <div id="stroke-status" class="text-sm p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                            點擊頂點開始畫圖！每條邊只能經過一次，最後回到起點。
+                        </div>
+                    </div>
+                    
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h4 class="text-xl font-semibold mb-4">一筆畫的秘密（歐拉定理）</h4>
+                        <div class="bg-orange-50 dark:bg-orange-900/20 border-l-4 border-orange-500 p-4 rounded-r-lg">
+                            <p class="font-semibold text-orange-900 dark:text-orange-300">
+                                一個圖可以一筆畫完（回到起點）的充要條件是：<span class="highlight">所有頂點的分支度都是偶數</span>！
+                            </p>
+                        </div>
+                        <p class="mt-4">
+                            為什麼？想像你走進一個點，就要走出來——進一條、出一條，所以線的數量必須是<strong>成對的</strong>，也就是偶數！
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Graph Introduction -->
+                <div id="graph-intro" class="mb-12">
+                    <h3 class="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">🌐 什麼是「圖」？</h3>
+                    
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <p>
+                            你們剛才玩的那些「點點連連」的東西，在數學裡有個專門的名字，叫做<strong class="highlight text-2xl">「圖（Graph）」</strong>！
+                        </p>
+                        
+                        <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 rounded-lg my-6">
+                            <p class="font-semibold text-red-900 dark:text-red-300">
+                                ⚠️ 注意！這裡的「圖」不是指照片或圖片，而是數學家用來描述「連結關係」的一種工具！
+                            </p>
+                        </div>
+
+                        <p>一個圖（Graph）由兩個部分組成：</p>
+                        <ul>
+                            <li><strong class="text-red-600 dark:text-red-400">頂點（Vertex / Node）</strong> → 就是那些「點」</li>
+                            <li><strong class="text-red-600 dark:text-red-400">邊（Edge）</strong> → 就是連接點的「線」</li>
+                        </ul>
+
+                        <h4 class="text-xl font-semibold mt-8 mb-4">生活中的「圖」例子</h4>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800">
+                            <div class="text-3xl mb-3">👥</div>
+                            <h5 class="font-semibold mb-2">社群網路</h5>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">頂點 = 每個人<br>邊 = 好友關係</p>
+                        </div>
+                        
+                        <div class="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800">
+                            <div class="text-3xl mb-3">🚇</div>
+                            <h5 class="font-semibold mb-2">交通網路</h5>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">頂點 = 車站<br>邊 = 路線</p>
+                        </div>
+                        
+                        <div class="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-xl border border-purple-200 dark:border-purple-800">
+                            <div class="text-3xl mb-3">🌐</div>
+                            <h5 class="font-semibold mb-2">網際網路</h5>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">頂點 = 網頁<br>邊 = 超連結</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MST Section -->
+                <div id="mst" class="mb-12">
+                    <h3 class="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">🏗️ 最小生成樹（MST）</h3>
+                    
+                    <div class="prose prose-lg dark:prose-invert max-w-none mb-8">
+                        <p>
+                            想像你是一個網路公司的工程師，你要在幾個城市之間鋪設光纖電纜。但是<strong class="text-red-600 dark:text-red-400">鋪電纜很貴</strong>，你的老闆說：「要<strong>花最少的錢</strong>，但要讓<strong>所有城市都能互相通訊</strong>！」
+                        </p>
+                        
+                        <p>這時候，你就需要找出一個<span class="highlight font-semibold">「最小生成樹」</span>！</p>
+                    </div>
+
+                    <!-- Interactive MST Visualization -->
+                    <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 mb-8 border border-gray-200 dark:border-gray-700">
+                        <h4 class="font-semibold text-lg mb-4">互動式 MST 演算法</h4>
+                        
+                        <canvas id="mst-canvas" width="600" height="400" 
+                                class="w-full border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 mb-4">
+                        </canvas>
+                        
+                        <div class="flex gap-4 mb-4 flex-wrap">
+                            <button onclick="runMSTStep()" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
+                                下一步
+                            </button>
+                            <button onclick="resetMST()" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                                重置
+                            </button>
+                        </div>
+                        
+                        <div id="mst-status" class="text-sm p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                            點擊「下一步」觀看 Kruskal 演算法執行過程
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Part 3: Merge -->
+            <section id="part3" class="mb-16">
+                <h2 class="text-3xl font-bold mb-8 text-gray-900 dark:text-white border-b-2 border-primary-light dark:border-primary-dark pb-3">Part 3: Merge [URL + Graph]（≤ 20 分鐘）</h2>
+                
+                <div class="prose prose-lg dark:prose-invert max-w-none">
+                    <h3 class="text-2xl font-semibold mb-6">🎭 揭曉時刻：一切都是圖！</h3>
+                    
+                    <p class="text-xl font-semibold">
+                        還記得一開始我們玩的<strong class="text-primary-light dark:text-primary-dark">「維基百科連結遊戲」</strong>嗎？那個遊戲<span class="highlight text-2xl">其實就是在一個「圖」上面走路</span>！
+                    </p>
+
+                    <div class="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 p-8 rounded-xl my-8 border-2 border-orange-300 dark:border-orange-700">
+                        <h4 class="text-2xl font-bold mb-4 text-orange-900 dark:text-orange-300">關鍵發現</h4>
+                        <p class="text-xl font-semibold text-orange-900 dark:text-orange-200">
+                            網際網路 = 一個巨大的「有向圖」（Directed Graph）
+                        </p>
+                        <ul class="mt-4 space-y-2">
+                            <li><strong>頂點（Vertex）</strong> = 每一個網頁（URL）</li>
+                            <li><strong>邊（Edge）</strong> = 網頁之間的超連結（Link）</li>
+                        </ul>
+                    </div>
+
+                    <p>
+                        如果網頁 A 有一個連結指向網頁 B，<strong class="text-red-600 dark:text-red-400">不代表</strong> B 也有連結指向 A。就像<strong>單行道</strong>——你可以從 A 走到 B，但不一定能從 B 走回 A！
+                    </p>
+
+                    <h4 class="text-xl font-semibold mt-8 mb-4">為什麼這個概念這麼重要？</h4>
+
+                    <div class="space-y-6">
+                        <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800">
+                            <h5 class="font-semibold text-lg mb-2">1. Google 的 PageRank 演算法</h5>
+                            <p>Google 會計算「有多少網頁<strong>指向</strong>某個網頁」，來判斷這個網頁的「重要性」。越多網頁指向你 = 你越重要 = 搜尋排名越前面！</p>
+                        </div>
+
+                        <div class="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800">
+                            <h5 class="font-semibold text-lg mb-2">2. 推薦系統（YouTube、Netflix）</h5>
+                            <p>「看過影片 A 的人，也看了影片 B、C、D……」這些連結關係也是一個「圖」！</p>
+                        </div>
+
+                        <div class="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-xl border border-purple-200 dark:border-purple-800">
+                            <h5 class="font-semibold text-lg mb-2">3. 社群網路分析</h5>
+                            <p>「你可能認識的人」= 你的朋友的朋友（圖的鄰居的鄰居）</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-8 rounded-xl my-12 border-2 border-blue-300 dark:border-blue-700">
+                        <h3 class="text-2xl font-bold mb-6 text-center">🎉 總結：今天學到了什麼？</h3>
+                        
+                        <ul class="space-y-3 text-lg">
+                            <li>✓ <strong>URL</strong> = 協定 + 域名 + 路徑，是網路世界的門牌地址</li>
+                            <li>✓ <strong>連結（Link）</strong> 讓我們在網頁之間跳躍</li>
+                            <li>✓ <strong>圖（Graph）</strong> = 頂點 + 邊，用來描述連結關係</li>
+                            <li>✓ <strong>樹（Tree）</strong> = 沒有迴圈的圖</li>
+                            <li>✓ <strong>最小生成樹（MST）</strong>：用最少成本連接所有頂點</li>
+                            <li>✓ <strong class="text-red-600 dark:text-red-400">網際網路 = 有向圖</strong>，網頁是頂點，連結是有方向的邊</li>
+                        </ul>
+                    </div>
+
+                    <div class="text-center my-12">
+                        <p class="text-2xl font-semibold mb-4">恭喜你完成今天的課程！</p>
+                        <p class="text-xl text-gray-600 dark:text-gray-300 mb-2">希望今天的課讓你發現：</p>
+                        <p class="text-xl">數學不只是教科書上的符號，</p>
+                        <p class="text-xl font-bold text-primary-light dark:text-primary-dark">而是真實世界背後的語言！</p>
+                    </div>
+
+                    <div class="text-center text-lg italic text-gray-500 dark:text-gray-400 my-8">
+                        Keep exploring. Keep questioning. Keep coding.
+                    </div>
+
+                    <div class="text-center text-gray-400 dark:text-gray-600">
+                        —— The End ——
+                    </div>
+                </div>
+            </section>
+
+            <!-- Highlight Feature Info -->
+            <div class="fixed bottom-6 right-6 bg-yellow-100 dark:bg-yellow-900 px-4 py-3 rounded-lg shadow-lg border border-yellow-300 dark:border-yellow-700 text-sm z-40">
+                <p class="font-medium mb-1">💡 重點標記功能</p>
+                <p class="text-xs text-gray-700 dark:text-gray-300">選取文字即可標記重點！</p>
+            </div>
+        </main>
     </div>
 
     <script>
-        const ROWS = 4;
-        const COLS = 8;
-        
-        const PIECE_TYPES = {
-            red: [
-                { name: '帥', rank: 7, count: 1 },
-                { name: '仕', rank: 6, count: 2 },
-                { name: '相', rank: 5, count: 2 },
-                { name: '俥', rank: 4, count: 2 },
-                { name: '傌', rank: 3, count: 2 },
-                { name: '砲', rank: 2, count: 2 },
-                { name: '兵', rank: 1, count: 5 }
-            ],
-            black: [
-                { name: '將', rank: 7, count: 1 },
-                { name: '士', rank: 6, count: 2 },
-                { name: '象', rank: 5, count: 2 },
-                { name: '車', rank: 4, count: 2 },
-                { name: '馬', rank: 3, count: 2 },
-                { name: '包', rank: 2, count: 2 },
-                { name: '卒', rank: 1, count: 5 }
-            ]
-        };
+        // Wait for DOM to load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme Toggle
+            const themeToggle = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+            
+            // Check for saved theme preference or default to light mode
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            html.classList.toggle('dark', savedTheme === 'dark');
+            
+            if (themeToggle) {
+                themeToggle.addEventListener('click', () => {
+                    html.classList.toggle('dark');
+                    const newTheme = html.classList.contains('dark') ? 'dark' : 'light';
+                    localStorage.setItem('theme', newTheme);
+                });
+            }
 
-        let boardState = [];
-        let selectedIndex = -1;
-        let currentPlayer = 1;
-        let playerColors = { 1: null, 2: null };
-        let isGameOver = false;
+            // Mobile TOC Toggle
+            const tocToggle = document.getElementById('toc-toggle');
+            const tocSidebar = document.getElementById('toc-sidebar');
+            
+            if (tocToggle && tocSidebar) {
+                tocToggle.addEventListener('click', () => {
+                    tocSidebar.classList.toggle('hidden');
+                });
+            }
 
-        // 連吃模式變數
-        let isComboMode = false;
-        let comboPieceIndex = -1;
-
-        const boardEl = document.getElementById('board');
-        const statusEl = document.getElementById('status');
-        const colorEl = document.getElementById('player-color');
-        const comboMsgEl = document.getElementById('combo-msg');
-        const btnPass = document.getElementById('btnPass');
-
-        function initGame() {
-            let pieces = [];
-            ['red', 'black'].forEach(color => {
-                PIECE_TYPES[color].forEach(type => {
-                    for(let i=0; i<type.count; i++) {
-                        pieces.push({
-                            color: color,
-                            name: type.name,
-                            rank: type.rank,
-                            revealed: false
-                        });
+            // Smooth scroll for navigation
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        // Close mobile menu
+                        if (window.innerWidth < 768 && tocSidebar) {
+                            tocSidebar.classList.add('hidden');
+                        }
                     }
                 });
             });
 
-            // 洗牌
-            for (let i = pieces.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [pieces[i], pieces[j]] = [pieces[j], pieces[i]];
-            }
-
-            boardState = pieces;
-            resetTurnState();
-            currentPlayer = 1;
-            playerColors = { 1: null, 2: null };
-            isGameOver = false;
-
-            renderBoard();
-            updateStatus();
-        }
-
-        function resetTurnState() {
-            selectedIndex = -1;
-            isComboMode = false;
-            comboPieceIndex = -1;
-            btnPass.style.display = 'none';
-            comboMsgEl.innerText = '';
-        }
-
-        function renderBoard() {
-            boardEl.innerHTML = '';
-            boardState.forEach((piece, index) => {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                cell.dataset.index = index;
-                cell.onclick = () => handleCellClick(index);
-
-                if (piece) {
-                    const pieceEl = document.createElement('div');
-                    pieceEl.className = `piece ${piece.revealed ? piece.color : 'hidden'}`;
+            // Highlight Selection Feature
+            let highlights = JSON.parse(localStorage.getItem('highlights') || '[]');
+            
+            document.addEventListener('mouseup', () => {
+                const selection = window.getSelection();
+                const selectedText = selection.toString().trim();
+                
+                if (selectedText.length > 3 && selectedText.length < 500) {
+                    const range = selection.getRangeAt(0);
+                    const span = document.createElement('span');
+                    span.className = 'highlight';
                     
-                    if (index === selectedIndex) {
-                        pieceEl.classList.add('selected');
+                    try {
+                        range.surroundContents(span);
+                        
+                        // Save to localStorage
+                        highlights.push(selectedText);
+                        localStorage.setItem('highlights', JSON.stringify(highlights));
+                    } catch (e) {
+                        // If selection spans multiple elements, just highlight inline
+                        console.log('Could not highlight:', e);
                     }
-                    // 連吃時，除了主角外其他變暗
-                    if (isComboMode && index !== selectedIndex) {
-                        pieceEl.classList.add('dimmed');
-                    }
-
-                    pieceEl.innerText = piece.name;
-                    cell.appendChild(pieceEl);
                 }
-                boardEl.appendChild(cell);
+            });
+
+            // Initialize canvas games
+            if (document.getElementById('one-stroke-canvas')) {
+                loadTriangle();
+            }
+            
+            if (document.getElementById('mst-canvas')) {
+                drawMST();
+            }
+            
+            // Initialize URL parser
+            parseURL();
+        });
+
+        // URL Parser
+        function parseURL() {
+            const urlInput = document.getElementById('url-input');
+            const breakdown = document.getElementById('url-breakdown');
+            
+            if (!urlInput || !breakdown) return;
+            
+            try {
+                const url = new URL(urlInput.value);
+                
+                breakdown.innerHTML = `
+                    <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                        <div class="font-semibold text-sm mb-1">協定 (Protocol)</div>
+                        <div class="font-mono text-lg font-bold text-blue-600 dark:text-blue-400">${url.protocol}</div>
+                    </div>
+                    <div class="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                        <div class="font-semibold text-sm mb-1">域名 (Domain)</div>
+                        <div class="font-mono text-lg font-bold text-purple-600 dark:text-purple-400">${url.hostname}</div>
+                    </div>
+                    <div class="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                        <div class="font-semibold text-sm mb-1">路徑 (Path)</div>
+                        <div class="font-mono text-lg font-bold text-green-600 dark:text-green-400">${url.pathname || '/'}</div>
+                    </div>
+                    ${url.search ? `
+                    <div class="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
+                        <div class="font-semibold text-sm mb-1">查詢參數 (Query)</div>
+                        <div class="font-mono text-lg font-bold text-orange-600 dark:text-orange-400">${url.search}</div>
+                    </div>
+                    ` : ''}
+                `;
+            } catch (e) {
+                breakdown.innerHTML = '<div class="text-red-600 dark:text-red-400">請輸入有效的 URL</div>';
+            }
+        }
+
+        // Wiki Game
+        let wikiClicks = 0;
+        let wikiPath = [];
+        
+        function startWikiGame() {
+            const start = document.getElementById('wiki-start').value;
+            const end = document.getElementById('wiki-end').value;
+            
+            wikiClicks = 0;
+            wikiPath = [start];
+            
+            updateWikiDisplay();
+            
+            alert(`開始挑戰！從「${start}」到「${end}」\n（這是模擬版，實際遊戲請在維基百科上進行）`);
+        }
+        
+        function updateWikiDisplay() {
+            const clicksEl = document.getElementById('wiki-clicks');
+            const pathDiv = document.getElementById('wiki-path');
+            const pathContent = document.getElementById('wiki-path-content');
+            
+            if (clicksEl) {
+                clicksEl.innerHTML = `點擊次數: <span class="text-primary-light dark:text-primary-dark">${wikiClicks}</span>`;
+            }
+            
+            if (wikiPath.length > 0 && pathDiv && pathContent) {
+                pathDiv.classList.remove('hidden');
+                pathContent.textContent = wikiPath.join(' → ');
+            }
+        }
+
+        // One-stroke Drawing Game
+        let canvas, ctx;
+        let vertices = [];
+        let edges = [];
+        let currentPath = [];
+        let isDrawing = false;
+        let startVertex = null;
+
+        function initCanvas() {
+            canvas = document.getElementById('one-stroke-canvas');
+            if (!canvas) return;
+            ctx = canvas.getContext('2d');
+            
+            canvas.addEventListener('click', handleCanvasClick);
+        }
+
+        function resetCanvas() {
+            if (!ctx || !canvas) {
+                initCanvas();
+            }
+            if (!ctx) return;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            currentPath = [];
+            isDrawing = false;
+            startVertex = null;
+            drawGraph();
+            updateStrokeStatus('點擊頂點開始畫圖！');
+        }
+
+        function drawGraph() {
+            if (!ctx || !canvas) return;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const isDark = document.documentElement.classList.contains('dark');
+            
+            // Draw edges
+            ctx.strokeStyle = isDark ? '#6B7280' : '#9CA3AF';
+            ctx.lineWidth = 2;
+            edges.forEach(edge => {
+                ctx.beginPath();
+                ctx.moveTo(vertices[edge.from].x, vertices[edge.from].y);
+                ctx.lineTo(vertices[edge.to].x, vertices[edge.to].y);
+                ctx.stroke();
+            });
+            
+            // Draw current path
+            if (currentPath.length > 0) {
+                ctx.strokeStyle = '#3B82F6';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(vertices[currentPath[0]].x, vertices[currentPath[0]].y);
+                for (let i = 1; i < currentPath.length; i++) {
+                    ctx.lineTo(vertices[currentPath[i]].x, vertices[currentPath[i]].y);
+                }
+                ctx.stroke();
+            }
+            
+            // Draw vertices
+            vertices.forEach((v, i) => {
+                ctx.beginPath();
+                ctx.arc(v.x, v.y, 15, 0, Math.PI * 2);
+                ctx.fillStyle = currentPath.includes(i) ? '#3B82F6' : '#10B981';
+                ctx.fill();
+                ctx.strokeStyle = '#FFFFFF';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                
+                // Label
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = 'bold 14px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(String.fromCharCode(65 + i), v.x, v.y);
             });
         }
 
-        function handleCellClick(index) {
-            if (isGameOver) return;
+        function loadTriangle() {
+            if (!ctx) initCanvas();
+            
+            vertices = [
+                {x: 300, y: 100},
+                {x: 150, y: 300},
+                {x: 450, y: 300}
+            ];
+            edges = [
+                {from: 0, to: 1},
+                {from: 1, to: 2},
+                {from: 2, to: 0}
+            ];
+            resetCanvas();
+        }
 
-            const targetPiece = boardState[index];
+        function loadSquare() {
+            if (!ctx) initCanvas();
+            
+            vertices = [
+                {x: 200, y: 150},
+                {x: 400, y: 150},
+                {x: 400, y: 300},
+                {x: 200, y: 300}
+            ];
+            edges = [
+                {from: 0, to: 1},
+                {from: 1, to: 2},
+                {from: 2, to: 3},
+                {from: 3, to: 0}
+            ];
+            resetCanvas();
+        }
 
-            // 1. 連吃模式處理
-            if (isComboMode) {
-                if (index === comboPieceIndex) return; // 點自己
+        function loadComplex() {
+            if (!ctx) initCanvas();
+            
+            vertices = [
+                {x: 300, y: 100},
+                {x: 150, y: 250},
+                {x: 300, y: 350},
+                {x: 450, y: 250}
+            ];
+            edges = [
+                {from: 0, to: 1},
+                {from: 0, to: 2},
+                {from: 0, to: 3},
+                {from: 1, to: 2},
+                {from: 1, to: 3},
+                {from: 2, to: 3}
+            ];
+            resetCanvas();
+        }
+
+        function updateStrokeStatus(message) {
+            const statusEl = document.getElementById('stroke-status');
+            if (statusEl) {
+                statusEl.textContent = message;
+            }
+        }
+
+        function handleCanvasClick(e) {
+            if (!canvas) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
+            
+            // Find clicked vertex
+            const clickedVertex = vertices.findIndex(v => 
+                Math.sqrt((v.x - x) ** 2 + (v.y - y) ** 2) < 20
+            );
+            
+            if (clickedVertex !== -1) {
+                if (!isDrawing) {
+                    startVertex = clickedVertex;
+                    currentPath = [clickedVertex];
+                    isDrawing = true;
+                    updateStrokeStatus(`從頂點 ${String.fromCharCode(65 + clickedVertex)} 開始！`);
+                } else {
+                    const lastVertex = currentPath[currentPath.length - 1];
+                    const edgeExists = edges.some(e => 
+                        (e.from === lastVertex && e.to === clickedVertex) ||
+                        (e.from === clickedVertex && e.to === lastVertex)
+                    );
+                    
+                    if (edgeExists && !currentPath.includes(clickedVertex)) {
+                        currentPath.push(clickedVertex);
+                        
+                        if (clickedVertex === startVertex && currentPath.length > 2) {
+                            updateStrokeStatus('🎉 成功！你完成了一筆畫！');
+                        } else {
+                            updateStrokeStatus(`目前路徑: ${currentPath.map(i => String.fromCharCode(65 + i)).join(' → ')}`);
+                        }
+                    } else if (currentPath.includes(clickedVertex)) {
+                        updateStrokeStatus('❌ 這個頂點已經走過了！');
+                    } else {
+                        updateStrokeStatus('❌ 這兩個頂點之間沒有邊！');
+                    }
+                }
+                drawGraph();
+            }
+        }
+
+        // MST Visualization
+        let mstCanvas, mstCtx;
+        
+        let mstVertices = [
+            {x: 150, y: 200, label: 'A'},
+            {x: 300, y: 100, label: 'B'},
+            {x: 450, y: 200, label: 'C'},
+            {x: 300, y: 300, label: 'D'}
+        ];
+        
+        let mstEdges = [
+            {from: 0, to: 1, weight: 1, selected: false},
+            {from: 0, to: 2, weight: 3, selected: false},
+            {from: 1, to: 2, weight: 2, selected: false},
+            {from: 1, to: 3, weight: 4, selected: false},
+            {from: 2, to: 3, weight: 5, selected: false}
+        ];
+        
+        let mstStep = 0;
+        let mstSortedEdges = [...mstEdges].sort((a, b) => a.weight - b.weight);
+        
+        function initMSTCanvas() {
+            mstCanvas = document.getElementById('mst-canvas');
+            if (!mstCanvas) return;
+            mstCtx = mstCanvas.getContext('2d');
+        }
+        
+        function drawMST() {
+            if (!mstCtx || !mstCanvas) {
+                initMSTCanvas();
+            }
+            if (!mstCtx) return;
+            
+            mstCtx.clearRect(0, 0, mstCanvas.width, mstCanvas.height);
+            
+            // Draw all edges
+            mstEdges.forEach(edge => {
+                mstCtx.beginPath();
+                mstCtx.moveTo(mstVertices[edge.from].x, mstVertices[edge.from].y);
+                mstCtx.lineTo(mstVertices[edge.to].x, mstVertices[edge.to].y);
+                mstCtx.strokeStyle = edge.selected ? '#10B981' : '#D1D5DB';
+                mstCtx.lineWidth = edge.selected ? 4 : 2;
+                mstCtx.stroke();
                 
-                // 必須是吃子動作才有效，移動到空格視為結束
-                if (!targetPiece || (targetPiece && targetPiece !== boardState[comboPieceIndex])) {
-                    attemptMove(comboPieceIndex, index);
-                }
-                return;
-            }
-
-            // 2. 正常回合
-            // A. 翻牌 (或砲盲吃)
-            if (targetPiece && !targetPiece.revealed) {
-                // 如果已選中棋子，嘗試盲吃
-                if (selectedIndex !== -1) {
-                    attemptMove(selectedIndex, index);
-                    return;
-                }
-                flipPiece(index);
-                return;
-            }
-
-            // B. 選棋
-            if (targetPiece && targetPiece.revealed) {
-                if (playerColors[currentPlayer] && targetPiece.color !== playerColors[currentPlayer]) {
-                    // 點敵方 -> 攻擊
-                    if (selectedIndex !== -1) attemptMove(selectedIndex, index);
-                    return;
-                }
-                // 點我方 -> 選取
-                selectedIndex = index;
-                renderBoard();
-                return;
-            }
-
-            // C. 移動到空格
-            if (!targetPiece && selectedIndex !== -1) {
-                attemptMove(selectedIndex, index);
-            }
-        }
-
-        function flipPiece(index) {
-            const piece = boardState[index];
-            piece.revealed = true;
-            if (playerColors[1] === null) {
-                playerColors[currentPlayer] = piece.color;
-                playerColors[currentPlayer === 1 ? 2 : 1] = (piece.color === 'red' ? 'black' : 'red');
-            }
-            endTurn();
-        }
-
-        function attemptMove(fromIndex, toIndex) {
-            const fromPiece = boardState[fromIndex];
-            const toPiece = boardState[toIndex];
+                // Draw weight
+                const midX = (mstVertices[edge.from].x + mstVertices[edge.to].x) / 2;
+                const midY = (mstVertices[edge.from].y + mstVertices[edge.to].y) / 2;
+                mstCtx.fillStyle = edge.selected ? '#10B981' : '#6B7280';
+                mstCtx.font = 'bold 16px sans-serif';
+                mstCtx.textAlign = 'center';
+                mstCtx.fillText(edge.weight, midX, midY - 10);
+            });
             
-            // 判斷是否為砲吃子 (目標是棋子，無論明暗)
-            const isCannonAttack = (fromPiece.rank === 2 && toPiece !== null);
-
-            if (isCannonAttack) {
-                // 砲吃子檢查：必須隔一顆，距離不限
-                if (!isValidCannonJump(fromIndex, toIndex)) {
-                    if(!isComboMode) { selectedIndex = -1; renderBoard(); }
-                    return; // 無效的砲擊
-                }
-            } else {
-                // 一般移動或吃子：必須相鄰
-                if (!isAdjacent(fromIndex, toIndex)) {
-                     if(!isComboMode) { selectedIndex = -1; renderBoard(); }
-                     return;
-                }
-            }
-
-            let isCapture = false;
-            if (toPiece) {
-                // 吃子階級判定 (盲吃無條件，明棋比大小)
-                if (toPiece.revealed) {
-                    if (!canCapture(fromPiece, toPiece)) {
-                        alert("階級不符，無法吃子！");
-                        if(!isComboMode) { selectedIndex = -1; renderBoard(); }
-                        return;
-                    }
-                }
-                isCapture = true;
-            } else {
-                // 移動到空格 (砲如果不吃子只能走一格)
-                if (fromPiece.rank === 2 && !isAdjacent(fromIndex, toIndex)) {
-                     if(!isComboMode) { selectedIndex = -1; renderBoard(); }
-                     return;
-                }
-            }
-
-            // 執行移動/吃子
-            boardState[toIndex] = fromPiece;
-            boardState[fromIndex] = null;
-
-            if (isCapture) {
-                // 連吃機制啟動
-                isComboMode = true;
-                comboPieceIndex = toIndex;
-                selectedIndex = toIndex;
+            // Draw vertices
+            mstVertices.forEach(v => {
+                mstCtx.beginPath();
+                mstCtx.arc(v.x, v.y, 20, 0, Math.PI * 2);
+                mstCtx.fillStyle = '#3B82F6';
+                mstCtx.fill();
+                mstCtx.strokeStyle = '#FFFFFF';
+                mstCtx.lineWidth = 3;
+                mstCtx.stroke();
                 
-                checkWin();
-                if(isGameOver) return;
-
-                comboMsgEl.innerText = "🔥 連吃中！繼續吃或換人";
-                btnPass.style.display = 'block';
-                renderBoard();
-            } else {
-                // 純移動 -> 結束回合
-                endTurn();
-            }
+                mstCtx.fillStyle = '#FFFFFF';
+                mstCtx.font = 'bold 16px sans-serif';
+                mstCtx.textAlign = 'center';
+                mstCtx.textBaseline = 'middle';
+                mstCtx.fillText(v.label, v.x, v.y);
+            });
         }
-
-        function forceEndTurn() {
-            if (isComboMode) endTurn();
-        }
-
-        function isAdjacent(i1, i2) {
-            const r1 = Math.floor(i1 / COLS), c1 = i1 % COLS;
-            const r2 = Math.floor(i2 / COLS), c2 = i2 % COLS;
-            return (Math.abs(r1 - r2) + Math.abs(c1 - c2)) === 1;
-        }
-
-        function canCapture(attacker, defender) {
-            if (attacker.rank === 2) return true; // 砲可以吃任何階級
-            if (attacker.rank === 1 && defender.rank === 7) return true; // 卒吃將
-            if (attacker.rank === 7 && defender.rank === 1) return false; // 將不可吃卒
-            return attacker.rank >= defender.rank;
-        }
-
-        // --- 核心修改：砲的跳吃邏輯 (距離不限，隔一顆) ---
-        function isValidCannonJump(fromIdx, toIdx) {
-            const r1 = Math.floor(fromIdx / COLS), c1 = fromIdx % COLS;
-            const r2 = Math.floor(toIdx / COLS), c2 = toIdx % COLS;
-
-            // 必須同行或同列
-            if (r1 !== r2 && c1 !== c2) return false;
-
-            let obstacles = 0;
-
-            if (r1 === r2) { // 同一列 (左右跳)
-                const minC = Math.min(c1, c2), maxC = Math.max(c1, c2);
-                // 檢查起點和終點之間所有的格子
-                for (let c = minC + 1; c < maxC; c++) {
-                    const idx = r1 * COLS + c;
-                    if (boardState[idx] !== null) {
-                        obstacles++;
-                    }
-                }
-            } else { // 同一行 (上下跳)
-                const minR = Math.min(r1, r2), maxR = Math.max(r1, r2);
-                // 檢查起點和終點之間所有的格子
-                for (let r = minR + 1; r < maxR; r++) {
-                    const idx = r * COLS + c1;
-                    if (boardState[idx] !== null) {
-                        obstacles++;
-                    }
-                }
-            }
-
-            // 規則重點：中間必須「正好只有一顆」棋子 (空格不計)
-            // 這樣就達成了「距離不限，隔一顆吃」的效果
-            return obstacles === 1;
-        }
-
-        function endTurn() {
-            resetTurnState();
-            currentPlayer = currentPlayer === 1 ? 2 : 1;
-            renderBoard();
-            updateStatus();
-        }
-
-        function updateStatus() {
-            let colorText = "";
-            if (playerColors[1]) {
-                const p1Color = playerColors[1] === 'red' ? '<span style="color:#ff6b6b">紅方</span>' : '<span style="color:#aaa">黑方</span>';
-                const p2Color = playerColors[2] === 'red' ? '<span style="color:#ff6b6b">紅方</span>' : '<span style="color:#aaa">黑方</span>';
-                colorText = `P1: ${p1Color} | P2: ${p2Color}`;
-            } else {
-                colorText = "翻開第一顆棋子決定顏色";
-            }
-            
-            const turnColor = currentPlayer === 1 ? playerColors[1] : playerColors[2];
-            let turnText = `輪到：玩家 ${currentPlayer}`;
-            if (turnColor) {
-                turnText += (turnColor === 'red' ? " (紅)" : " (黑)");
-            }
-
-            statusEl.innerHTML = turnText;
-            colorEl.innerHTML = colorText;
-        }
-
-        function checkWin() {
-            const redPieces = boardState.filter(p => p && p.color === 'red');
-            const blackPieces = boardState.filter(p => p && p.color === 'black');
-            
-            if (playerColors[1] !== null) {
-                if (redPieces.length === 0) {
-                    alert("黑方獲勝！");
-                    isGameOver = true;
-                } else if (blackPieces.length === 0) {
-                    alert("紅方獲勝！");
-                    isGameOver = true;
+        
+        function runMSTStep() {
+            if (mstStep < mstSortedEdges.length) {
+                const edge = mstSortedEdges[mstStep];
+                edge.selected = true;
+                
+                const fromLabel = mstVertices[edge.from].label;
+                const toLabel = mstVertices[edge.to].label;
+                
+                updateMSTStatus(`步驟 ${mstStep + 1}: 加入邊 ${fromLabel}-${toLabel} (權重: ${edge.weight})`);
+                
+                mstStep++;
+                drawMST();
+                
+                if (mstStep === mstSortedEdges.length) {
+                    setTimeout(() => {
+                        const totalWeight = mstSortedEdges.filter(e => e.selected).reduce((sum, e) => sum + e.weight, 0);
+                        updateMSTStatus(`✅ 完成！最小生成樹總權重: ${totalWeight}`);
+                    }, 500);
                 }
             }
         }
-
-        initGame();
-
+        
+        function resetMST() {
+            mstStep = 0;
+            mstEdges.forEach(e => e.selected = false);
+            drawMST();
+            updateMSTStatus('點擊「下一步」觀看 Kruskal 演算法執行過程');
+        }
+        
+        function updateMSTStatus(message) {
+            const statusEl = document.getElementById('mst-status');
+            if (statusEl) {
+                statusEl.textContent = message;
+            }
+        }
     </script>
 </body>
 </html>
