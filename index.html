@@ -1,969 +1,921 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>URL, Link & Graph - 互動式講義</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            light: '#2E75B6',
-                            dark: '#60A5FA'
-                        },
-                        accent: {
-                            light: '#548235',
-                            dark: '#86EFAC'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
-        
-        * {
-            font-family: 'IBM Plex Sans', system-ui, sans-serif;
-        }
-        
-        code, pre {
-            font-family: 'IBM Plex Mono', monospace;
-        }
-        
-        .highlight {
-            background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
-            background-repeat: no-repeat;
-            background-size: 100% 40%;
-            background-position: 0 85%;
-        }
-        
-        .dark .highlight {
-            background: linear-gradient(120deg, rgba(251, 191, 36, 0.3) 0%, rgba(251, 191, 36, 0.3) 100%);
-            background-repeat: no-repeat;
-            background-size: 100% 40%;
-            background-position: 0 85%;
-        }
-        
-        .smooth-scroll {
-            scroll-behavior: smooth;
-        }
-        
-        .section-link {
-            transition: all 0.2s;
-        }
-        
-        .section-link:hover {
-            transform: translateX(4px);
-        }
-        
-        .interactive-box {
-            transition: all 0.3s;
-        }
-        
-        .interactive-box:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-        }
-        
-        .dark .interactive-box:hover {
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .fade-in-up {
-            animation: fadeInUp 0.6s ease-out;
-        }
-        
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        
-        .dark ::-webkit-scrollbar-track {
-            background: #1e293b;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        
-        .dark ::-webkit-scrollbar-thumb {
-            background: #475569;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-        
-        .dark ::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
-        }
-    </style>
-</head>
-<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200 smooth-scroll">
-    
-    <!-- Header with Theme Toggle -->
-    <header class="fixed top-0 left-0 right-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <h1 class="text-xl font-semibold text-gray-900 dark:text-white">URL, Link & Graph</h1>
-            <div class="flex items-center gap-4">
-                <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-                    <svg id="theme-icon-light" class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                    </svg>
-                    <svg id="theme-icon-dark" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                    </svg>
-                </button>
-                <button id="toc-toggle" class="md:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </header>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>加強版極速排球 (進階人形版)</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<style>
+			body {
+				margin: 0;
+				overflow: hidden;
+				background-color: #1a202c;
+				color: white;
+				font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+			}
+			canvas {
+				display: block;
+				margin: 0 auto;
+				background: linear-gradient(to bottom, #1a365d, #2b6cb0);
+				box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+			}
+			#game-container {
+				position: relative;
+				width: 800px;
+				margin: 20px auto;
+			}
+			#ui-layer {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				pointer-events: none;
+			}
+			.score {
+				font-size: 4rem;
+				font-weight: bold;
+				position: absolute;
+				top: 20px;
+				opacity: 0.8;
+			}
+			#score-1p {
+				left: 50px;
+				color: #fbd38d;
+			}
+			#score-2p {
+				right: 50px;
+				color: #feb2b2;
+			}
+			#overlay {
+				pointer-events: auto;
+			}
+			.key-btn {
+				display: inline-block;
+				padding: 2px 8px;
+				background: #4a5568;
+				border-radius: 4px;
+				font-weight: bold;
+				font-family: monospace;
+			}
+		</style>
+	</head>
+	<body class="bg-gray-900 flex items-center justify-center min-h-screen">
+		<div id="game-container">
+			<canvas id="gameCanvas" width="800" height="500"></canvas>
 
-    <div class="flex pt-16">
-        <!-- Sidebar TOC -->
-        <aside id="toc-sidebar" class="hidden md:block fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 border-r border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 overflow-y-auto p-6">
-            <nav class="space-y-2">
-                <div class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">目錄</div>
-                <a href="#intro" class="section-link block px-3 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800">開場引言</a>
-                <div class="ml-2 space-y-1">
-                    <a href="#part1" class="section-link block px-3 py-2 rounded-lg text-sm font-semibold text-primary-light dark:text-primary-dark hover:bg-gray-200 dark:hover:bg-gray-800">Part 1: URL & Link</a>
-                    <a href="#game1" class="section-link block px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 ml-2">遊戲 1: Wiki 連結</a>
-                    <a href="#url-intro" class="section-link block px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 ml-2">連結簡介</a>
-                    <a href="#url-structure" class="section-link block px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 ml-2">URL 結構</a>
-                </div>
-                <div class="ml-2 space-y-1">
-                    <a href="#part2" class="section-link block px-3 py-2 rounded-lg text-sm font-semibold text-primary-light dark:text-primary-dark hover:bg-gray-200 dark:hover:bg-gray-800">Part 2: Graph</a>
-                    <a href="#game2" class="section-link block px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 ml-2">遊戲 2: 一筆畫</a>
-                    <a href="#graph-intro" class="section-link block px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 ml-2">圖論簡介</a>
-                    <a href="#mst" class="section-link block px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 ml-2">最小生成樹</a>
-                </div>
-                <a href="#part3" class="section-link block px-3 py-2 rounded-lg text-sm font-semibold text-primary-light dark:text-primary-dark hover:bg-gray-200 dark:hover:bg-gray-800 ml-2">Part 3: Merge</a>
-            </nav>
-        </aside>
+			<div id="ui-layer">
+				<div id="score-1p" class="score">0</div>
+				<div id="score-2p" class="score">0</div>
+				<div
+					id="status-text"
+					class="absolute w-full text-center top-4 text-2xl font-bold text-yellow-300 drop-shadow-md"
+				></div>
+			</div>
 
-        <!-- Main Content -->
-        <main class="flex-1 md:ml-64 px-4 sm:px-6 lg:px-8 py-8 max-w-4xl">
-            
-            <!-- Intro Section -->
-            <section id="intro" class="mb-16 fade-in-up">
-                <div class="prose prose-lg dark:prose-invert max-w-none">
-                    <h1 class="text-4xl font-bold mb-6 text-gray-900 dark:text-white">URL, Link & Graph</h1>
-                    <p class="text-xl text-gray-600 dark:text-gray-300 mb-8">從網頁連結到圖論的奇妙旅程</p>
-                    
-                    <div class="border-l-4 border-primary-light dark:border-primary-dark pl-6 py-4 my-8 bg-gray-50 dark:bg-gray-800/50 rounded-r-lg">
-                        <p class="italic text-gray-700 dark:text-gray-300 mb-3">
-                            "What we are looking for is how everything works. What makes everything work."
-                        </p>
-                        <p class="italic text-gray-700 dark:text-gray-300 mb-3">
-                            "The truth is so remarkable, so amazing, and I have this disease – like many other people who have studied far enough to begin to understand a little of how things work. They are fascinated by it."
-                        </p>
-                        <p class="italic text-gray-700 dark:text-gray-300">
-                            "But it is curiosity as to where we are, what we are."
-                        </p>
-                    </div>
+			<!-- 遊戲開始說明畫面 -->
+			<div
+				id="overlay"
+				class="absolute inset-0 bg-black bg-opacity-85 flex flex-col items-center justify-center rounded-lg overflow-y-auto py-8"
+			>
+				<h1 class="text-4xl font-bold mb-4 text-yellow-400 tracking-wider">
+					⚡ 加強版極速排球 ⚡
+				</h1>
 
-                    <p class="text-lg">
-                        你有沒有想過，當你在維基百科上點擊一個又一個連結時，你其實是在一個巨大的「圖」裡面遊走？或者當你用 Google Maps 找最短路線時，背後其實是數學家們幾百年前就想出來的「最小生成樹」在幫你計算？
-                    </p>
-                    
-                    <p class="text-lg">
-                        今天，我們要一起揭開這些看似無關的東西背後的<span class="highlight font-semibold">共同秘密</span>！準備好了嗎？Let's dive in!
-                    </p>
-                </div>
-            </section>
+				<div class="flex gap-8 mb-6 text-sm">
+					<div class="bg-gray-800 p-4 rounded border border-gray-600 w-64">
+						<h2
+							class="text-xl font-bold mb-2 text-orange-300 border-b border-gray-600 pb-1"
+						>
+							1P (左方玩家)
+						</h2>
+						<ul class="space-y-2">
+							<li>
+								移動：<span class="key-btn">W</span>
+								<span class="key-btn">A</span> <span class="key-btn">S</span>
+								<span class="key-btn">D</span>
+							</li>
+							<li>擊球：<span class="key-btn">E</span></li>
+						</ul>
+					</div>
+					<div class="bg-gray-800 p-4 rounded border border-gray-600 w-64">
+						<h2
+							class="text-xl font-bold mb-2 text-red-300 border-b border-gray-600 pb-1"
+						>
+							2P (右方玩家)
+						</h2>
+						<ul class="space-y-2">
+							<li>
+								移動：<span class="key-btn">↑</span>
+								<span class="key-btn">↓</span> <span class="key-btn">←</span>
+								<span class="key-btn">→</span>
+							</li>
+							<li>擊球：<span class="key-btn">Enter</span></li>
+						</ul>
+					</div>
+				</div>
 
-            <!-- Part 1: URL & Link -->
-            <section id="part1" class="mb-16">
-                <h2 class="text-3xl font-bold mb-8 text-gray-900 dark:text-white border-b-2 border-primary-light dark:border-primary-dark pb-3">Part 1: URL & Link（≤ 30 分鐘）</h2>
-                
-                <!-- Game 1: Wiki Game -->
-                <div id="game1" class="mb-12">
-                    <h3 class="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">🎮 遊戲 1: Wiki 連結挑戰賽</h3>
-                    
-                    <div class="bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-xl p-6 mb-6 border border-yellow-200 dark:border-yellow-800">
-                        <h4 class="font-semibold text-lg mb-4 text-gray-900 dark:text-white">互動式遊戲體驗</h4>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium mb-2">從這裡開始：</label>
-                                <input type="text" id="wiki-start" value="台灣" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark outline-none">
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium mb-2">目標抵達：</label>
-                                <input type="text" id="wiki-end" value="量子力學" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark outline-none">
-                            </div>
-                            
-                            <div class="flex items-center gap-4">
-                                <button onclick="startWikiGame()" class="px-6 py-3 bg-primary-light dark:bg-primary-dark text-white rounded-lg hover:opacity-90 transition-opacity font-medium">
-                                    開始挑戰
-                                </button>
-                                <div id="wiki-clicks" class="text-lg font-semibold">點擊次數: <span class="text-primary-light dark:text-primary-dark">0</span></div>
-                            </div>
-                            
-                            <div id="wiki-path" class="mt-4 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hidden">
-                                <div class="text-sm font-medium mb-2">你的路徑：</div>
-                                <div id="wiki-path-content" class="text-sm text-gray-600 dark:text-gray-400"></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="prose prose-lg dark:prose-invert max-w-none">
-                        <h4 class="text-xl font-semibold mb-4">遊戲規則</h4>
-                        <ul class="space-y-2">
-                            <li>從指定的維基百科條目 A，<strong>只透過點擊條目內的連結</strong>，最終到達另一個指定條目 B</li>
-                            <li>點擊次數越少越好！</li>
-                            <li>不能用瀏覽器的「上一頁」功能，不能直接搜尋</li>
-                        </ul>
-                        
-                        <div class="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 p-4 my-6 rounded-r-lg">
-                            <p class="text-sm font-medium text-green-800 dark:text-green-300">
-                                💡 這個遊戲會讓學生自己發現：連結不是隨機的，而是形成了某種「網絡」！
-                            </p>
-                        </div>
-                    </div>
-                </div>
+				<div
+					class="bg-blue-900 bg-opacity-50 p-4 rounded mb-6 w-full max-w-2xl text-sm border border-blue-700"
+				>
+					<h3 class="font-bold text-blue-300 mb-2 text-lg">
+						🔥 進階戰鬥技巧 (全新改版)
+					</h3>
+					<div class="grid grid-cols-2 gap-4">
+						<ul class="list-disc pl-5 space-y-1 text-gray-200">
+							<li>
+								<strong class="text-yellow-300">飛撲救球：</strong
+								>快速連按兩次左或右 (<span class="key-btn">A</span
+								><span class="key-btn">A</span> 或 <span class="key-btn">D</span
+								><span class="key-btn">D</span>)，自動彈高球。
+							</li>
+							<li>
+								<strong class="text-red-400">前排蓄力暴扣：</strong>在網前跳起時
+								<strong class="text-white">長按擊球鍵</strong
+								>，放開後釋放毀滅重扣。
+							</li>
+						</ul>
+						<ul class="list-disc pl-5 space-y-1 text-gray-200">
+							<li>
+								<strong class="text-blue-300">後排遠殺：</strong
+								>在後排跳起擊球，軌跡會自動調平，輕鬆越過網子飛向對手後場。
+							</li>
+							<li>
+								<strong class="text-green-300">前半身判定：</strong
+								>殺球判定已修正！只要球在你的前方，就能順利擊出。
+							</li>
+						</ul>
+					</div>
+				</div>
 
-                <!-- URL Introduction -->
-                <div id="url-intro" class="mb-12">
-                    <h3 class="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">🔗 什麼是「連結」？</h3>
-                    
-                    <div class="prose prose-lg dark:prose-invert max-w-none">
-                        <p>
-                            剛剛的遊戲好玩嗎？你們有沒有注意到，每次點擊那個藍色的字，你就會<strong class="text-primary-light dark:text-primary-dark">「跳」</strong>到另一個完全不同的頁面？這個「跳躍」，就是我們今天要研究的第一個主角：<strong class="highlight">連結（Link）</strong>！
-                        </p>
-                        
-                        <p>
-                            想像一下，網際網路就像一個超級巨大的圖書館，而每個網頁就是一本書。連結就像是書裡面寫著「如果你想知道更多，請翻到第 X 頁」或「請參考另一本書《XXX》」的標註。
-                        </p>
-                        
-                        <p>
-                            但這個「圖書館」有個超酷的功能：你不需要真的走到另一個書架，也不需要翻頁——<strong class="text-red-600 dark:text-red-400">只要點一下，瞬間就到了</strong>！這就是數位世界的魔法。
-                        </p>
-                    </div>
-                </div>
+				<button
+					id="start-btn"
+					class="bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 px-8 rounded-full text-xl shadow-[0_0_15px_rgba(236,201,75,0.5)] transition-transform hover:scale-105"
+				>
+					點擊開始對戰！
+				</button>
+			</div>
+		</div>
 
-                <!-- URL Structure -->
-                <div id="url-structure" class="mb-12">
-                    <h3 class="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">🧩 URL 的秘密結構</h3>
-                    
-                    <div class="prose prose-lg dark:prose-invert max-w-none mb-8">
-                        <p>
-                            一個完整的 <strong class="highlight">URL（Uniform Resource Locator）</strong>——也就是「網址」，就像是網路世界的門牌地址！
-                        </p>
-                    </div>
+		<script>
+			const canvas = document.getElementById("gameCanvas");
+			const ctx = canvas.getContext("2d");
+			const overlay = document.getElementById("overlay");
+			const startBtn = document.getElementById("start-btn");
+			const statusText = document.getElementById("status-text");
 
-                    <!-- Interactive URL Breakdown -->
-                    <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 mb-8 border border-gray-200 dark:border-gray-700">
-                        <h4 class="font-semibold text-lg mb-4">互動式 URL 拆解</h4>
-                        
-                        <div class="mb-6">
-                            <input type="text" id="url-input" value="https://www.wikipedia.org/wiki/Graph_theory" 
-                                   class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 font-mono text-sm focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark outline-none"
-                                   oninput="parseURL()">
-                        </div>
-                        
-                        <div id="url-breakdown" class="space-y-4">
-                            <!-- Will be populated by JavaScript -->
-                        </div>
-                    </div>
+			// 遊戲常數 (已調低重力)
+			const GRAVITY = 0.25;
+			const GROUND_Y = 450;
+			const NET = { x: 390, y: 280, w: 20, h: 170 };
+			let gameRunning = false;
+			let shakeAmount = 0;
+			let rallyMultiplier = 1.0;
 
-                    <div class="grid md:grid-cols-3 gap-6 mb-8">
-                        <div class="interactive-box bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800">
-                            <div class="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">[1] 協定 Protocol</div>
-                            <div class="font-mono text-lg font-bold text-blue-600 dark:text-blue-400 mb-3">https://</div>
-                            <p class="text-sm text-gray-700 dark:text-gray-300">規定「怎麼傳資料」，就像郵局規定你要用「平信」還是「掛號」</p>
-                        </div>
-                        
-                        <div class="interactive-box bg-purple-50 dark:bg-purple-900/20 p-6 rounded-xl border-2 border-purple-200 dark:border-purple-800">
-                            <div class="text-sm font-semibold text-purple-900 dark:text-purple-300 mb-2">[2] 域名 Domain</div>
-                            <div class="font-mono text-lg font-bold text-purple-600 dark:text-purple-400 mb-3">www.wikipedia.org</div>
-                            <p class="text-sm text-gray-700 dark:text-gray-300">「誰」在提供這個網頁，就像你家的門牌號碼</p>
-                        </div>
-                        
-                        <div class="interactive-box bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border-2 border-green-200 dark:border-green-800">
-                            <div class="text-sm font-semibold text-green-900 dark:text-green-300 mb-2">[3] 路徑 Path</div>
-                            <div class="font-mono text-lg font-bold text-green-600 dark:text-green-400 mb-3">/wiki/Graph_theory</div>
-                            <p class="text-sm text-gray-700 dark:text-gray-300">你要的「具體是哪個東西」，就像房間號碼</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
+			// 按鍵與雙擊狀態追蹤
+			const keys = {};
+			const keyTimers = {};
+			const doubleTaps = {};
 
-            <!-- Part 2: Graph -->
-            <section id="part2" class="mb-16">
-                <h2 class="text-3xl font-bold mb-8 text-gray-900 dark:text-white border-b-2 border-primary-light dark:border-primary-dark pb-3">Part 2: Graph 圖論（≤ 40 分鐘）</h2>
-                
-                <!-- Game 2: One-stroke -->
-                <div id="game2" class="mb-12">
-                    <h3 class="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">🎮 遊戲 2: 一筆畫挑戰賽</h3>
-                    
-                    <div class="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl p-6 mb-6 border border-purple-200 dark:border-purple-800">
-                        <h4 class="font-semibold text-lg mb-4 text-gray-900 dark:text-white">互動式一筆畫遊戲</h4>
-                        
-                        <canvas id="one-stroke-canvas" width="600" height="400" 
-                                class="w-full border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 cursor-crosshair mb-4">
-                        </canvas>
-                        
-                        <div class="flex gap-4 mb-4 flex-wrap">
-                            <button onclick="resetCanvas()" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
-                                重置
-                            </button>
-                            <button onclick="loadTriangle()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                                三角形
-                            </button>
-                            <button onclick="loadSquare()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                                正方形
-                            </button>
-                            <button onclick="loadComplex()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
-                                複雜圖形
-                            </button>
-                        </div>
-                        
-                        <div id="stroke-status" class="text-sm p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                            點擊頂點開始畫圖！每條邊只能經過一次，最後回到起點。
-                        </div>
-                    </div>
-                    
-                    <div class="prose prose-lg dark:prose-invert max-w-none">
-                        <h4 class="text-xl font-semibold mb-4">一筆畫的秘密（歐拉定理）</h4>
-                        <div class="bg-orange-50 dark:bg-orange-900/20 border-l-4 border-orange-500 p-4 rounded-r-lg">
-                            <p class="font-semibold text-orange-900 dark:text-orange-300">
-                                一個圖可以一筆畫完（回到起點）的充要條件是：<span class="highlight">所有頂點的分支度都是偶數</span>！
-                            </p>
-                        </div>
-                        <p class="mt-4">
-                            為什麼？想像你走進一個點，就要走出來——進一條、出一條，所以線的數量必須是<strong>成對的</strong>，也就是偶數！
-                        </p>
-                    </div>
-                </div>
+			window.addEventListener("keydown", (e) => {
+				if (!keys[e.code]) {
+					let now = Date.now();
+					// 判斷 250 毫秒內的雙擊
+					if (now - (keyTimers[e.code] || 0) < 250) {
+						doubleTaps[e.code] = true;
+					}
+					keyTimers[e.code] = now;
+				}
+				keys[e.code] = true;
+			});
+			window.addEventListener("keyup", (e) => {
+				keys[e.code] = false;
+			});
 
-                <!-- Graph Introduction -->
-                <div id="graph-intro" class="mb-12">
-                    <h3 class="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">🌐 什麼是「圖」？</h3>
-                    
-                    <div class="prose prose-lg dark:prose-invert max-w-none">
-                        <p>
-                            你們剛才玩的那些「點點連連」的東西，在數學裡有個專門的名字，叫做<strong class="highlight text-2xl">「圖（Graph）」</strong>！
-                        </p>
-                        
-                        <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 rounded-lg my-6">
-                            <p class="font-semibold text-red-900 dark:text-red-300">
-                                ⚠️ 注意！這裡的「圖」不是指照片或圖片，而是數學家用來描述「連結關係」的一種工具！
-                            </p>
-                        </div>
+			// 玩家類別 (重構為人形物理與動畫系統)
+			class Player {
+				constructor(x, color, isPlayer1) {
+					this.w = 40; // 人形寬度變窄
+					this.h = 80; // 人形高度變高
+					this.startX = x;
+					this.x = x;
+					this.y = GROUND_Y - this.h;
+					this.vx = 0;
+					this.vy = 0;
+					this.speed = 7;
+					this.jumpPower = 8.5; // 配合低重力的跳躍力
+					this.color = color;
+					this.isPlayer1 = isPlayer1;
 
-                        <p>一個圖（Graph）由兩個部分組成：</p>
-                        <ul>
-                            <li><strong class="text-red-600 dark:text-red-400">頂點（Vertex / Node）</strong> → 就是那些「點」</li>
-                            <li><strong class="text-red-600 dark:text-red-400">邊（Edge）</strong> → 就是連接點的「線」</li>
-                        </ul>
+					// 狀態與動畫
+					this.isGrounded = true;
+					this.canDoubleJump = true;
+					this.currentPose = "idle";
+					this.poseTimer = 0;
 
-                        <h4 class="text-xl font-semibold mt-8 mb-4">生活中的「圖」例子</h4>
-                    </div>
+					// 蓄力系統
+					this.prevHitKeyDown = false;
+					this.isCharging = false;
+					this.chargePower = 0;
 
-                    <div class="grid md:grid-cols-3 gap-6 mb-8">
-                        <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800">
-                            <div class="text-3xl mb-3">👥</div>
-                            <h5 class="font-semibold mb-2">社群網路</h5>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">頂點 = 每個人<br>邊 = 好友關係</p>
-                        </div>
-                        
-                        <div class="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800">
-                            <div class="text-3xl mb-3">🚇</div>
-                            <h5 class="font-semibold mb-2">交通網路</h5>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">頂點 = 車站<br>邊 = 路線</p>
-                        </div>
-                        
-                        <div class="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-xl border border-purple-200 dark:border-purple-800">
-                            <div class="text-3xl mb-3">🌐</div>
-                            <h5 class="font-semibold mb-2">網際網路</h5>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">頂點 = 網頁<br>邊 = 超連結</p>
-                        </div>
-                    </div>
-                </div>
+					// 撲球系統
+					this.isDiving = false;
+					this.diveTimer = 0;
+					this.diveDir = 1;
 
-                <!-- MST Section -->
-                <div id="mst" class="mb-12">
-                    <h3 class="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">🏗️ 最小生成樹（MST）</h3>
-                    
-                    <div class="prose prose-lg dark:prose-invert max-w-none mb-8">
-                        <p>
-                            想像你是一個網路公司的工程師，你要在幾個城市之間鋪設光纖電纜。但是<strong class="text-red-600 dark:text-red-400">鋪電纜很貴</strong>，你的老闆說：「要<strong>花最少的錢</strong>，但要讓<strong>所有城市都能互相通訊</strong>！」
-                        </p>
-                        
-                        <p>這時候，你就需要找出一個<span class="highlight font-semibold">「最小生成樹」</span>！</p>
-                    </div>
+					this.score = 0;
+				}
 
-                    <!-- Interactive MST Visualization -->
-                    <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 mb-8 border border-gray-200 dark:border-gray-700">
-                        <h4 class="font-semibold text-lg mb-4">互動式 MST 演算法</h4>
-                        
-                        <canvas id="mst-canvas" width="600" height="400" 
-                                class="w-full border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 mb-4">
-                        </canvas>
-                        
-                        <div class="flex gap-4 mb-4 flex-wrap">
-                            <button onclick="runMSTStep()" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
-                                下一步
-                            </button>
-                            <button onclick="resetMST()" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
-                                重置
-                            </button>
-                        </div>
-                        
-                        <div id="mst-status" class="text-sm p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                            點擊「下一步」觀看 Kruskal 演算法執行過程
-                        </div>
-                    </div>
-                </div>
-            </section>
+				reset() {
+					this.w = 40;
+					this.h = 80;
+					this.x = this.startX;
+					this.y = GROUND_Y - this.h;
+					this.vx = 0;
+					this.vy = 0;
+					this.isGrounded = true;
+					this.canDoubleJump = true;
+					this.isDiving = false;
+					this.isCharging = false;
+					this.currentPose = "idle";
+				}
 
-            <!-- Part 3: Merge -->
-            <section id="part3" class="mb-16">
-                <h2 class="text-3xl font-bold mb-8 text-gray-900 dark:text-white border-b-2 border-primary-light dark:border-primary-dark pb-3">Part 3: Merge [URL + Graph]（≤ 20 分鐘）</h2>
-                
-                <div class="prose prose-lg dark:prose-invert max-w-none">
-                    <h3 class="text-2xl font-semibold mb-6">🎭 揭曉時刻：一切都是圖！</h3>
-                    
-                    <p class="text-xl font-semibold">
-                        還記得一開始我們玩的<strong class="text-primary-light dark:text-primary-dark">「維基百科連結遊戲」</strong>嗎？那個遊戲<span class="highlight text-2xl">其實就是在一個「圖」上面走路</span>！
-                    </p>
+				startDive(dir) {
+					if (this.isDiving) return;
+					this.isDiving = true;
+					this.diveTimer = 25; // 撲救持續時間
+					this.diveDir = dir;
+					this.vx = dir * 15; // 爆發速度
+					this.vy = -5; // 稍微往上彈起
+					this.isGrounded = false;
+					this.currentPose = "dive";
 
-                    <div class="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 p-8 rounded-xl my-8 border-2 border-orange-300 dark:border-orange-700">
-                        <h4 class="text-2xl font-bold mb-4 text-orange-900 dark:text-orange-300">關鍵發現</h4>
-                        <p class="text-xl font-semibold text-orange-900 dark:text-orange-200">
-                            網際網路 = 一個巨大的「有向圖」（Directed Graph）
-                        </p>
-                        <ul class="mt-4 space-y-2">
-                            <li><strong>頂點（Vertex）</strong> = 每一個網頁（URL）</li>
-                            <li><strong>邊（Edge）</strong> = 網頁之間的超連結（Link）</li>
-                        </ul>
-                    </div>
+					// 改變碰撞箱 (變寬變扁)
+					let cx = this.x + this.w / 2;
+					this.w = 80;
+					this.h = 40;
+					this.x = cx - 40;
+					this.y += 40;
+				}
 
-                    <p>
-                        如果網頁 A 有一個連結指向網頁 B，<strong class="text-red-600 dark:text-red-400">不代表</strong> B 也有連結指向 A。就像<strong>單行道</strong>——你可以從 A 走到 B，但不一定能從 B 走回 A！
-                    </p>
+				update() {
+					// 取得控制輸入
+					let up = this.isPlayer1 ? keys["KeyW"] : keys["ArrowUp"];
+					let left = this.isPlayer1 ? keys["KeyA"] : keys["ArrowLeft"];
+					let right = this.isPlayer1 ? keys["KeyD"] : keys["ArrowRight"];
+					let hitKeyDown = this.isPlayer1 ? keys["KeyE"] : keys["Enter"];
 
-                    <h4 class="text-xl font-semibold mt-8 mb-4">為什麼這個概念這麼重要？</h4>
+					// 雙擊判斷
+					let doubleLeft = this.isPlayer1
+						? doubleTaps["KeyA"]
+						: doubleTaps["ArrowLeft"];
+					let doubleRight = this.isPlayer1
+						? doubleTaps["KeyD"]
+						: doubleTaps["ArrowRight"];
 
-                    <div class="space-y-6">
-                        <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800">
-                            <h5 class="font-semibold text-lg mb-2">1. Google 的 PageRank 演算法</h5>
-                            <p>Google 會計算「有多少網頁<strong>指向</strong>某個網頁」，來判斷這個網頁的「重要性」。越多網頁指向你 = 你越重要 = 搜尋排名越前面！</p>
-                        </div>
+					// 飛撲狀態下鎖定常規控制
+					if (this.isDiving) {
+						this.diveTimer--;
+						this.vy += GRAVITY;
+						this.x += this.vx;
+						this.y += this.vy;
 
-                        <div class="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800">
-                            <h5 class="font-semibold text-lg mb-2">2. 推薦系統（YouTube、Netflix）</h5>
-                            <p>「看過影片 A 的人，也看了影片 B、C、D……」這些連結關係也是一個「圖」！</p>
-                        </div>
+						if (this.y + this.h >= GROUND_Y) {
+							this.y = GROUND_Y - this.h;
+							this.vy = 0;
+							this.vx *= 0.8; // 地面摩擦力滑行
+						}
 
-                        <div class="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-xl border border-purple-200 dark:border-purple-800">
-                            <h5 class="font-semibold text-lg mb-2">3. 社群網路分析</h5>
-                            <p>「你可能認識的人」= 你的朋友的朋友（圖的鄰居的鄰居）</p>
-                        </div>
-                    </div>
+						// 結束飛撲，恢復人形直立
+						if (this.diveTimer <= 0) {
+							this.isDiving = false;
+							let cx = this.x + this.w / 2;
+							this.w = 40;
+							this.h = 80;
+							this.x = cx - 20;
+							this.y = GROUND_Y - this.h;
+							this.currentPose = "idle";
+						}
+					} else {
+						// --- 常規移動與控制 ---
 
-                    <div class="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-8 rounded-xl my-12 border-2 border-blue-300 dark:border-blue-700">
-                        <h3 class="text-2xl font-bold mb-6 text-center">🎉 總結：今天學到了什麼？</h3>
-                        
-                        <ul class="space-y-3 text-lg">
-                            <li>✓ <strong>URL</strong> = 協定 + 域名 + 路徑，是網路世界的門牌地址</li>
-                            <li>✓ <strong>連結（Link）</strong> 讓我們在網頁之間跳躍</li>
-                            <li>✓ <strong>圖（Graph）</strong> = 頂點 + 邊，用來描述連結關係</li>
-                            <li>✓ <strong>樹（Tree）</strong> = 沒有迴圈的圖</li>
-                            <li>✓ <strong>最小生成樹（MST）</strong>：用最少成本連接所有頂點</li>
-                            <li>✓ <strong class="text-red-600 dark:text-red-400">網際網路 = 有向圖</strong>，網頁是頂點，連結是有方向的邊</li>
-                        </ul>
-                    </div>
+						// 觸發飛撲
+						if (this.isGrounded) {
+							if (doubleLeft) this.startDive(-1);
+							else if (doubleRight) this.startDive(1);
+						}
 
-                    <div class="text-center my-12">
-                        <p class="text-2xl font-semibold mb-4">恭喜你完成今天的課程！</p>
-                        <p class="text-xl text-gray-600 dark:text-gray-300 mb-2">希望今天的課讓你發現：</p>
-                        <p class="text-xl">數學不只是教科書上的符號，</p>
-                        <p class="text-xl font-bold text-primary-light dark:text-primary-dark">而是真實世界背後的語言！</p>
-                    </div>
+						if (!this.isDiving) {
+							if (left) this.vx = -this.speed;
+							else if (right) this.vx = this.speed;
+							else this.vx = 0;
 
-                    <div class="text-center text-lg italic text-gray-500 dark:text-gray-400 my-8">
-                        Keep exploring. Keep questioning. Keep coding.
-                    </div>
+							// 跳躍
+							if (up) {
+								if (this.isGrounded) {
+									this.vy = -this.jumpPower;
+									this.isGrounded = false;
+									this.currentPose = "jump";
+									keys[this.isPlayer1 ? "KeyW" : "ArrowUp"] = false;
+								} else if (
+									this.canDoubleJump &&
+									this.vy > -2 &&
+									!this.isCharging
+								) {
+									this.vy = -this.jumpPower * 0.9;
+									this.canDoubleJump = false;
+									createHitEffect(
+										this.x + this.w / 2,
+										this.y + this.h,
+										"white",
+										5,
+									);
+									keys[this.isPlayer1 ? "KeyW" : "ArrowUp"] = false;
+								}
+							}
 
-                    <div class="text-center text-gray-400 dark:text-gray-600">
-                        —— The End ——
-                    </div>
-                </div>
-            </section>
+							// 物理
+							this.vy += GRAVITY;
+							this.x += this.vx;
+							this.y += this.vy;
 
-            <!-- Highlight Feature Info -->
-            <div class="fixed bottom-6 right-6 bg-yellow-100 dark:bg-yellow-900 px-4 py-3 rounded-lg shadow-lg border border-yellow-300 dark:border-yellow-700 text-sm z-40">
-                <p class="font-medium mb-1">💡 重點標記功能</p>
-                <p class="text-xs text-gray-700 dark:text-gray-300">選取文字即可標記重點！</p>
-            </div>
-        </main>
-    </div>
+							// 地面
+							if (this.y + this.h >= GROUND_Y) {
+								this.y = GROUND_Y - this.h;
+								this.vy = 0;
+								this.isGrounded = true;
+								this.canDoubleJump = true;
+								if (this.poseTimer <= 0 && !this.isCharging)
+									this.currentPose = "idle";
+							}
 
-    <script>
-        // Wait for DOM to load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Theme Toggle
-            const themeToggle = document.getElementById('theme-toggle');
-            const html = document.documentElement;
-            
-            // Check for saved theme preference or default to light mode
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            html.classList.toggle('dark', savedTheme === 'dark');
-            
-            if (themeToggle) {
-                themeToggle.addEventListener('click', () => {
-                    html.classList.toggle('dark');
-                    const newTheme = html.classList.contains('dark') ? 'dark' : 'light';
-                    localStorage.setItem('theme', newTheme);
-                });
-            }
+							// 前後排判定 (1P 網子在 390，前排算 > 200；2P 前排算 < 560)
+							let isFrontRow = this.isPlayer1
+								? this.x > 200
+								: this.x < 600 - this.w;
 
-            // Mobile TOC Toggle
-            const tocToggle = document.getElementById('toc-toggle');
-            const tocSidebar = document.getElementById('toc-sidebar');
-            
-            if (tocToggle && tocSidebar) {
-                tocToggle.addEventListener('click', () => {
-                    tocSidebar.classList.toggle('hidden');
-                });
-            }
+							// --- 蓄力與擊球系統 ---
+							if (hitKeyDown && !this.prevHitKeyDown) {
+								// 剛按下
+								if (!this.isGrounded && isFrontRow) {
+									// 開始前排蓄力
+									this.isCharging = true;
+									this.chargePower = 0;
+									this.currentPose = "charge";
+								} else {
+									// 立即擊球 (後排或地面)
+									this.tryHitBall(false);
+									this.currentPose = this.isGrounded ? "receive" : "spike";
+									this.poseTimer = 15;
+								}
+							}
 
-            // Smooth scroll for navigation
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        // Close mobile menu
-                        if (window.innerWidth < 768 && tocSidebar) {
-                            tocSidebar.classList.add('hidden');
-                        }
-                    }
-                });
-            });
+							if (hitKeyDown && this.isCharging) {
+								// 蓄力中
+								this.chargePower += 1;
+								if (this.vy > 0) this.vy *= 0.85; // 滯空效果
+								if (this.chargePower > 15 && Math.random() < 0.3) {
+									createHitEffect(
+										this.x + this.w / 2,
+										this.y + 20,
+										"#ecc94b",
+										1,
+									);
+								}
+							}
 
-            // Highlight Selection Feature
-            let highlights = JSON.parse(localStorage.getItem('highlights') || '[]');
-            
-            document.addEventListener('mouseup', () => {
-                const selection = window.getSelection();
-                const selectedText = selection.toString().trim();
-                
-                if (selectedText.length > 3 && selectedText.length < 500) {
-                    const range = selection.getRangeAt(0);
-                    const span = document.createElement('span');
-                    span.className = 'highlight';
-                    
-                    try {
-                        range.surroundContents(span);
-                        
-                        // Save to localStorage
-                        highlights.push(selectedText);
-                        localStorage.setItem('highlights', JSON.stringify(highlights));
-                    } catch (e) {
-                        // If selection spans multiple elements, just highlight inline
-                        console.log('Could not highlight:', e);
-                    }
-                }
-            });
+							if (!hitKeyDown && this.prevHitKeyDown) {
+								// 放開擊球鍵
+								if (this.isCharging) {
+									this.tryHitBall(true, this.chargePower);
+									this.isCharging = false;
+									this.currentPose = "spike";
+									this.poseTimer = 15;
+								}
+							}
 
-            // Initialize canvas games
-            if (document.getElementById('one-stroke-canvas')) {
-                loadTriangle();
-            }
-            
-            if (document.getElementById('mst-canvas')) {
-                drawMST();
-            }
-            
-            // Initialize URL parser
-            parseURL();
-        });
+							this.prevHitKeyDown = hitKeyDown;
+						}
+					}
 
-        // URL Parser
-        function parseURL() {
-            const urlInput = document.getElementById('url-input');
-            const breakdown = document.getElementById('url-breakdown');
-            
-            if (!urlInput || !breakdown) return;
-            
-            try {
-                const url = new URL(urlInput.value);
-                
-                breakdown.innerHTML = `
-                    <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                        <div class="font-semibold text-sm mb-1">協定 (Protocol)</div>
-                        <div class="font-mono text-lg font-bold text-blue-600 dark:text-blue-400">${url.protocol}</div>
-                    </div>
-                    <div class="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
-                        <div class="font-semibold text-sm mb-1">域名 (Domain)</div>
-                        <div class="font-mono text-lg font-bold text-purple-600 dark:text-purple-400">${url.hostname}</div>
-                    </div>
-                    <div class="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                        <div class="font-semibold text-sm mb-1">路徑 (Path)</div>
-                        <div class="font-mono text-lg font-bold text-green-600 dark:text-green-400">${url.pathname || '/'}</div>
-                    </div>
-                    ${url.search ? `
-                    <div class="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
-                        <div class="font-semibold text-sm mb-1">查詢參數 (Query)</div>
-                        <div class="font-mono text-lg font-bold text-orange-600 dark:text-orange-400">${url.search}</div>
-                    </div>
-                    ` : ''}
-                `;
-            } catch (e) {
-                breakdown.innerHTML = '<div class="text-red-600 dark:text-red-400">請輸入有效的 URL</div>';
-            }
-        }
+					// 清除雙擊旗標以防重複觸發 (分開清除，避免 1P 清掉 2P 的指令)
+					if (this.isPlayer1) {
+						doubleTaps["KeyA"] = false;
+						doubleTaps["KeyD"] = false;
+					} else {
+						doubleTaps["ArrowLeft"] = false;
+						doubleTaps["ArrowRight"] = false;
+					}
 
-        // Wiki Game
-        let wikiClicks = 0;
-        let wikiPath = [];
-        
-        function startWikiGame() {
-            const start = document.getElementById('wiki-start').value;
-            const end = document.getElementById('wiki-end').value;
-            
-            wikiClicks = 0;
-            wikiPath = [start];
-            
-            updateWikiDisplay();
-            
-            alert(`開始挑戰！從「${start}」到「${end}」\n（這是模擬版，實際遊戲請在維基百科上進行）`);
-        }
-        
-        function updateWikiDisplay() {
-            const clicksEl = document.getElementById('wiki-clicks');
-            const pathDiv = document.getElementById('wiki-path');
-            const pathContent = document.getElementById('wiki-path-content');
-            
-            if (clicksEl) {
-                clicksEl.innerHTML = `點擊次數: <span class="text-primary-light dark:text-primary-dark">${wikiClicks}</span>`;
-            }
-            
-            if (wikiPath.length > 0 && pathDiv && pathContent) {
-                pathDiv.classList.remove('hidden');
-                pathContent.textContent = wikiPath.join(' → ');
-            }
-        }
+					// 牆壁與網子碰撞 (任何狀態皆適用)
+					if (this.isPlayer1) {
+						if (this.x < 0) this.x = 0;
+						if (this.x + this.w > NET.x) this.x = NET.x - this.w;
+					} else {
+						if (this.x < NET.x + NET.w) this.x = NET.x + NET.w;
+						if (this.x + this.w > canvas.width) this.x = canvas.width - this.w;
+					}
 
-        // One-stroke Drawing Game
-        let canvas, ctx;
-        let vertices = [];
-        let edges = [];
-        let currentPath = [];
-        let isDrawing = false;
-        let startVertex = null;
+					// 姿勢重置計時器
+					if (this.poseTimer > 0) {
+						this.poseTimer--;
+					} else if (!this.isDiving && !this.isCharging) {
+						this.currentPose = this.isGrounded
+							? this.vx !== 0
+								? "run"
+								: "idle"
+							: "jump";
+					}
+				}
 
-        function initCanvas() {
-            canvas = document.getElementById('one-stroke-canvas');
-            if (!canvas) return;
-            ctx = canvas.getContext('2d');
-            
-            canvas.addEventListener('click', handleCanvasClick);
-        }
+				tryHitBall(isCharge, chargePower = 0) {
+					let sideDir = this.isPlayer1 ? 1 : -1;
+					let isFrontRow = this.isPlayer1
+						? this.x > 200
+						: this.x < 600 - this.w;
+					let upPressed = this.isPlayer1 ? keys["KeyW"] : keys["ArrowUp"];
 
-        function resetCanvas() {
-            if (!ctx || !canvas) {
-                initCanvas();
-            }
-            if (!ctx) return;
-            
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            currentPath = [];
-            isDrawing = false;
-            startVertex = null;
-            drawGraph();
-            updateStrokeStatus('點擊頂點開始畫圖！');
-        }
+					// 修正判定：只要前半身碰到即可 (將檢查中心往前移)
+					let hitOriginX = this.x + this.w / 2 + sideDir * this.w * 0.5;
+					let hitOriginY = this.y + this.h * 0.3; // 上半身判定
 
-        function drawGraph() {
-            if (!ctx || !canvas) return;
-            
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            const isDark = document.documentElement.classList.contains('dark');
-            
-            // Draw edges
-            ctx.strokeStyle = isDark ? '#6B7280' : '#9CA3AF';
-            ctx.lineWidth = 2;
-            edges.forEach(edge => {
-                ctx.beginPath();
-                ctx.moveTo(vertices[edge.from].x, vertices[edge.from].y);
-                ctx.lineTo(vertices[edge.to].x, vertices[edge.to].y);
-                ctx.stroke();
-            });
-            
-            // Draw current path
-            if (currentPath.length > 0) {
-                ctx.strokeStyle = '#3B82F6';
-                ctx.lineWidth = 4;
-                ctx.beginPath();
-                ctx.moveTo(vertices[currentPath[0]].x, vertices[currentPath[0]].y);
-                for (let i = 1; i < currentPath.length; i++) {
-                    ctx.lineTo(vertices[currentPath[i]].x, vertices[currentPath[i]].y);
-                }
-                ctx.stroke();
-            }
-            
-            // Draw vertices
-            vertices.forEach((v, i) => {
-                ctx.beginPath();
-                ctx.arc(v.x, v.y, 15, 0, Math.PI * 2);
-                ctx.fillStyle = currentPath.includes(i) ? '#3B82F6' : '#10B981';
-                ctx.fill();
-                ctx.strokeStyle = '#FFFFFF';
-                ctx.lineWidth = 3;
-                ctx.stroke();
-                
-                // Label
-                ctx.fillStyle = '#FFFFFF';
-                ctx.font = 'bold 14px sans-serif';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(String.fromCharCode(65 + i), v.x, v.y);
-            });
-        }
+					let dist = Math.hypot(ball.x - hitOriginX, ball.y - hitOriginY);
+					let hitRadius = 60 + (isCharge ? 20 : 0); // 蓄力判定範圍更大
 
-        function loadTriangle() {
-            if (!ctx) initCanvas();
-            
-            vertices = [
-                {x: 300, y: 100},
-                {x: 150, y: 300},
-                {x: 450, y: 300}
-            ];
-            edges = [
-                {from: 0, to: 1},
-                {from: 1, to: 2},
-                {from: 2, to: 0}
-            ];
-            resetCanvas();
-        }
+					if (dist < hitRadius + ball.r) {
+						if (rallyMultiplier < 2.0) rallyMultiplier += 0.05;
 
-        function loadSquare() {
-            if (!ctx) initCanvas();
-            
-            vertices = [
-                {x: 200, y: 150},
-                {x: 400, y: 150},
-                {x: 400, y: 300},
-                {x: 200, y: 300}
-            ];
-            edges = [
-                {from: 0, to: 1},
-                {from: 1, to: 2},
-                {from: 2, to: 3},
-                {from: 3, to: 0}
-            ];
-            resetCanvas();
-        }
+						if (!this.isGrounded) {
+							if (upPressed && !isCharge) {
+								// 招式：欺敵吊球
+								ball.vx = 8 * sideDir;
+								ball.vy = -7;
+								createHitEffect(ball.x, ball.y, "#63b3ed", 8);
+								statusText.innerText = "✨ 欺敵吊球 ✨";
+								ball.isDropShot = true;
+							} else if (isCharge && chargePower >= 10) {
+								// 招式：前排蓄力暴扣
+								let powerLevel = Math.min(chargePower / 30, 1.5);
+								ball.vx = (15 + powerLevel * 5) * sideDir;
+								ball.vy = 12 + powerLevel * 10;
+								shakeAmount = 15 + powerLevel * 15;
+								createHitEffect(ball.x, ball.y, "#f56565", 25);
+								statusText.innerText = "🔥🔥 蓄力暴扣！ 🔥🔥";
+								ball.isDropShot = false;
+							} else if (!isFrontRow) {
+								// 招式：後排殺 (調整軌跡使其能過網)
+								ball.vx = 17 * sideDir;
+								ball.vy = 2; // 軌跡平滑不過度往下
+								createHitEffect(ball.x, ball.y, "#4299e1", 12);
+								statusText.innerText = "☄️ 後排遠殺 ☄️";
+								ball.isDropShot = false;
+							} else {
+								// 一般殺球
+								ball.vx = 13 * sideDir;
+								ball.vy = 9;
+								createHitEffect(ball.x, ball.y, "#fbd38d", 10);
+								ball.isDropShot = false;
+							}
+						} else {
+							// 地面接球
+							ball.vx = 7 * sideDir;
+							ball.vy = -14;
+							createHitEffect(ball.x, ball.y, "#4fd1c5", 8);
+							ball.isDropShot = false;
+						}
 
-        function loadComplex() {
-            if (!ctx) initCanvas();
-            
-            vertices = [
-                {x: 300, y: 100},
-                {x: 150, y: 250},
-                {x: 300, y: 350},
-                {x: 450, y: 250}
-            ];
-            edges = [
-                {from: 0, to: 1},
-                {from: 0, to: 2},
-                {from: 0, to: 3},
-                {from: 1, to: 2},
-                {from: 1, to: 3},
-                {from: 2, to: 3}
-            ];
-            resetCanvas();
-        }
+						ball.y -= 5;
+						clearTimeout(statusTimeout);
+						if (statusText.innerText !== "") {
+							statusTimeout = setTimeout(
+								() => (statusText.innerText = ""),
+								1500,
+							);
+						}
+					}
+				}
 
-        function updateStrokeStatus(message) {
-            const statusEl = document.getElementById('stroke-status');
-            if (statusEl) {
-                statusEl.textContent = message;
-            }
-        }
+				draw() {
+					ctx.save();
 
-        function handleCanvasClick(e) {
-            if (!canvas) return;
-            
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            const x = (e.clientX - rect.left) * scaleX;
-            const y = (e.clientY - rect.top) * scaleY;
-            
-            // Find clicked vertex
-            const clickedVertex = vertices.findIndex(v => 
-                Math.sqrt((v.x - x) ** 2 + (v.y - y) ** 2) < 20
-            );
-            
-            if (clickedVertex !== -1) {
-                if (!isDrawing) {
-                    startVertex = clickedVertex;
-                    currentPath = [clickedVertex];
-                    isDrawing = true;
-                    updateStrokeStatus(`從頂點 ${String.fromCharCode(65 + clickedVertex)} 開始！`);
-                } else {
-                    const lastVertex = currentPath[currentPath.length - 1];
-                    const edgeExists = edges.some(e => 
-                        (e.from === lastVertex && e.to === clickedVertex) ||
-                        (e.from === clickedVertex && e.to === lastVertex)
-                    );
-                    
-                    if (edgeExists && !currentPath.includes(clickedVertex)) {
-                        currentPath.push(clickedVertex);
-                        
-                        if (clickedVertex === startVertex && currentPath.length > 2) {
-                            updateStrokeStatus('🎉 成功！你完成了一筆畫！');
-                        } else {
-                            updateStrokeStatus(`目前路徑: ${currentPath.map(i => String.fromCharCode(65 + i)).join(' → ')}`);
-                        }
-                    } else if (currentPath.includes(clickedVertex)) {
-                        updateStrokeStatus('❌ 這個頂點已經走過了！');
-                    } else {
-                        updateStrokeStatus('❌ 這兩個頂點之間沒有邊！');
-                    }
-                }
-                drawGraph();
-            }
-        }
+					// 移動到角色底部中心點
+					let cx = this.x + this.w / 2;
+					let cy = this.y + this.h;
+					ctx.translate(cx, cy);
 
-        // MST Visualization
-        let mstCanvas, mstCtx;
-        
-        let mstVertices = [
-            {x: 150, y: 200, label: 'A'},
-            {x: 300, y: 100, label: 'B'},
-            {x: 450, y: 200, label: 'C'},
-            {x: 300, y: 300, label: 'D'}
-        ];
-        
-        let mstEdges = [
-            {from: 0, to: 1, weight: 1, selected: false},
-            {from: 0, to: 2, weight: 3, selected: false},
-            {from: 1, to: 2, weight: 2, selected: false},
-            {from: 1, to: 3, weight: 4, selected: false},
-            {from: 2, to: 3, weight: 5, selected: false}
-        ];
-        
-        let mstStep = 0;
-        let mstSortedEdges = [...mstEdges].sort((a, b) => a.weight - b.weight);
-        
-        function initMSTCanvas() {
-            mstCanvas = document.getElementById('mst-canvas');
-            if (!mstCanvas) return;
-            mstCtx = mstCanvas.getContext('2d');
-        }
-        
-        function drawMST() {
-            if (!mstCtx || !mstCanvas) {
-                initMSTCanvas();
-            }
-            if (!mstCtx) return;
-            
-            mstCtx.clearRect(0, 0, mstCanvas.width, mstCanvas.height);
-            
-            // Draw all edges
-            mstEdges.forEach(edge => {
-                mstCtx.beginPath();
-                mstCtx.moveTo(mstVertices[edge.from].x, mstVertices[edge.from].y);
-                mstCtx.lineTo(mstVertices[edge.to].x, mstVertices[edge.to].y);
-                mstCtx.strokeStyle = edge.selected ? '#10B981' : '#D1D5DB';
-                mstCtx.lineWidth = edge.selected ? 4 : 2;
-                mstCtx.stroke();
-                
-                // Draw weight
-                const midX = (mstVertices[edge.from].x + mstVertices[edge.to].x) / 2;
-                const midY = (mstVertices[edge.from].y + mstVertices[edge.to].y) / 2;
-                mstCtx.fillStyle = edge.selected ? '#10B981' : '#6B7280';
-                mstCtx.font = 'bold 16px sans-serif';
-                mstCtx.textAlign = 'center';
-                mstCtx.fillText(edge.weight, midX, midY - 10);
-            });
-            
-            // Draw vertices
-            mstVertices.forEach(v => {
-                mstCtx.beginPath();
-                mstCtx.arc(v.x, v.y, 20, 0, Math.PI * 2);
-                mstCtx.fillStyle = '#3B82F6';
-                mstCtx.fill();
-                mstCtx.strokeStyle = '#FFFFFF';
-                mstCtx.lineWidth = 3;
-                mstCtx.stroke();
-                
-                mstCtx.fillStyle = '#FFFFFF';
-                mstCtx.font = 'bold 16px sans-serif';
-                mstCtx.textAlign = 'center';
-                mstCtx.textBaseline = 'middle';
-                mstCtx.fillText(v.label, v.x, v.y);
-            });
-        }
-        
-        function runMSTStep() {
-            if (mstStep < mstSortedEdges.length) {
-                const edge = mstSortedEdges[mstStep];
-                edge.selected = true;
-                
-                const fromLabel = mstVertices[edge.from].label;
-                const toLabel = mstVertices[edge.to].label;
-                
-                updateMSTStatus(`步驟 ${mstStep + 1}: 加入邊 ${fromLabel}-${toLabel} (權重: ${edge.weight})`);
-                
-                mstStep++;
-                drawMST();
-                
-                if (mstStep === mstSortedEdges.length) {
-                    setTimeout(() => {
-                        const totalWeight = mstSortedEdges.filter(e => e.selected).reduce((sum, e) => sum + e.weight, 0);
-                        updateMSTStatus(`✅ 完成！最小生成樹總權重: ${totalWeight}`);
-                    }, 500);
-                }
-            }
-        }
-        
-        function resetMST() {
-            mstStep = 0;
-            mstEdges.forEach(e => e.selected = false);
-            drawMST();
-            updateMSTStatus('點擊「下一步」觀看 Kruskal 演算法執行過程');
-        }
-        
-        function updateMSTStatus(message) {
-            const statusEl = document.getElementById('mst-status');
-            if (statusEl) {
-                statusEl.textContent = message;
-            }
-        }
-    </script>
-</body>
+					// 決定面向
+					let facing = this.isPlayer1 ? 1 : -1;
+					if (this.isDiving) facing = Math.sign(this.vx) || facing; // 飛撲時根據速度方向轉向
+					ctx.scale(facing, 1);
+
+					// 蓄力特效
+					if (this.isCharging) {
+						ctx.beginPath();
+						ctx.arc(0, -40, 50, 0, Math.PI * 2);
+						ctx.fillStyle = `rgba(255, 100, 100, ${Math.min(this.chargePower / 40, 0.4)})`;
+						ctx.fill();
+					}
+
+					// 人形繪圖設定
+					ctx.lineWidth = 6;
+					ctx.lineCap = "round";
+					ctx.lineJoin = "round";
+					ctx.strokeStyle = this.color;
+					ctx.fillStyle = this.color;
+
+					let headX = 0,
+						headY = -70,
+						bodyTilt = 0;
+					let armRX = 15,
+						armRY = -30,
+						armLX = -15,
+						armLY = -30;
+					let legRX = 10,
+						legRY = 0,
+						legLX = -10,
+						legLY = 0;
+
+					// 根據姿勢決定骨架位置
+					let timeOsc = Math.sin(Date.now() / 150);
+
+					if (this.currentPose === "dive") {
+						// 飛撲姿勢：身體水平、手往前伸
+						headX = 25;
+						headY = -20;
+						bodyTilt = Math.PI / 2; // 轉 90 度
+						armRX = 45;
+						armRY = -5;
+						armLX = 45;
+						armLY = -5;
+						legRX = -15;
+						legRY = -10;
+						legLX = -30;
+						legLY = -5;
+					} else if (this.currentPose === "receive") {
+						// 接球姿勢：微蹲，手合攏往前
+						headY = -55;
+						bodyTilt = 0.3;
+						armRX = 25;
+						armRY = -20;
+						armLX = 25;
+						armLY = -20;
+						legLX = -15;
+						legLY = 0;
+						legRX = 15;
+						legRY = 0;
+					} else if (this.currentPose === "charge") {
+						// 蓄力姿勢：身體後仰，打擊手往後拉
+						bodyTilt = -0.3;
+						armRX = -30;
+						armRY = -70; // 蓄力手
+						armLX = 20;
+						armLY = -40; // 平衡手
+						legLX = -10;
+						legLY = 0;
+						legRX = 10;
+						legRY = 0;
+					} else if (this.currentPose === "spike") {
+						// 殺球姿勢：身體前傾，手往前揮
+						bodyTilt = 0.4;
+						armRX = 35;
+						armRY = -20; // 揮擊手
+						armLX = -20;
+						armLY = -50;
+					} else if (!this.isGrounded) {
+						// 跳躍姿勢
+						armRX = 20;
+						armRY = -85;
+						armLX = -20;
+						armLY = -85;
+						legRY = -15;
+						legLY = -10; // 膝蓋微彎
+					} else if (this.currentPose === "run") {
+						// 跑步姿勢 (簡易擺動)
+						headY = -68 + timeOsc * 2;
+						armRX = timeOsc * 20;
+						armRY = -30;
+						armLX = -timeOsc * 20;
+						armLY = -30;
+						legRX = -timeOsc * 15;
+						legLX = timeOsc * 15;
+					} else {
+						// Idle 待機姿勢 (呼吸效果)
+						headY = -70 + timeOsc * 2;
+					}
+
+					// 旋轉身體中心 (如果不是飛撲)
+					if (this.currentPose !== "dive") {
+						ctx.rotate(bodyTilt);
+					}
+
+					// 畫頭部
+					ctx.beginPath();
+					ctx.arc(headX, headY, 14, 0, Math.PI * 2);
+					ctx.fill();
+
+					// 畫身體
+					ctx.beginPath();
+					if (this.currentPose === "dive") {
+						ctx.moveTo(headX - 14, headY);
+						ctx.lineTo(-20, headY);
+					} else {
+						ctx.moveTo(0, headY + 14);
+						ctx.lineTo(0, -35); // 臀部位置
+					}
+					ctx.stroke();
+
+					// 畫手腳
+					if (this.currentPose === "dive") {
+						// 飛撲四肢
+						ctx.beginPath();
+						ctx.moveTo(0, headY);
+						ctx.lineTo(armLX, armLY);
+						ctx.moveTo(0, headY);
+						ctx.lineTo(armRX, armRY);
+						ctx.moveTo(-20, headY);
+						ctx.lineTo(legLX, legLY);
+						ctx.moveTo(-20, headY);
+						ctx.lineTo(legRX, legRY);
+						ctx.stroke();
+					} else {
+						// 正常四肢
+						ctx.beginPath();
+						ctx.moveTo(0, -50);
+						ctx.lineTo(armLX, armLY);
+						ctx.moveTo(0, -50);
+						ctx.lineTo(armRX, armRY);
+						ctx.moveTo(0, -35);
+						ctx.lineTo(legLX, legLY);
+						ctx.moveTo(0, -35);
+						ctx.lineTo(legRX, legRY);
+						ctx.stroke();
+					}
+
+					// 畫眼睛 (堅定眼神)
+					ctx.fillStyle = "white";
+					let eyeX = headX + (this.currentPose === "dive" ? 5 : 6);
+					let eyeY = headY - (this.currentPose === "dive" ? 5 : 2);
+					ctx.beginPath();
+					ctx.arc(eyeX, eyeY, 4, 0, Math.PI * 2);
+					ctx.fill();
+					ctx.fillStyle = "black";
+					ctx.beginPath();
+					ctx.arc(eyeX + 1.5, eyeY, 2, 0, Math.PI * 2);
+					ctx.fill();
+
+					ctx.restore();
+				}
+			}
+
+			// 球類別
+			class Ball {
+				constructor() {
+					this.r = 20;
+					this.reset(1);
+					this.trail = [];
+					this.isDropShot = false;
+				}
+
+				reset(serveSide) {
+					this.x = serveSide === 1 ? 200 : 600;
+					this.y = 100;
+					this.vx = 0;
+					this.vy = 0;
+					this.trail = [];
+					this.isDropShot = false;
+					rallyMultiplier = 1.0;
+				}
+
+				update() {
+					this.trail.push({ x: this.x, y: this.y });
+					if (this.trail.length > 15) this.trail.shift();
+
+					let currentGravity = GRAVITY * rallyMultiplier;
+
+					if (this.isDropShot && this.vy > 0) {
+						this.vx *= 0.96;
+						currentGravity *= 1.4;
+					}
+
+					this.vy += currentGravity;
+					if (this.vy > 25) this.vy = 25;
+
+					this.x += this.vx * rallyMultiplier;
+					this.y += this.vy * rallyMultiplier;
+
+					// 牆壁
+					if (this.x - this.r < 0) {
+						this.x = this.r;
+						this.vx *= -0.8;
+					} else if (this.x + this.r > canvas.width) {
+						this.x = canvas.width - this.r;
+						this.vx *= -0.8;
+					}
+
+					// 網子碰撞
+					if (
+						this.x + this.r > NET.x &&
+						this.x - this.r < NET.x + NET.w &&
+						this.y + this.r > NET.y
+					) {
+						if (this.y < NET.y + 10) {
+							this.vy *= -0.8;
+							this.y = NET.y - this.r;
+						} else {
+							this.vx *= -0.8;
+							if (this.x < NET.x + NET.w / 2) this.x = NET.x - this.r;
+							else this.x = NET.x + NET.w + this.r;
+						}
+					}
+
+					// 身體碰撞彈開與撲救自動接球
+					[p1, p2].forEach((p) => {
+						// 簡易邊界框判定
+						let testX = this.x,
+							testY = this.y;
+						if (this.x < p.x) testX = p.x;
+						else if (this.x > p.x + p.w) testX = p.x + p.w;
+						if (this.y < p.y) testY = p.y;
+						else if (this.y > p.y + p.h) testY = p.y + p.h;
+
+						let dist = Math.hypot(this.x - testX, this.y - testY);
+						if (dist < this.r) {
+							if (p.isDiving) {
+								// 神級自動撲救
+								let sideDir = p.isPlayer1 ? 1 : -1;
+								this.vx = 4 * sideDir;
+								this.vy = -16;
+								this.y -= 10;
+								createHitEffect(this.x, this.y, "#9ae6b4", 15);
+								statusText.innerText = "🛡️ 神級撲救！ 🛡️";
+								clearTimeout(statusTimeout);
+								statusTimeout = setTimeout(
+									() => (statusText.innerText = ""),
+									1500,
+								);
+							} else {
+								// 被動身體推開
+								let angle = Math.atan2(
+									this.y - (p.y + p.h / 2),
+									this.x - (p.x + p.w / 2),
+								);
+								this.vx = Math.cos(angle) * 7;
+								this.vy = Math.sin(angle) * 7 - 5;
+								this.y -= 5;
+							}
+							this.isDropShot = false;
+						}
+					});
+
+					// 落地
+					if (this.y + this.r >= GROUND_Y) {
+						shakeAmount = 10;
+						this.y = GROUND_Y - this.r;
+						this.vy = -this.vy * 0.5;
+						this.vx *= 0.5;
+						score(this.x < NET.x ? 2 : 1);
+					}
+				}
+
+				draw() {
+					if (
+						rallyMultiplier > 1.2 ||
+						Math.abs(this.vy) > 15 ||
+						Math.abs(this.vx) > 10
+					) {
+						for (let i = 0; i < this.trail.length; i++) {
+							let point = this.trail[i];
+							let alpha = i / this.trail.length;
+							ctx.beginPath();
+							ctx.arc(point.x, point.y, this.r * alpha, 0, Math.PI * 2);
+							ctx.fillStyle = `rgba(255, 255, 0, ${alpha * 0.5})`;
+							ctx.fill();
+						}
+					}
+
+					ctx.beginPath();
+					ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+					ctx.fillStyle = "#ecc94b";
+					ctx.fill();
+					ctx.lineWidth = 3;
+					ctx.strokeStyle = "#b7791f";
+					ctx.stroke();
+					ctx.beginPath();
+					ctx.arc(this.x, this.y, this.r, 0.2, 2.9);
+					ctx.stroke();
+					ctx.beginPath();
+					ctx.arc(this.x, this.y, this.r, 3.3, 6.0);
+					ctx.stroke();
+				}
+			}
+
+			// 視覺特效
+			let particles = [];
+			function createHitEffect(x, y, color, count = 10) {
+				for (let i = 0; i < count; i++) {
+					particles.push({
+						x: x,
+						y: y,
+						vx: (Math.random() - 0.5) * 15,
+						vy: (Math.random() - 0.5) * 15,
+						life: 1.0,
+						color: color,
+					});
+				}
+			}
+
+			let statusTimeout;
+			function score(playerNum) {
+				if (!gameRunning) return;
+				gameRunning = false;
+				statusText.innerText = `${playerNum}P 得分！`;
+
+				if (playerNum === 1) {
+					p1.score++;
+					document.getElementById("score-1p").innerText = p1.score;
+				} else {
+					p2.score++;
+					document.getElementById("score-2p").innerText = p2.score;
+				}
+
+				setTimeout(() => {
+					p1.reset();
+					p2.reset();
+					ball.reset(playerNum === 1 ? 2 : 1);
+					statusText.innerText = "";
+					gameRunning = true;
+				}, 1500);
+			}
+
+			// 初始化
+			const p1 = new Player(100, "#ed8936", true);
+			const p2 = new Player(636, "#f56565", false);
+			const ball = new Ball();
+
+			function gameLoop() {
+				ctx.save();
+				if (shakeAmount > 0) {
+					ctx.translate(
+						(Math.random() - 0.5) * shakeAmount,
+						(Math.random() - 0.5) * shakeAmount,
+					);
+					shakeAmount *= 0.8;
+					if (shakeAmount < 0.5) shakeAmount = 0;
+				}
+
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+				if (gameRunning) {
+					p1.update();
+					p2.update();
+					ball.update();
+				}
+
+				// 畫背景物件
+				ctx.fillStyle = "#a0aec0";
+				ctx.fillRect(NET.x, NET.y, NET.w, NET.h);
+				ctx.fillStyle = "#e2e8f0";
+				ctx.fillRect(NET.x - 2, NET.y, NET.w + 4, 10);
+				ctx.fillStyle = "#2f855a";
+				ctx.fillRect(0, GROUND_Y, canvas.width, canvas.height - GROUND_Y);
+				ctx.fillStyle = "#fff";
+				ctx.fillRect(0, GROUND_Y, canvas.width, 5);
+
+				// 畫特效
+				for (let i = particles.length - 1; i >= 0; i--) {
+					let p = particles[i];
+					p.x += p.vx;
+					p.y += p.vy;
+					p.life -= 0.05;
+					ctx.globalAlpha = p.life;
+					ctx.fillStyle = p.color;
+					ctx.beginPath();
+					ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+					ctx.fill();
+					ctx.globalAlpha = 1.0;
+					if (p.life <= 0) particles.splice(i, 1);
+				}
+
+				p1.draw();
+				p2.draw();
+				ball.draw();
+				ctx.restore();
+				requestAnimationFrame(gameLoop);
+			}
+
+			startBtn.addEventListener("click", () => {
+				overlay.style.display = "none";
+				gameRunning = true;
+				p1.reset();
+				p2.reset();
+				ball.reset(1);
+				document.getElementById("score-1p").innerText = "0";
+				document.getElementById("score-2p").innerText = "0";
+				p1.score = 0;
+				p2.score = 0;
+			});
+
+			gameLoop();
+		</script>
+	</body>
 </html>
