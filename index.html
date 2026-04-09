@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>加強版極速排球 - 寫實全螢幕版</title>
+    <title>加強版排球遊戲 </title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -28,24 +28,13 @@
         }
     </script>
     <style>
-        /* 讓 Body 填滿整個視窗並隱藏滾動條 */
         body { 
-            margin: 0; 
-            padding: 0;
-            overflow: hidden; 
-            background-color: #09090b; 
-            color: #f8fafc; 
+            margin: 0; padding: 0; overflow: hidden; 
+            background-color: #09090b; color: #f8fafc; 
             font-family: ui-sans-serif, system-ui, sans-serif; 
-            width: 100vw;
-            height: 100vh;
+            width: 100vw; height: 100vh;
         }
-        
-        /* Canvas 佔滿整個畫面 */
-        canvas { 
-            display: block; 
-            width: 100vw; 
-            height: 100vh; 
-        }
+        canvas { display: block; width: 100vw; height: 100vh; }
         
         #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
         
@@ -56,37 +45,21 @@
         
         #overlay { pointer-events: auto; }
         
-        /* 極光動畫 CSS */
-        @keyframes aurora1 {
-            0% { transform: translateX(-10vw) translateY(-5vh) rotate(0deg) scale(1); }
-            50% { transform: translateX(5vw) translateY(3vh) rotate(180deg) scale(1.1); }
-            100% { transform: translateX(10vw) translateY(-3vh) rotate(360deg) scale(0.9); }
-        }
-        @keyframes aurora2 {
-            0% { transform: translateX(8vw) translateY(4vh) rotate(45deg) scale(0.8); }
-            50% { transform: translateX(-3vw) translateY(-2vh) rotate(225deg) scale(1.2); }
-            100% { transform: translateX(-8vw) translateY(6vh) rotate(405deg) scale(0.9); }
-        }
-        @keyframes aurora3 {
-            0% { transform: translateX(-5vw) translateY(2vh) rotate(90deg) scale(1.1); }
-            50% { transform: translateX(7vw) translateY(-4vh) rotate(270deg) scale(0.8); }
-            100% { transform: translateX(-2vw) translateY(5vh) rotate(450deg) scale(1.0); }
-        }
-        @keyframes aurora4 {
-            0% { transform: translateX(3vw) translateY(-2vh) rotate(135deg) scale(0.9); }
-            50% { transform: translateX(-6vw) translateY(1vh) rotate(315deg) scale(1.1); }
-            100% { transform: translateX(4vw) translateY(-6vh) rotate(495deg) scale(0.8); }
-        }
+        @keyframes aurora1 { 0% { transform: translateX(-10vw) translateY(-5vh) rotate(0deg) scale(1); } 50% { transform: translateX(5vw) translateY(3vh) rotate(180deg) scale(1.1); } 100% { transform: translateX(10vw) translateY(-3vh) rotate(360deg) scale(0.9); } }
+        @keyframes aurora2 { 0% { transform: translateX(8vw) translateY(4vh) rotate(45deg) scale(0.8); } 50% { transform: translateX(-3vw) translateY(-2vh) rotate(225deg) scale(1.2); } 100% { transform: translateX(-8vw) translateY(6vh) rotate(405deg) scale(0.9); } }
+        @keyframes aurora3 { 0% { transform: translateX(-5vw) translateY(2vh) rotate(90deg) scale(1.1); } 50% { transform: translateX(7vw) translateY(-4vh) rotate(270deg) scale(0.8); } 100% { transform: translateX(-2vw) translateY(5vh) rotate(450deg) scale(1.0); } }
+        @keyframes aurora4 { 0% { transform: translateX(3vw) translateY(-2vh) rotate(135deg) scale(0.9); } 50% { transform: translateX(-6vw) translateY(1vh) rotate(315deg) scale(1.1); } 100% { transform: translateX(4vw) translateY(-6vh) rotate(495deg) scale(0.8); } }
 
         input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        
+        /* 隱藏預設 HTML UI 在得分時，改由 Canvas 繪製動漫風 */
+        .hidden-status { display: none !important; }
     </style>
 </head>
 <body class="relative">
 
-<!-- 遊戲畫布 -->
 <canvas id="gameCanvas"></canvas>
 
-<!-- UI 層 -->
 <div id="ui-layer">
     <div id="score-1p" class="score">0</div>
     <div id="timer-text"></div>
@@ -94,9 +67,7 @@
     <div id="status-text" class="absolute w-full text-center top-32 text-4xl font-black text-white drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] tracking-widest"></div>
 </div>
 
-<!-- 遊戲初始選單 (Aurora Background + Shadcn Drawer Style) -->
 <div id="overlay" class="absolute inset-0 bg-background flex flex-col items-center justify-center overflow-hidden z-20">
-    <!-- Aurora Background Elements -->
     <div class="absolute inset-0 z-0">
         <div class="absolute inset-0 opacity-70">
             <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-900/40 via-purple-900/30 to-indigo-900/40"></div>
@@ -110,18 +81,24 @@
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/10"></div>
     </div>
 
-    <!-- Shadcn UI Styled Content Card -->
-    <div class="relative z-10 flex flex-col items-center w-full max-w-2xl px-6">
-        <h1 class="text-6xl font-extrabold text-white mb-2 tracking-tight drop-shadow-2xl text-center">
-            Super Volleyball
+    <div class="relative z-10 flex flex-col items-center w-full max-w-3xl px-6">
+        <h1 class="text-6xl font-extrabold text-white mb-2 tracking-tight drop-shadow-2xl text-center italic">
+            SUPER VOLLEYBALL
         </h1>
-        <p class="text-lg text-muted-foreground mb-8 text-center">Select game mode and jump into the court.</p>
+        <p class="text-lg text-muted-foreground mb-6 text-center">Anime Edition ⚡ Choose your style</p>
         
-        <!-- Shadcn Card -->
-        <div class="bg-card/60 backdrop-blur-md border border-border w-full rounded-xl shadow-2xl p-6 mb-6">
-            <div class="flex items-center gap-2 mb-6 pb-4 border-b border-border">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-foreground"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 12 4 8"/><path d="M12 12v8"/><path d="m12 12 8-4"/></svg>
-                <h2 class="text-lg font-semibold text-foreground">Game Settings</h2>
+        <div class="bg-card/60 backdrop-blur-md border border-border w-full rounded-xl shadow-2xl p-6 mb-4">
+            
+            <!-- 對手模式選擇 -->
+            <div class="flex gap-4 mb-6 pb-6 border-b border-border justify-center">
+                <label class="flex items-center gap-2 cursor-pointer bg-primary/10 px-4 py-2 rounded-lg hover:bg-primary/20 transition-colors">
+                    <input type="radio" name="opponent" id="mode-pve" value="pve" class="w-4 h-4 accent-white" checked>
+                    <span class="text-foreground font-bold text-lg">1P vs 電腦 (PvE)</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer bg-primary/10 px-4 py-2 rounded-lg hover:bg-primary/20 transition-colors">
+                    <input type="radio" name="opponent" id="mode-pvp" value="pvp" class="w-4 h-4 accent-white">
+                    <span class="text-foreground font-bold text-lg">1P vs 2P (PvP)</span>
+                </label>
             </div>
 
             <div class="grid grid-cols-2 gap-6">
@@ -129,12 +106,12 @@
                 <label class="flex flex-col gap-3 cursor-pointer group">
                     <div class="flex items-center gap-2">
                         <input type="radio" name="mode" id="mode-score" value="score" class="w-4 h-4 accent-white" checked>
-                        <span class="text-foreground font-medium">Score Limit</span>
+                        <span class="text-foreground font-medium">得分制 (Score Limit)</span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <input type="number" id="score-limit" min="10" max="30" value="15" 
-                            class="flex h-10 w-full rounded-md border border-input bg-background/50 px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-foreground transition-all">
-                        <span class="text-sm text-muted-foreground whitespace-nowrap">pts</span>
+                        <input type="number" id="score-limit" min="5" max="30" value="15" 
+                            class="flex h-10 w-full rounded-md border border-input bg-background/50 px-3 py-2 text-sm ring-offset-background text-foreground transition-all focus:ring-2 focus:ring-ring focus:outline-none">
+                        <span class="text-sm text-muted-foreground whitespace-nowrap">分</span>
                     </div>
                 </label>
 
@@ -142,38 +119,44 @@
                 <label class="flex flex-col gap-3 cursor-pointer group">
                     <div class="flex items-center gap-2">
                         <input type="radio" name="mode" id="mode-time" value="time" class="w-4 h-4 accent-white">
-                        <span class="text-foreground font-medium text-muted-foreground" id="time-title">Time Limit</span>
+                        <span class="text-foreground font-medium text-muted-foreground" id="time-title">計時制 (附 10s 攻擊限制)</span>
                     </div>
                     <div class="flex items-center gap-2">
                         <input type="number" id="time-limit" min="30" max="300" value="60" disabled
-                            class="flex h-10 w-full rounded-md border border-input bg-background/50 px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-muted-foreground transition-all">
-                        <span class="text-sm text-muted-foreground whitespace-nowrap">sec</span>
+                            class="flex h-10 w-full rounded-md border border-input bg-background/50 px-3 py-2 text-sm ring-offset-background disabled:opacity-50 text-muted-foreground transition-all focus:ring-2 focus:ring-ring focus:outline-none">
+                        <span class="text-sm text-muted-foreground whitespace-nowrap">秒</span>
                     </div>
                 </label>
             </div>
         </div>
 
-        <!-- Controls Info -->
-        <div class="flex gap-4 w-full mb-8 text-sm">
+        <div class="flex gap-4 w-full mb-6 text-sm">
             <div class="flex-1 bg-card/40 backdrop-blur-sm border border-border p-4 rounded-lg flex flex-col items-center">
-                <span class="text-orange-400 font-bold mb-2 text-base">1P (Left)</span>
-                <div class="text-muted-foreground text-center space-y-1">
-                    <p>Move: <strong class="text-foreground text-base">W A S D</strong></p>
-                    <p>Action: <strong class="text-foreground text-base">E</strong></p>
-                </div>
+                <span class="text-orange-400 font-bold mb-2 text-lg">1P (左方玩家)</span>
+                <p>移動: <strong class="text-foreground">W A S D</strong> | 動作: <strong class="text-foreground">E</strong></p>
+                <ul class="text-xs text-left space-y-1 mt-3 bg-black/40 p-2 rounded w-full">
+                    <li class="font-bold text-yellow-300 text-center border-b border-white/20 pb-1 mb-1">🏐 5 種特殊發球 (發球局時)</li>
+                    <li><strong class="text-white">W</strong> : 跳發 (強力平擊)</li>
+                    <li><strong class="text-white">S</strong> : 低手 (超高緩降)</li>
+                    <li><strong class="text-white">A</strong> : 吊球 (過網急墜)</li>
+                    <li><strong class="text-white">D</strong> : 飄球 (詭異S型晃動)</li>
+                    <li><strong class="text-white">E</strong> : 普發 (標準)</li>
+                </ul>
             </div>
-            <div class="flex-1 bg-card/40 backdrop-blur-sm border border-border p-4 rounded-lg flex flex-col items-center">
-                <span class="text-red-400 font-bold mb-2 text-base">2P (Right)</span>
-                <div class="text-muted-foreground text-center space-y-1">
-                    <p>Move: <strong class="text-foreground text-base">Arrows</strong></p>
-                    <p>Action: <strong class="text-foreground text-base">Enter</strong></p>
-                </div>
+            <div class="flex-1 bg-card/40 backdrop-blur-sm border border-border p-4 rounded-lg flex flex-col items-center opacity-70" id="p2-panel">
+                <span class="text-red-400 font-bold mb-2 text-lg">2P / 電腦 AI</span>
+                <p>移動: <strong class="text-foreground">方向鍵</strong> | 動作: <strong class="text-foreground">Enter</strong></p>
+                <ul class="text-xs text-left space-y-1 mt-3 bg-black/40 p-2 rounded w-full">
+                    <li class="font-bold text-yellow-300 text-center border-b border-white/20 pb-1 mb-1">🏐 發球對應</li>
+                    <li><strong class="text-white">↑</strong> : 跳發 | <strong class="text-white">↓</strong> : 低手</li>
+                    <li><strong class="text-white">←</strong> : 吊球 | <strong class="text-white">→</strong> : 飄球</li>
+                    <li class="text-center text-gray-400 italic mt-1">(單人模式時由電腦隨機發出)</li>
+                </ul>
             </div>
         </div>
 
-        <button id="start-btn" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-base font-bold ring-offset-background transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-14 px-10 w-full max-w-md shadow-[0_0_20px_rgba(255,255,255,0.3)]">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><polygon points="6 3 20 12 6 21 6 3"/></svg>
-            Start Match
+        <button id="start-btn" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-xl font-black ring-offset-background transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-white text-black hover:bg-gray-200 h-14 px-12 w-full max-w-sm shadow-[0_0_20px_rgba(255,255,255,0.4)] italic">
+            START GAME
         </button>
     </div>
 </div>
@@ -182,34 +165,22 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// --- 動態全螢幕解析度邏輯 ---
-const logicalHeight = 600; // 提升邏輯高度以容納更高的人物
+const logicalHeight = 600; 
 let logicalWidth = 1000;
 let scaleFactor = 1;
 
 function resizeGame() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    // 依據高度計算縮放比例
     scaleFactor = canvas.height / logicalHeight;
-    // 反推動態的邏輯寬度 (確保左右填滿螢幕無黑邊)
     logicalWidth = canvas.width / scaleFactor;
-    
-    // 更新網子位置到畫面正中央
     NET.x = logicalWidth / 2 - NET.w / 2;
-    
-    // 如果視窗縮小導致 2P 在界外，把他拉回來
-    // 加上 try-catch 防止未宣告變數錯誤
     try {
       if (typeof p2 !== 'undefined' && p2 !== null && p2.x > logicalWidth - p2.w) {
           p2.x = logicalWidth - p2.w;
       }
-    } catch(e) {
-      // 忽略錯誤，代表 p2 還沒初始化
-    }
+    } catch(e) {}
 }
-
-// -------------------------
 
 const overlay = document.getElementById('overlay');
 const startBtn = document.getElementById('start-btn');
@@ -222,6 +193,8 @@ const modeTimeRadio = document.getElementById('mode-time');
 const scoreLimitInput = document.getElementById('score-limit');
 const timeLimitInput = document.getElementById('time-limit');
 const timeTitle = document.getElementById('time-title');
+const opponentRadios = document.getElementsByName('opponent');
+const p2Panel = document.getElementById('p2-panel');
 
 modeScoreRadio.addEventListener('change', () => {
     scoreLimitInput.disabled = false; scoreLimitInput.classList.remove('text-muted-foreground'); scoreLimitInput.classList.add('text-foreground');
@@ -234,13 +207,20 @@ modeTimeRadio.addEventListener('change', () => {
     modeScoreRadio.nextElementSibling.classList.add('text-muted-foreground'); timeTitle.classList.remove('text-muted-foreground');
 });
 
-// 遊戲常數 (物理與維度微調以適應高大角色與寬場地)
+Array.from(opponentRadios).forEach(radio => {
+    radio.addEventListener('change', (e) => {
+        if(e.target.value === 'pvp') p2Panel.classList.remove('opacity-70');
+        else p2Panel.classList.add('opacity-70');
+    });
+});
+
 const GRAVITY = 0.28;
 const GROUND_Y = 500; 
-const NET = { x: 0, y: 280, w: 22, h: 220 }; // 網子變高
+const NET = { x: 0, y: 280, w: 22, h: 220 }; 
 
-let gameState = 'MENU';
+let gameState = 'MENU'; // MENU, SERVING, PLAYING, SCORED, GAME_OVER
 let gameMode = 'score'; 
+let playMode = 'pve'; 
 let targetScore = 15;
 let timeLimit = 60;
 let timeRemaining = 60;
@@ -249,6 +229,11 @@ let currentServer = 1;
 let shakeAmount = 0;
 let rallyMultiplier = 1.0;
 let lastFrameTime = 0;
+let aiTimer = 0; 
+
+// --- 攻擊限制系統 (Shot Clock) ---
+let shotClockTimer = 10.0;
+let activeSide = 1;
 
 const keys = {};
 window.addEventListener('keydown', e => keys[e.code] = true);
@@ -256,13 +241,12 @@ window.addEventListener('keyup', e => keys[e.code] = false);
 
 class Player {
     constructor(isPlayer1, color) {
-        // 角色長高、變寬
-        this.w = 50; 
-        this.h = 130; 
+        this.w = 55; 
+        this.h = 135; 
         this.color = color;
         this.isPlayer1 = isPlayer1;
-        this.speed = 9.5; // 配合較寬的場地提升跑速
-        this.jumpPower = 10.5; // 配合身高提升跳躍力
+        this.speed = 9.8; 
+        this.jumpPower = 10.8; 
         
         this.resetPosition();
         
@@ -272,6 +256,7 @@ class Player {
         this.poseTimer = 0;
         
         this.prevHitKeyDown = false;
+        this.prevUp = false; this.prevDown = false; this.prevLeft = false; this.prevRight = false;
         this.isCharging = false;
         this.chargePower = 0;
 
@@ -288,7 +273,7 @@ class Player {
     }
 
     reset() {
-        this.w = 50; this.h = 130;
+        this.w = 55; this.h = 135;
         this.resetPosition();
         this.isGrounded = true;
         this.canDoubleJump = true;
@@ -308,12 +293,13 @@ class Player {
         this.currentPose = 'dive';
 
         let cx = this.x + this.w / 2;
-        this.w = 110; this.h = 50; // 飛撲時碰撞箱變長
-        this.x = cx - 55; this.y += 80;
+        this.w = 120; this.h = 50; 
+        this.x = cx - 60; this.y += 85;
     }
 
     update() {
         let up = this.isPlayer1 ? keys['KeyW'] : keys['ArrowUp'];
+        let down = this.isPlayer1 ? keys['KeyS'] : keys['ArrowDown'];
         let left = this.isPlayer1 ? keys['KeyA'] : keys['ArrowLeft'];
         let right = this.isPlayer1 ? keys['KeyD'] : keys['ArrowRight'];
         let hitKeyDown = this.isPlayer1 ? keys['KeyE'] : keys['Enter'];
@@ -332,17 +318,43 @@ class Player {
                 ball.y = this.y - 20;
                 ball.vx = 0; ball.vy = 0;
                 ball.isDropShot = false;
+                ball.isFloat = false;
 
-                if (hitKeyDown && !this.prevHitKeyDown) {
+                let serveType = 0;
+                if (hitKeyDown && !this.prevHitKeyDown) serveType = 1; 
+                if (up && !this.prevUp) serveType = 2; 
+                if (down && !this.prevDown) serveType = 3; 
+                if (left && !this.prevLeft) serveType = 4; 
+                if (right && !this.prevRight) serveType = 5; 
+
+                if (serveType !== 0) {
                     gameState = 'PLAYING';
-                    ball.vy = -14;
-                    ball.vx = (this.isPlayer1 ? 1 : -1) * 8;
                     this.currentPose = 'spike';
                     this.poseTimer = 20;
-                    createHitEffect(ball.x, ball.y, '#fbd38d', 15);
-                    statusText.innerText = "";
+                    let sideDir = this.isPlayer1 ? 1 : -1;
+                    
+                    switch(serveType) {
+                        case 1: 
+                            ball.vy = -13; ball.vx = sideDir * 9; 
+                            showStatus("NORMAL SERVE", '#fff'); break;
+                        case 2: 
+                            this.vy = -this.jumpPower; this.isGrounded = false; 
+                            ball.y -= 40; 
+                            ball.vy = -7; ball.vx = sideDir * 14; 
+                            showStatus("🔥 JUMP SERVE 🔥", '#ef4444'); shakeAmount = 10; break;
+                        case 3: 
+                            ball.vy = -24; ball.vx = sideDir * 5; 
+                            showStatus("🎈 HIGH TOSS", '#a78bfa'); break;
+                        case 4: 
+                            ball.vy = -16; ball.vx = sideDir * 8; ball.isDropShot = true; 
+                            showStatus("✨ DROP SERVE ✨", '#60a5fa'); break;
+                        case 5: 
+                            ball.vy = -12; ball.vx = sideDir * 9.5; ball.isFloat = true; 
+                            showStatus("〰️ FLOAT SERVE 〰️", '#4ade80'); break;
+                    }
+                    createHitEffect(ball.x, ball.y, this.color, 15);
                 }
-                this.prevHitKeyDown = hitKeyDown;
+                this.prevHitKeyDown = hitKeyDown; this.prevUp = up; this.prevDown = down; this.prevLeft = left; this.prevRight = right;
                 return;
             }
         }
@@ -362,8 +374,8 @@ class Player {
             if (this.diveTimer <= 0) {
                 this.isDiving = false;
                 let cx = this.x + this.w / 2;
-                this.w = 50; this.h = 130;
-                this.x = cx - 25; this.y = GROUND_Y - this.h;
+                this.w = 55; this.h = 135;
+                this.x = cx - 27.5; this.y = GROUND_Y - this.h;
                 this.currentPose = 'idle';
             }
         } else {
@@ -418,7 +430,7 @@ class Player {
                 if (hitKeyDown && this.isCharging) {
                     this.chargePower += 1;
                     if (this.vy > 0) this.vy *= 0.82; 
-                    if (this.chargePower > 15 && Math.random() < 0.3) createHitEffect(this.x + this.w/2, this.y + 20, '#ecc94b', 1);
+                    if (this.chargePower > 15 && Math.random() < 0.4) createHitEffect(this.x + this.w/2, this.y + 20, '#ecc94b', 1);
                 }
 
                 if (!hitKeyDown && this.prevHitKeyDown) {
@@ -432,9 +444,8 @@ class Player {
             }
         }
         
-        this.prevHitKeyDown = hitKeyDown;
+        this.prevHitKeyDown = hitKeyDown; this.prevUp = up; this.prevDown = down; this.prevLeft = left; this.prevRight = right;
 
-        // 確保角色不出界
         if (this.isPlayer1) {
             if (this.x < 0) this.x = 0;
             if (this.x + this.w > NET.x) this.x = NET.x - this.w;
@@ -456,31 +467,30 @@ class Player {
         let isFrontRow = this.isPlayer1 ? (this.x > logicalWidth * 0.3) : (this.x < logicalWidth * 0.7 - this.w);
         let upPressed = this.isPlayer1 ? keys['KeyW'] : keys['ArrowUp'];
 
-        // 調整擊球判定點到肩膀前方
         let hitOriginX = this.x + this.w/2 + (sideDir * this.w * 0.6);
         let hitOriginY = this.y + this.h * 0.25; 
         let dist = Math.hypot(ball.x - hitOriginX, ball.y - hitOriginY);
-        let hitRadius = 75 + (isCharge ? 25 : 0); 
+        let hitRadius = 80 + (isCharge ? 30 : 0); 
 
         if (dist < hitRadius + ball.r) {
             if (rallyMultiplier < 2.2) rallyMultiplier += 0.05;
 
             if (upPressed && !isCharge) {
-                ball.vx = 9 * sideDir; ball.vy = -8;
-                createHitEffect(ball.x, ball.y, '#63b3ed', 8);
-                statusText.innerText = "✨ Drop Shot ✨";
+                ball.vx = 8 * sideDir; ball.vy = -6;
+                createHitEffect(ball.x, ball.y, '#60a5fa', 12);
+                showStatus("✨ TRICK DROP ✨", '#93c5fd');
                 ball.isDropShot = true;
             } else if (isCharge && chargePower >= 10) {
                 let powerLevel = Math.min(chargePower / 30, 1.5);
                 ball.vx = (18 + powerLevel * 6) * sideDir; ball.vy = 14 + powerLevel * 10;
-                shakeAmount = 18 + powerLevel * 15;
-                createHitEffect(ball.x, ball.y, '#ef4444', 30);
-                statusText.innerText = "🔥🔥 SUPER SPIKE 🔥🔥";
+                shakeAmount = 20 + powerLevel * 15;
+                createHitEffect(ball.x, ball.y, '#ef4444', 35);
+                showStatus("🔥🔥 SMASH 🔥🔥", '#fca5a5');
                 ball.isDropShot = false;
             } else if (!isFrontRow) {
-                ball.vx = 20 * sideDir; ball.vy = 2; 
+                ball.vx = 20 * sideDir; ball.vy = 1.5; 
                 createHitEffect(ball.x, ball.y, '#3b82f6', 15);
-                statusText.innerText = "☄️ Back Row ☄️";
+                showStatus("☄️ BACK ROW ATTACK ☄️", '#93c5fd');
                 ball.isDropShot = false;
             } else {
                 ball.vx = 15 * sideDir; ball.vy = 10;
@@ -489,12 +499,11 @@ class Player {
             }
             
             ball.y -= 5;
-            clearTimeout(window.statusTimeout);
-            window.statusTimeout = setTimeout(() => statusText.innerText = "", 1500);
+            ball.isFloat = false; 
+            ball.hitCooldown = 15; 
         }
     }
 
-    // 逼真人體骨架渲染
     draw() {
         ctx.save();
         let cx = this.x + this.w / 2; 
@@ -506,153 +515,170 @@ class Player {
         ctx.scale(facing, 1);
 
         if (this.isCharging) {
-            ctx.beginPath(); ctx.arc(0, -60, 60, 0, Math.PI*2);
-            ctx.fillStyle = `rgba(239, 68, 68, ${Math.min(this.chargePower/40, 0.4)})`; ctx.fill();
+            ctx.beginPath(); ctx.arc(0, -60, 65, 0, Math.PI*2);
+            let glow = ctx.createRadialGradient(0, -60, 20, 0, -60, 65);
+            glow.addColorStop(0, `rgba(239, 68, 68, ${Math.min(this.chargePower/30, 0.8)})`);
+            glow.addColorStop(1, 'rgba(239, 68, 68, 0)');
+            ctx.fillStyle = glow; ctx.fill();
         }
 
-        // 定義身體節點
-        let headY = -115, headX = 0;
-        let shoulderY = -95, hipY = -55;
+        let headY = -120, headX = 0;
+        let shoulderY = -95, hipY = -50;
         let bodyTilt = 0;
         
-        // 預設關節位置
-        let rElbowX = 15, rElbowY = -70, rHandX = 15, rHandY = -40;
-        let lElbowX = -15, lElbowY = -70, lHandX = -15, lHandY = -40;
-        let rKneeX = 12, rKneeY = -25, rFootX = 15, rFootY = 0;
-        let lKneeX = -12, lKneeY = -25, lFootX = -15, lFootY = 0;
+        let rElbowX = 18, rElbowY = -70, rHandX = 18, rHandY = -40;
+        let lElbowX = -18, lElbowY = -70, lHandX = -18, lHandY = -40;
+        let rKneeX = 15, rKneeY = -25, rFootX = 18, rFootY = 0;
+        let lKneeX = -15, lKneeY = -25, lFootX = -18, lFootY = 0;
 
         let timeOsc = Math.sin(Date.now() / 150);
 
         if (this.currentPose === 'dive') {
-            headX = 40; headY = -30; bodyTilt = Math.PI / 2; 
-            shoulderY = -95; hipY = -55; // relative to body rotation
-            rElbowX = 65; rElbowY = -15; rHandX = 85; rHandY = -5;
-            lElbowX = 65; lElbowY = -5; lHandX = 85; lHandY = 5;
-            rKneeX = -25; rKneeY = -15; rFootX = -50; rFootY = -5;
-            lKneeX = -25; lKneeY = -5; lFootX = -50; lFootY = 5;
+            headX = 45; headY = -35; bodyTilt = Math.PI / 2; 
+            shoulderY = -100; hipY = -55; 
+            rElbowX = 70; rElbowY = -20; rHandX = 95; rHandY = -10;
+            lElbowX = 70; lElbowY = -5; lHandX = 95; lHandY = 5;
+            rKneeX = -25; rKneeY = -15; rFootX = -55; rFootY = -5;
+            lKneeX = -25; lKneeY = -5; lFootX = -55; lFootY = 5;
         } else if (this.currentPose === 'charge') {
-            bodyTilt = -0.2; 
-            rElbowX = -35; rElbowY = -100; rHandX = -45; rHandY = -120; // 往後拉弓
-            lElbowX = 25; lElbowY = -75; lHandX = 35; lHandY = -55;
+            bodyTilt = -0.25; 
+            rElbowX = -40; rElbowY = -105; rHandX = -50; rHandY = -125; 
+            lElbowX = 30; lElbowY = -75; lHandX = 40; lHandY = -55;
             rKneeX = -5; rKneeY = -25; rFootX = 10; rFootY = 0;
             lKneeX = 15; lKneeY = -25; lFootX = -10; lFootY = 0;
         } else if (this.currentPose === 'spike') {
-            bodyTilt = 0.3; 
-            rElbowX = 35; rElbowY = -50; rHandX = 55; rHandY = -30; // 往下扣殺
-            lElbowX = -25; lElbowY = -75; lHandX = -35; lHandY = -55;
+            bodyTilt = 0.35; 
+            rElbowX = 40; rElbowY = -50; rHandX = 65; rHandY = -30; 
+            lElbowX = -30; lElbowY = -75; lHandX = -40; lHandY = -55;
             rKneeX = -5; rKneeY = -25; rFootX = 10; rFootY = 0;
         } else if (!this.isGrounded) {
-            // 跳躍中
-            rElbowX = 25; rElbowY = -120; rHandX = 15; rHandY = -145; // 雙手高舉
-            lElbowX = -25; lElbowY = -120; lHandX = -15; lHandY = -145;
-            rKneeX = 15; rKneeY = -35; rFootX = 10; rFootY = -15; // 屈膝
-            lKneeX = -15; lKneeY = -35; lFootX = -10; lFootY = -15;
+            rElbowX = 30; rElbowY = -125; rHandX = 20; rHandY = -155; 
+            lElbowX = -30; lElbowY = -125; lHandX = -20; lHandY = -155;
+            rKneeX = 18; rKneeY = -35; rFootX = 12; rFootY = -15; 
+            lKneeX = -18; lKneeY = -35; lFootX = -12; lFootY = -15;
         } else if (this.currentPose === 'run') {
-            headY = -112 + timeOsc * 3;
-            rElbowX = timeOsc * 25; rElbowY = -70; rHandX = timeOsc * 35; rHandY = -40;
-            lElbowX = -timeOsc * 25; lElbowY = -70; lHandX = -timeOsc * 35; lHandY = -40;
-            rKneeX = -timeOsc * 20; rKneeY = -25; rFootX = -timeOsc * 30; rFootY = 0;
-            lKneeX = timeOsc * 20; lKneeY = -25; lFootX = timeOsc * 30; lFootY = 0;
+            headY = -118 + timeOsc * 3;
+            rElbowX = timeOsc * 30; rElbowY = -70; rHandX = timeOsc * 40; rHandY = -40;
+            lElbowX = -timeOsc * 30; lElbowY = -70; lHandX = -timeOsc * 40; lHandY = -40;
+            rKneeX = -timeOsc * 25; rKneeY = -25; rFootX = -timeOsc * 35; rFootY = 0;
+            lKneeX = timeOsc * 25; lKneeY = -25; lFootX = timeOsc * 35; lFootY = 0;
+        } else if (this.currentPose === 'receive') {
+            bodyTilt = 0.15; 
+            rElbowX = 25; rElbowY = -45; rHandX = 40; rHandY = -20; 
+            lElbowX = 15; lElbowY = -45; lHandX = 40; lHandY = -20;
+            rKneeX = 20; rKneeY = -35; rFootX = 15; rFootY = 0; 
+            lKneeX = -10; lKneeY = -35; lFootX = -15; lFootY = 0;
+            headY = -115;
+            shoulderY = -90;
         } else {
-            // Idle 呼吸
-            headY = -115 + timeOsc * 2;
+            headY = -120 + timeOsc * 2;
             shoulderY = -95 + timeOsc * 2;
         }
 
         if (this.currentPose !== 'dive') ctx.rotate(bodyTilt);
 
-        const skinColor = '#fdba74'; // 逼真的膚色
-        const clothColor = this.color; 
-        const shortsColor = '#1e293b';
+        const skinColor = '#fdba74'; 
+        const clothColor = this.color === '#f97316' ? '#111827' : '#ffffff'; 
+        const accentColor = this.color; 
+        const pantsColor = '#1e293b';
 
-        // 輔助繪製四肢的函數
         const drawLimb = (x1, y1, x2, y2, x3, y3, isArm) => {
-            // 上半部 (大腿/大臂)
             ctx.strokeStyle = skinColor;
-            ctx.lineWidth = isArm ? 10 : 12;
+            ctx.lineWidth = isArm ? 11 : 14;
             ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-            // 下半部 (小腿/小臂)
-            ctx.lineWidth = isArm ? 8 : 10;
+            ctx.lineWidth = isArm ? 9 : 11;
             ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x3, y3); ctx.stroke();
-            // 關節
-            ctx.fillStyle = '#f97316'; ctx.beginPath(); ctx.arc(x2, y2, isArm? 5: 6, 0, Math.PI*2); ctx.fill();
-            // 手掌/鞋子
+            ctx.fillStyle = accentColor; ctx.beginPath(); ctx.arc(x2, y2, isArm? 6: 7, 0, Math.PI*2); ctx.fill(); 
             ctx.fillStyle = isArm ? skinColor : '#ffffff';
-            ctx.beginPath(); ctx.arc(x3, y3, isArm? 6: 8, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(x3, y3, isArm? 6: 9, 0, Math.PI*2); ctx.fill();
         };
 
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round'; ctx.lineJoin = 'round';
 
         if (this.currentPose === 'dive') {
-            // 飛撲特別處理 (因為身體旋轉了)
-            drawLimb(0, shoulderY, lElbowX, lElbowY, lHandX, lHandY, true); // 左手
-            drawLimb(0, hipY, lKneeX, lKneeY, lFootX, lFootY, false);       // 左腳
+            drawLimb(0, shoulderY, lElbowX, lElbowY, lHandX, lHandY, true); 
+            drawLimb(0, hipY, lKneeX, lKneeY, lFootX, lFootY, false);       
             
-            // 身體 (球衣與球褲)
-            ctx.lineWidth = 22; ctx.strokeStyle = clothColor;
-            ctx.beginPath(); ctx.moveTo(0, shoulderY); ctx.lineTo(0, hipY); ctx.stroke();
-            ctx.lineWidth = 24; ctx.strokeStyle = shortsColor;
-            ctx.beginPath(); ctx.moveTo(0, hipY); ctx.lineTo(0, hipY + 15); ctx.stroke();
+            ctx.fillStyle = clothColor;
+            ctx.beginPath(); ctx.moveTo(-15, shoulderY); ctx.lineTo(15, shoulderY); ctx.lineTo(15, hipY); ctx.lineTo(-15, hipY); ctx.fill();
+            ctx.lineWidth = 4; ctx.strokeStyle = accentColor; ctx.stroke();
             
-            drawLimb(0, shoulderY, rElbowX, rElbowY, rHandX, rHandY, true); // 右手
-            drawLimb(0, hipY, rKneeX, rKneeY, rFootX, rFootY, false);       // 右腳
+            ctx.lineWidth = 26; ctx.strokeStyle = pantsColor;
+            ctx.beginPath(); ctx.moveTo(0, hipY); ctx.lineTo(0, hipY + 18); ctx.stroke();
+            
+            drawLimb(0, shoulderY, rElbowX, rElbowY, rHandX, rHandY, true); 
+            drawLimb(0, hipY, rKneeX, rKneeY, rFootX, rFootY, false);       
         } else {
-            // 正常直立繪製順序：後方手腳 -> 身體 -> 前方手腳
             drawLimb(0, shoulderY, lElbowX, lElbowY, lHandX, lHandY, true);
             drawLimb(0, hipY, lKneeX, lKneeY, lFootX, lFootY, false);
             
-            // 軀幹
-            ctx.lineWidth = 24; ctx.strokeStyle = clothColor;
-            ctx.beginPath(); ctx.moveTo(0, shoulderY+5); ctx.lineTo(0, hipY); ctx.stroke();
-            // 短褲
-            ctx.lineWidth = 26; ctx.strokeStyle = shortsColor;
-            ctx.beginPath(); ctx.moveTo(0, hipY); ctx.lineTo(0, hipY + 18); ctx.stroke();
+            ctx.fillStyle = clothColor;
+            ctx.beginPath(); ctx.moveTo(-18, shoulderY); ctx.lineTo(18, shoulderY); ctx.lineTo(14, hipY); ctx.lineTo(-14, hipY); ctx.fill();
+            ctx.lineWidth = 4; ctx.strokeStyle = accentColor; ctx.beginPath(); ctx.moveTo(-8, shoulderY); ctx.lineTo(0, shoulderY+20); ctx.lineTo(8, shoulderY); ctx.stroke();
+            
+            ctx.lineWidth = 28; ctx.strokeStyle = pantsColor;
+            ctx.beginPath(); ctx.moveTo(0, hipY); ctx.lineTo(0, hipY + 20); ctx.stroke();
             
             drawLimb(0, shoulderY, rElbowX, rElbowY, rHandX, rHandY, true);
             drawLimb(0, hipY, rKneeX, rKneeY, rFootX, rFootY, false);
         }
 
-        // 頭部
         ctx.fillStyle = skinColor;
-        ctx.beginPath(); ctx.arc(headX, headY, 18, 0, Math.PI*2); ctx.fill();
-        // 頭帶/頭髮
-        ctx.fillStyle = clothColor;
-        ctx.beginPath(); ctx.arc(headX, headY, 19, Math.PI, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(headX, headY, 18, 0, Math.PI*2); ctx.fill(); 
+        ctx.fillStyle = this.isPlayer1 ? '#0f172a' : '#7f1d1d'; 
+        ctx.beginPath();
+        ctx.moveTo(headX - 18, headY + 5);
+        ctx.lineTo(headX - 25, headY - 15);
+        ctx.lineTo(headX - 10, headY - 18);
+        ctx.lineTo(headX - 5, headY - 35);
+        ctx.lineTo(headX + 5, headY - 20);
+        ctx.lineTo(headX + 20, headY - 28);
+        ctx.lineTo(headX + 18, headY - 5);
+        ctx.lineTo(headX + 22, headY + 10);
+        ctx.fill();
 
-        // 眼睛
-        ctx.fillStyle = 'white';
-        let eyeX = headX + (this.currentPose === 'dive' ? 6 : 8), eyeY = headY - (this.currentPose === 'dive' ? 6 : 3);
-        ctx.beginPath(); ctx.arc(eyeX, eyeY, 5, 0, Math.PI*2); ctx.fill();
-        ctx.fillStyle = 'black'; ctx.beginPath(); ctx.arc(eyeX + 1.5, eyeY, 2.5, 0, Math.PI*2); ctx.fill();
+        let eyeX = headX + (this.currentPose === 'dive' ? 8 : 10), eyeY = headY - (this.currentPose === 'dive' ? 4 : 2);
+        ctx.fillStyle = accentColor;
+        ctx.shadowColor = accentColor; ctx.shadowBlur = 10;
+        ctx.beginPath(); ctx.ellipse(eyeX, eyeY, 5, 2, this.isDiving ? Math.PI/4 : 0, 0, Math.PI*2); ctx.fill();
+        ctx.shadowBlur = 0; 
 
         ctx.restore();
     }
 }
 
 class Ball {
-    constructor() { this.r = 24; this.trail = []; this.isDropShot = false; }
-    reset() { this.vx = 0; this.vy = 0; this.trail = []; this.isDropShot = false; rallyMultiplier = 1.0; }
+    constructor() { this.r = 24; this.trail = []; this.isDropShot = false; this.isFloat = false; this.hitCooldown = 0; }
+    reset() { this.vx = 0; this.vy = 0; this.trail = []; this.isDropShot = false; this.isFloat = false; this.hitCooldown = 0; rallyMultiplier = 1.0; }
 
     update() {
+        if (this.hitCooldown > 0) this.hitCooldown--;
+
         this.trail.push({x: this.x, y: this.y});
         if (this.trail.length > 15) this.trail.shift();
 
         let currentGravity = GRAVITY * rallyMultiplier;
-        if (this.isDropShot && this.vy > 0) { this.vx *= 0.95; currentGravity *= 1.4; }
+        
+        if (this.isDropShot && this.vy > 0) { this.vx *= 0.95; currentGravity *= 2.0; }
+        
+        if (this.isFloat) {
+            this.x += Math.sin(Date.now() / 60) * 4; 
+            currentGravity *= 0.8; 
+        }
 
         this.vy += currentGravity;
-        if (this.vy > 28) this.vy = 28; // 高度增加，終端速度微調
+        if (this.vy > 28) this.vy = 28; 
 
         this.x += this.vx * rallyMultiplier; this.y += this.vy * rallyMultiplier;
 
         if (this.x - this.r < 0) { this.x = this.r; this.vx *= -0.8; }
         else if (this.x + this.r > logicalWidth) { this.x = logicalWidth - this.r; this.vx *= -0.8; }
 
-        // 網子碰撞
         if (this.x + this.r > NET.x && this.x - this.r < NET.x + NET.w && this.y + this.r > NET.y) {
-            if (this.y < NET.y + 12) { this.vy *= -0.8; this.y = NET.y - this.r; } 
-            else { 
+            let isTop = this.y < NET.y + 10;
+            if (isTop) { 
+                this.vy *= -0.8; this.y = NET.y - this.r; this.vx *= 0.9;
+            } else { 
                 this.vx *= -0.8;
                 if (this.x < NET.x + NET.w/2) this.x = NET.x - this.r;
                 else this.x = NET.x + NET.w + this.r;
@@ -664,24 +690,42 @@ class Ball {
             if (this.x < p.x) testX = p.x; else if (this.x > p.x + p.w) testX = p.x + p.w;
             if (this.y < p.y) testY = p.y; else if (this.y > p.y + p.h) testY = p.y + p.h;
 
-            let dist = Math.hypot(this.x - testX, this.y - testY);
+            let distX = this.x - testX;
+            let distY = this.y - testY;
+            let dist = Math.hypot(distX, distY);
+
             if (dist < this.r) {
-                if (p.isDiving && gameState === 'PLAYING') {
-                    let sideDir = p.isPlayer1 ? 1 : -1;
-                    this.vx = 5 * sideDir; this.vy = -18; this.y -= 12;
-                    createHitEffect(this.x, this.y, '#4ade80', 20);
-                    statusText.innerText = "🛡️ SUPER SAVE! 🛡️";
-                    clearTimeout(window.statusTimeout); window.statusTimeout = setTimeout(() => statusText.innerText = "", 1500);
-                } else {
-                    let angle = Math.atan2(this.y - (p.y + p.h/2), this.x - (p.x + p.w/2));
-                    this.vx = Math.cos(angle) * 8; this.vy = Math.sin(angle) * 8 - 6; this.y -= 5; 
+                if (dist === 0) { distX = 0; distY = -1; dist = 1; }
+                let pushDist = this.r - dist;
+                this.x += (distX / dist) * pushDist;
+                this.y += (distY / dist) * pushDist;
+
+                if (this.hitCooldown === 0) {
+                    if (p.isDiving && gameState === 'PLAYING') {
+                        let sideDir = p.isPlayer1 ? 1 : -1;
+                        this.vx = 5 * sideDir; this.vy = -18;
+                        createHitEffect(this.x, this.y, '#4ade80', 25);
+                        showStatus("🛡️ 神級撲救 🛡️", '#4ade80');
+                    } else {
+                        p.currentPose = 'receive'; 
+                        p.poseTimer = 15;
+                        
+                        if (this.y < p.y + 40) {
+                            this.vy = -14 + (p.vy * 0.3);
+                            this.vx = (this.x - (p.x + p.w/2)) * 0.15 + (p.vx * 0.5);
+                        } else {
+                            this.vx = Math.sign(this.x - (p.x + p.w/2)) * 7 + (p.vx * 0.5);
+                            this.vy = -7; 
+                        }
+                    }
+                    this.isDropShot = false; this.isFloat = false;
+                    this.hitCooldown = 8; 
                 }
-                this.isDropShot = false;
             }
         });
 
         if (this.y + this.r >= GROUND_Y) {
-            shakeAmount = 15; this.y = GROUND_Y - this.r;
+            shakeAmount = 25; this.y = GROUND_Y - this.r;
             this.vy = -this.vy * 0.5; this.vx *= 0.5;
             if (gameState === 'PLAYING') score(this.x < logicalWidth/2 ? 2 : 1); 
         }
@@ -692,7 +736,8 @@ class Ball {
             for (let i = 0; i < this.trail.length; i++) {
                 let point = this.trail[i]; let alpha = i / this.trail.length;
                 ctx.beginPath(); ctx.arc(point.x, point.y, this.r * alpha, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(250, 204, 21, ${alpha * 0.4})`; ctx.fill();
+                ctx.fillStyle = this.isDropShot ? `rgba(96, 165, 250, ${alpha * 0.5})` : (this.isFloat ? `rgba(74, 222, 128, ${alpha * 0.5})` : `rgba(250, 204, 21, ${alpha * 0.5})`); 
+                ctx.fill();
             }
         }
 
@@ -705,113 +750,187 @@ class Ball {
     }
 }
 
+let customStatus = { text: "", color: "#fff", timer: 0 };
+function showStatus(text, color) {
+    customStatus = { text, color, timer: 60 };
+}
+
 let particles = [];
 function createHitEffect(x, y, color, count = 10) {
-    for (let i = 0; i < count; i++) particles.push({ x: x, y: y, vx: (Math.random() - 0.5) * 18, vy: (Math.random() - 0.5) * 18, life: 1.0, color: color });
+    for (let i = 0; i < count; i++) particles.push({ x: x, y: y, vx: (Math.random() - 0.5) * 25, vy: (Math.random() - 0.5) * 25, life: 1.0, color: color });
+}
+
+function processAI() {
+    if (playMode !== 'pve' || gameState === 'GAME_OVER' || gameState === 'SCORED') return;
+
+    keys['ArrowUp'] = false; keys['ArrowDown'] = false;
+    keys['ArrowLeft'] = false; keys['ArrowRight'] = false;
+    keys['Enter'] = false;
+
+    if (gameState === 'SERVING' && currentServer === 2) {
+        aiTimer++;
+        if (aiTimer > 40) {
+            let r = Math.random();
+            if (r < 0.2) keys['Enter'] = true;
+            else if (r < 0.4) keys['ArrowUp'] = true;
+            else if (r < 0.6) keys['ArrowDown'] = true;
+            else if (r < 0.8) keys['ArrowLeft'] = true;
+            else keys['ArrowRight'] = true;
+            aiTimer = 0;
+        }
+        return;
+    }
+
+    if (gameState !== 'PLAYING') return;
+
+    let targetX = logicalWidth * 0.80 - p2.w/2; 
+    let isBallIncoming = ball.vx > 0 && ball.x > logicalWidth * 0.4;
+
+    if (isBallIncoming) {
+        targetX = ball.x;
+        if (ball.isFloat && Math.random() < 0.15) targetX += (Math.random() - 0.5) * 150;
+    }
+
+    let p2Center = p2.x + p2.w/2;
+    if (p2Center < targetX - 15) keys['ArrowRight'] = true;
+    else if (p2Center > targetX + 15) keys['ArrowLeft'] = true;
+
+    if (isBallIncoming) {
+        let dist = Math.abs(p2Center - ball.x);
+        if (ball.y < GROUND_Y - 200 && dist < 100) {
+            keys['ArrowUp'] = true; 
+            if (ball.y < p2.y && ball.vy > 0 && Math.random() < 0.8) keys['Enter'] = true; 
+        }
+        if (ball.y > GROUND_Y - 150 && dist > 100 && dist < 300 && ball.vy > 10) {
+            if (Math.random() < 0.1) keys['Enter'] = true; 
+        }
+    }
+}
+
+let animeScoreData = { active: false, timer: 0, text: "" };
+function drawAnimeScore() {
+    if (!animeScoreData.active) return;
+    animeScoreData.timer--;
+    
+    ctx.save();
+    ctx.fillStyle = `rgba(0,0,0,${Math.min(0.8, animeScoreData.timer/20)})`;
+    ctx.fillRect(0, 0, logicalWidth, logicalHeight);
+    
+    ctx.strokeStyle = '#fff';
+    for(let i=0; i<30; i++) {
+        let y = (logicalHeight/2 - 150) + Math.random()*300;
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(logicalWidth, y);
+        ctx.globalAlpha = Math.random() * 0.4 * (animeScoreData.timer/90);
+        ctx.lineWidth = Math.random() * 5;
+        ctx.stroke();
+    }
+    
+    ctx.globalAlpha = Math.min(1, animeScoreData.timer/20);
+    ctx.translate(logicalWidth/2, logicalHeight/2);
+    ctx.rotate(-0.08);
+    ctx.font = '900 85px ui-sans-serif, system-ui';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    
+    ctx.shadowColor = currentServer === 1 ? '#fb923c' : '#f87171';
+    ctx.shadowBlur = 30; ctx.fillStyle = '#fff';
+    ctx.fillText(animeScoreData.text, 0, 0);
+    
+    ctx.lineWidth = 4; ctx.strokeStyle = currentServer === 1 ? '#ea580c' : '#dc2626';
+    ctx.strokeText(animeScoreData.text, 0, 0);
+    
+    ctx.restore();
+    if (animeScoreData.timer <= 0) animeScoreData.active = false;
 }
 
 function endGame() {
     gameState = 'GAME_OVER';
     let winnerText = p1.score > p2.score ? "1P WINS! 🏆" : (p2.score > p1.score ? "2P WINS! 🏆" : "DRAW! 🤝");
-    statusText.innerText = `MATCH OVER! ${winnerText}`;
+    document.getElementById('status-text').innerText = `MATCH OVER! ${winnerText}`;
+    document.getElementById('status-text').classList.remove('hidden-status');
     
     setTimeout(() => {
         overlay.style.display = 'flex';
-        startBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg> Play Again';
-        statusText.innerText = "";
+        startBtn.innerText = 'PLAY AGAIN';
+        document.getElementById('status-text').innerText = "";
         gameState = 'MENU';
-    }, 4000);
+    }, 4500);
 }
 
 function score(playerNum) {
-    if (gameState !== 'PLAYING') return;
+    if (gameState !== 'PLAYING' && gameState !== 'SERVING') return;
     gameState = 'SCORED'; 
-    statusText.innerText = `POINT FOR ${playerNum}P !`;
+    document.getElementById('status-text').classList.add('hidden-status'); 
     
     if (playerNum === 1) p1.score++; else p2.score++;
     document.getElementById('score-1p').innerText = p1.score; document.getElementById('score-2p').innerText = p2.score;
     currentServer = playerNum; 
+
+    animeScoreData = { active: true, timer: 120, text: `${playerNum}P POINT!` };
 
     setTimeout(() => {
         if (gameMode === 'score' && (p1.score >= targetScore || p2.score >= targetScore)) {
             endGame(); return;
         }
         p1.resetPosition(); p2.resetPosition(); ball.reset();
+        shotClockTimer = 10.0;
+        activeSide = playerNum;
         gameState = 'SERVING';
-        statusText.innerText = `${playerNum}P SERVE (Press Action)`;
-    }, 1500);
+        showStatus(`${playerNum}P SERVE`, '#fff');
+    }, 2000); 
 }
 
-// 監聽器和 resizeGame 先前已設定，現在初始化物件
 window.addEventListener('resize', resizeGame);
-resizeGame(); // 確保 p1/p2 還沒初始前，logicalWidth 等常數已就位
+resizeGame(); 
 
-const p1 = new Player(true, '#f97316'); // 亮橘色 1P
-const p2 = new Player(false, '#ef4444'); // 亮紅色 2P
+const p1 = new Player(true, '#f97316'); 
+const p2 = new Player(false, '#ef4444'); 
 const ball = new Ball();
 
-
-// 繪製細緻的高質感室內球場 (支援動態寬度)
 function drawStadium() {
-    // 牆壁漸層
     let wallGrad = ctx.createLinearGradient(0, 0, 0, GROUND_Y);
-    wallGrad.addColorStop(0, '#020617'); 
-    wallGrad.addColorStop(1, '#1e293b'); 
-    ctx.fillStyle = wallGrad;
-    ctx.fillRect(0, 0, logicalWidth, GROUND_Y);
+    wallGrad.addColorStop(0, '#020617'); wallGrad.addColorStop(1, '#1e293b'); 
+    ctx.fillStyle = wallGrad; ctx.fillRect(0, 0, logicalWidth, GROUND_Y);
 
-    // 聚光燈效果
     let spotlight = ctx.createRadialGradient(logicalWidth/2, 100, 50, logicalWidth/2, GROUND_Y, logicalWidth*0.6);
-    spotlight.addColorStop(0, 'rgba(255, 255, 255, 0.15)');
-    spotlight.addColorStop(1, 'rgba(255, 255, 255, 0)');
-    ctx.fillStyle = spotlight;
-    ctx.fillRect(0, 0, logicalWidth, GROUND_Y);
+    spotlight.addColorStop(0, 'rgba(255, 255, 255, 0.15)'); spotlight.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    ctx.fillStyle = spotlight; ctx.fillRect(0, 0, logicalWidth, GROUND_Y);
 
-    // 透視木頭地板
     let floorGrad = ctx.createLinearGradient(0, GROUND_Y, 0, logicalHeight);
-    floorGrad.addColorStop(0, '#78350f'); 
-    floorGrad.addColorStop(1, '#d97706'); 
-    ctx.fillStyle = floorGrad;
-    ctx.fillRect(0, GROUND_Y, logicalWidth, logicalHeight - GROUND_Y);
+    floorGrad.addColorStop(0, '#78350f'); floorGrad.addColorStop(1, '#d97706'); 
+    ctx.fillStyle = floorGrad; ctx.fillRect(0, GROUND_Y, logicalWidth, logicalHeight - GROUND_Y);
 
-    // 木板透視發散線
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
-    ctx.lineWidth = 3;
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)'; ctx.lineWidth = 3;
     for (let i = -logicalWidth; i < logicalWidth * 2; i += 60) {
         ctx.beginPath();
         let endX = logicalWidth / 2 + (i - logicalWidth / 2) * 3.5; 
-        ctx.moveTo(i, GROUND_Y);
-        ctx.lineTo(endX, logicalHeight);
-        ctx.stroke();
+        ctx.moveTo(i, GROUND_Y); ctx.lineTo(endX, logicalHeight); ctx.stroke();
     }
     
-    // 白線
-    ctx.fillStyle = 'rgba(255,255,255,0.85)'; 
-    ctx.fillRect(0, GROUND_Y - 2, logicalWidth, 4); 
+    ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fillRect(0, GROUND_Y - 2, logicalWidth, 4); 
 
-    // 網柱與球網
     let postGrad = ctx.createLinearGradient(NET.x, 0, NET.x + NET.w, 0);
-    postGrad.addColorStop(0, '#475569');
-    postGrad.addColorStop(0.5, '#94a3b8');
-    postGrad.addColorStop(1, '#334155');
-    ctx.fillStyle = postGrad;
-    ctx.fillRect(NET.x, NET.y, NET.w, NET.h);
+    postGrad.addColorStop(0, '#475569'); postGrad.addColorStop(0.5, '#94a3b8'); postGrad.addColorStop(1, '#334155');
+    ctx.fillStyle = postGrad; ctx.fillRect(NET.x, NET.y, NET.w, NET.h);
     
-    ctx.fillStyle = '#f8fafc';
-    ctx.fillRect(NET.x - 4, NET.y, NET.w + 8, 14);
-    ctx.fillStyle = '#cbd5e1';
-    ctx.fillRect(NET.x - 4, NET.y + 12, NET.w + 8, 2); 
+    ctx.fillStyle = '#f8fafc'; ctx.fillRect(NET.x - 4, NET.y, NET.w + 8, 14);
+    ctx.fillStyle = '#cbd5e1'; ctx.fillRect(NET.x - 4, NET.y + 12, NET.w + 8, 2); 
     
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    for(let y = NET.y + 20; y < NET.y + NET.h; y += 15) {
-        ctx.moveTo(NET.x, y); ctx.lineTo(NET.x + NET.w, y);
-    }
-    for(let x = NET.x; x <= NET.x + NET.w; x += 11) {
-        ctx.moveTo(x, NET.y + 14); ctx.lineTo(x, NET.y + NET.h);
-    }
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)'; ctx.lineWidth = 2; ctx.beginPath();
+    for(let y = NET.y + 20; y < NET.y + NET.h; y += 15) { ctx.moveTo(NET.x, y); ctx.lineTo(NET.x + NET.w, y); }
+    for(let x = NET.x; x <= NET.x + NET.w; x += 11) { ctx.moveTo(x, NET.y + 14); ctx.lineTo(x, NET.y + NET.h); }
     ctx.stroke();
+}
+
+function drawCustomStatus() {
+    if (customStatus.timer <= 0) return;
+    customStatus.timer--;
+    ctx.save();
+    ctx.font = '900 45px ui-sans-serif, system-ui';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.shadowColor = customStatus.color; ctx.shadowBlur = 15;
+    ctx.fillStyle = customStatus.color;
+    ctx.fillText(customStatus.text, logicalWidth/2, 150 - (60 - customStatus.timer)*0.5);
+    ctx.restore();
 }
 
 function gameLoop(timestamp) {
@@ -819,14 +938,11 @@ function gameLoop(timestamp) {
     let deltaTime = timestamp - lastFrameTime;
     lastFrameTime = timestamp;
     
-    // 保證 Canvas 與螢幕大小一致 (應對視窗改變)
-    if(canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
-        resizeGame();
-    }
+    if(canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) resizeGame();
+
+    processAI(); 
 
     ctx.save();
-    
-    // 套用動態解析度縮放
     ctx.scale(scaleFactor, scaleFactor);
 
     if (shakeAmount > 0) {
@@ -835,8 +951,27 @@ function gameLoop(timestamp) {
         if (shakeAmount < 0.5) shakeAmount = 0;
     }
 
-    // 清除的是「邏輯」大小的區塊
     ctx.clearRect(0, 0, logicalWidth, logicalHeight);
+
+    // --- 攻擊限制 10 秒邏輯 ---
+    if (gameState === 'PLAYING') {
+        let currentBallSide = ball.x < logicalWidth / 2 ? 1 : 2;
+        // 如果球越過網子，重置 10 秒計時並切換攻方
+        if (currentBallSide !== activeSide) {
+            activeSide = currentBallSide;
+            shotClockTimer = 10.0;
+        }
+    }
+
+    if (gameMode === 'time' && (gameState === 'PLAYING' || gameState === 'SERVING')) {
+        shotClockTimer -= deltaTime / 1000;
+        if (shotClockTimer <= 0) {
+            shotClockTimer = 0;
+            // 超時違例！對手直接得分
+            showStatus("⏳ TIME VIOLATION! ⏳", '#ef4444');
+            score(activeSide === 1 ? 2 : 1);
+        }
+    }
 
     if (gameState === 'PLAYING' || gameState === 'SCORED' || gameState === 'SERVING') {
         p1.update(); p2.update(); 
@@ -854,7 +989,7 @@ function gameLoop(timestamp) {
     for (let i = particles.length - 1; i >= 0; i--) {
         let p = particles[i];
         p.x += p.vx; p.y += p.vy; p.life -= 0.05;
-        ctx.globalAlpha = p.life; ctx.fillStyle = p.color;
+        ctx.globalAlpha = Math.max(0, p.life); ctx.fillStyle = p.color;
         ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, Math.PI*2); ctx.fill();
         ctx.globalAlpha = 1.0;
         if (p.life <= 0) particles.splice(i, 1);
@@ -863,16 +998,44 @@ function gameLoop(timestamp) {
     if (gameState !== 'MENU') {
         p1.draw(); p2.draw(); 
         if (gameState !== 'GAME_OVER') ball.draw();
+        
+        // --- 繪製攻擊限制計時器 (Shot Clock) ---
+        if (gameMode === 'time' && (gameState === 'PLAYING' || gameState === 'SERVING')) {
+            ctx.save();
+            ctx.font = '900 60px ui-sans-serif, system-ui';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            let displayTime = Math.ceil(shotClockTimer);
+            let clockColor = 'rgba(255,255,255,0.4)';
+            
+            // 最後 3 秒紅色警告閃爍
+            if (shotClockTimer <= 3 && Math.floor(Date.now() / 150) % 2 === 0) {
+                clockColor = '#ef4444'; 
+                ctx.shadowColor = '#ef4444'; ctx.shadowBlur = 20;
+            }
+            
+            ctx.fillStyle = clockColor;
+            let clockX = activeSide === 1 ? logicalWidth * 0.25 : logicalWidth * 0.75;
+            ctx.fillText(displayTime, clockX, 150);
+            
+            ctx.font = '700 20px ui-sans-serif, system-ui';
+            ctx.fillText("ATTACK", clockX, 90);
+            ctx.restore();
+        }
+
+        drawCustomStatus();
     }
     
+    drawAnimeScore(); 
+
     ctx.restore();
     requestAnimationFrame(gameLoop);
 }
 
 startBtn.addEventListener('click', () => {
+    playMode = document.querySelector('input[name="opponent"]:checked').value;
     gameMode = modeScoreRadio.checked ? 'score' : 'time';
     targetScore = parseInt(scoreLimitInput.value) || 15;
-    if(targetScore < 10) targetScore = 10; if(targetScore > 30) targetScore = 30;
+    if(targetScore < 5) targetScore = 5; if(targetScore > 30) targetScore = 30;
     
     timeLimit = parseInt(timeLimitInput.value) || 60;
     if(timeLimit < 30) timeLimit = 30; if(timeLimit > 300) timeLimit = 300;
@@ -883,12 +1046,16 @@ startBtn.addEventListener('click', () => {
     document.getElementById('score-1p').innerText = "0"; 
     document.getElementById('score-2p').innerText = "0";
     timerText.innerText = gameMode === 'time' ? timeLimit : "";
+    document.getElementById('status-text').classList.add('hidden-status');
     
-    currentServer = 1; 
+    currentServer = 1; aiTimer = 0;
+    shotClockTimer = 10.0;
+    activeSide = 1;
+
     p1.reset(); p2.reset(); ball.reset();
     
     gameState = 'SERVING';
-    statusText.innerText = "1P SERVE (Press Action)";
+    showStatus("1P SERVE", "#fff");
     lastFrameTime = performance.now();
 });
 
