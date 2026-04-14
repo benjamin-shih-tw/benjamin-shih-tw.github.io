@@ -318,15 +318,23 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        const logicalHeight = 600;
-        let logicalWidth = 1000;
+        const logicalHeight = 850;
+        const logicalWidth = 1000;
         let scaleFactor = 1;
+        let offsetX = 0;
+        let offsetY = 0;
 
         function resizeGame() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            scaleFactor = canvas.height / logicalHeight;
-            logicalWidth = canvas.width / scaleFactor;
+            
+            let scaleX = canvas.width / logicalWidth;
+            let scaleY = canvas.height / logicalHeight;
+            scaleFactor = Math.min(scaleX, scaleY);
+            
+            offsetX = (canvas.width - logicalWidth * scaleFactor) / 2;
+            offsetY = (canvas.height - logicalHeight * scaleFactor) / 2;
+            
             NET.x = logicalWidth / 2 - NET.w / 2;
 
             // 防止調整視窗時人物出界
@@ -381,8 +389,8 @@
         });
 
         const GRAVITY = 0.28;
-        const GROUND_Y = 500;
-        const NET = { x: 0, y: 280, w: 22, h: 220 };
+        const GROUND_Y = 750;
+        const NET = { x: 0, y: 530, w: 22, h: 220 };
 
         let gameState = 'MENU';
         let gameMode = 'score';
@@ -1136,7 +1144,12 @@
 
             processAI();
 
+            // 畫黑邊背景
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
             ctx.save();
+            ctx.translate(offsetX, offsetY);
             ctx.scale(scaleFactor, scaleFactor);
 
             if (shakeAmount > 0) {
