@@ -555,9 +555,13 @@
                         this.currentPose = 'idle';
                     }
                 } else {
-                    if (left) this.vx = -this.speed;
-                    else if (right) this.vx = this.speed;
-                    else this.vx = 0;
+                    if (down && this.isGrounded) {
+                        this.vx = 0; // 蹲下接球時不可移動
+                    } else {
+                        if (left) this.vx = -this.speed;
+                        else if (right) this.vx = this.speed;
+                        else this.vx = 0;
+                    }
 
                     if (up) {
                         if (this.isGrounded) {
@@ -630,7 +634,11 @@
 
                 if (this.poseTimer > 0) this.poseTimer--;
                 else if (!this.isDiving && !this.isCharging) {
-                    this.currentPose = this.isGrounded ? (this.vx !== 0 ? 'run' : 'idle') : 'jump';
+                    if (down && this.isGrounded) {
+                        this.currentPose = 'receive';
+                    } else {
+                        this.currentPose = this.isGrounded ? (this.vx !== 0 ? 'run' : 'idle') : 'jump';
+                    }
                 }
             }
 
